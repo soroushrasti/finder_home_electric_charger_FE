@@ -15,13 +15,13 @@ export default function LoginScreen({ navigation, setUser }) {
 
     const handleLogin = async () => {
         try {
-            const response = await fetch(`${env.apiUrl}/user/login`, {
-                method: 'POST',
+            const queryParams = new URLSearchParams(credentials).toString();
+            const response = await fetch(`${env.apiUrl}/user/login?${queryParams}`, {
+                method: 'GET',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${env.apiToken}`
                 },
-                body: JSON.stringify(credentials),
             });
 
             const data = await response.json();

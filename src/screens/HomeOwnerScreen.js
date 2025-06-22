@@ -6,42 +6,27 @@ import env from '../config/environment';
 export default function HomeOwnerScreen({ user }) {
     const [chargers, setChargers] = useState([]);
     const [modalVisible, setModalVisible] = useState(false);
-    const [searchParams, setSearchParams] = useState({
-        city: '',
-        postcode: '',
-        alley: '',
-        street: ''
-    });
 
     const [newLocation, setNewLocation] = useState({
-        postcode: '',
-        alley: '',
-        street: '',
-        home_phone_number: '',
-        city: '',
-        fast_charger: false
+        "postCode":"",
+        "alley":"",
+        "street":"",
+        "homePhoneNumber":"",
+        "city":"",
+        "fastCharging":true
     });
+
+    useEffect(() => {
+        fetchChargerLocations();
+    }, []);
 
     const fetchChargerLocations = async () => {
         try {
-            // Ensure city is provided as it's mandatory
-            if (!searchParams.city) {
-                Alert.alert('Error', 'City is required for search');
-                return;
-            }
-
-            const payload = {
-                user_id: user.id,
-                ...searchParams
-            };
-
-            const response = await fetch(`${env.apiUrl}/find-car-charger-location`, {
-                method: 'POST',
+            const response = await fetch(`${env.apiUrl}/charging_locations/users/${user.user_id}`, {
+                method: 'GET',
                 headers: {
-                    'Content-Type': 'application/json',
                     'Authorization': `Bearer ${env.apiToken}`
                 },
-                body: JSON.stringify(payload)
             });
 
             const data = await response.json();
@@ -56,13 +41,6 @@ export default function HomeOwnerScreen({ user }) {
         }
     };
 
-    useEffect(() => {
-        // Initialize with city from user data if available
-        if (user && user.city) {
-            setSearchParams(prev => ({ ...prev, city: user.city }));
-        }
-        fetchChargerLocations();
-    }, []);
 
     const handleAddLocation = async () => {
         try {
@@ -72,11 +50,13 @@ export default function HomeOwnerScreen({ user }) {
             }
 
             const payload = {
-                user_id: user.id,
+                userId: user.user_id,
                 ...newLocation
             };
 
-            const response = await fetch(`${env.apiUrl}/add-car-charger-location`, {
+            console.log(payload);
+
+            const response = await fetch(`${env.apiUrl}/charging_location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -100,13 +80,12 @@ export default function HomeOwnerScreen({ user }) {
     };
 
     const renderChargerItem = ({ item }) => (
-        <View style={styles.chargerItem}>
-            <Text style={styles.chargerTitle}>
-                {item.street}, {item.city}
-            </Text>
-            <Text>{item.postcode} {item.alley}</Text>
-            <Text>Phone: {item.home_phone_number}</Text>
-            <Text>Fast Charger: {item.fast_charger ? 'Yes' : 'No'}</Text>
+        <View style={styles.card}>
+            <Text style={styles.cardTitle}>{item.street}, {item.city}</Text>
+            <Text style={styles.cardSubtitle}>Postcode: {item.postcode}</Text>
+            <Text style={styles.cardSubtitle}>Alley: {item.alley}</Text>
+            <Text style={styles.cardSubtitle}>Phone: {item.home_phone_number}</Text>
+            <Text style={styles.cardSubtitle}>Fast Charger: {item.fast_charger ? 'Yes' : 'No'}</Text>
         </View>
     );
 
@@ -114,20 +93,11 @@ export default function HomeOwnerScreen({ user }) {
         <View style={styles.container}>
             <Text style={styles.title}>Charger Locations</Text>
 
-            <View style={styles.searchContainer}>
-                <TextInput
-                    placeholder="City (required)"
-                    value={searchParams.city}
-                    onChangeText={(text) => setSearchParams({...searchParams, city: text})}
-                    style={styles.searchInput}
-                />
-                <Button title="Search" onPress={fetchChargerLocations} />
-            </View>
 
             <FlatList
                 data={chargers}
                 renderItem={renderChargerItem}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.userId.toString()}
                 ListEmptyComponent={<Text style={styles.empty}>No charger locations found</Text>}
             />
 
@@ -157,14 +127,14 @@ export default function HomeOwnerScreen({ user }) {
                     />
                     <TextInput
                         placeholder="Postcode"
-                        value={newLocation.postcode}
-                        onChangeText={(text) => setNewLocation({...newLocation, postcode: text})}
+                        value={newLocation.postCode}
+                        onChangeText={(text) => setNewLocation({...newLocation, postCode: text})}
                         style={styles.input}
                     />
                     <TextInput
                         placeholder="Home Phone Number"
-                        value={newLocation.home_phone_number}
-                        onChangeText={(text) => setNewLocation({...newLocation, home_phone_number: text})}
+                        value={newLocation.homePhoneNumber}
+                        onChangeText={(text) => setNewLocation({...newLocation, homePhoneNumber: text})}
                         keyboardType="phone-pad"
                         style={styles.input}
                     />
@@ -172,8 +142,8 @@ export default function HomeOwnerScreen({ user }) {
                     <View style={styles.switchContainer}>
                         <Text>Fast Charger</Text>
                         <Switch
-                            value={newLocation.fast_charger}
-                            onValueChange={(value) => setNewLocation({...newLocation, fast_charger: value})}
+                            value={newLocation.fastCharging}
+                            onValueChange={(value) => setNewLocation({...newLocation, fastCharging: value})}
                         />
                     </View>
 
@@ -188,16 +158,25 @@ export default function HomeOwnerScreen({ user }) {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16 },
-    title: { fontSize: 22, fontWeight: 'bold', marginBottom: 16 },
-    searchContainer: { marginBottom: 16 },
-    searchInput: { borderWidth: 1, marginBottom: 8, padding: 8, borderRadius: 4 },
-    chargerItem: { padding: 16, marginBottom: 8, backgroundColor: '#f0f0f0', borderRadius: 8 },
-    chargerTitle: { fontSize: 18, fontWeight: 'bold' },
-    empty: { textAlign: 'center', marginVertical: 20 },
-    modalContainer: { flex: 1, padding: 24, justifyContent: 'center' },
-    modalTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' },
-    input: { borderWidth: 1, marginBottom: 12, padding: 8, borderRadius: 4 },
-    switchContainer: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 },
-    buttonRow: { flexDirection: 'row', justifyContent: 'space-around', marginTop: 16 }
+    card: {
+        padding: 16,
+        marginVertical: 8,
+        backgroundColor: '#ffffff',
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    cardTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 4,
+    },
+    cardSubtitle: {
+        fontSize: 14,
+        color: '#555',
+        marginBottom: 2,
+    },
 });

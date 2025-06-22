@@ -14,6 +14,7 @@ export default function RegisterScreen() {
         postCode: '',
         userType: 'ELECTRIC_CAR_OWNER',
         mobile: '',
+        password: '',
     });
 
     const handleChange = (name, value) => {
@@ -102,6 +103,14 @@ export default function RegisterScreen() {
                 onChangeText={(v) => handleChange('mobile', v)}
                 mode="outlined"
                 keyboardType="phone-pad"
+                style={styles.input}
+            />
+            <TextInput
+                label="Password"
+                value={form.password}
+                onChangeText={(v) => handleChange('password', v)}
+                mode="outlined"
+                secureTextEntry
                 style={styles.input}
             />
             <Text style={styles.radioLabel}>User Type</Text>

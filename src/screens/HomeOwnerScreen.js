@@ -54,8 +54,6 @@ export default function HomeOwnerScreen({ user }) {
                 ...newLocation
             };
 
-            console.log(payload);
-
             const response = await fetch(`${env.apiUrl}/charging_location`, {
                 method: 'POST',
                 headers: {
@@ -161,7 +159,7 @@ const styles = StyleSheet.create({
     card: {
         padding: 16,
         marginVertical: 8,
-        backgroundColor: '#ffffff',
+        backgroundColor: '# ',
         borderRadius: 8,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },

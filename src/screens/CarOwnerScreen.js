@@ -1,18 +1,19 @@
 // src/screens/CarOwnerScreen.js
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Button, StyleSheet, TextInput, Modal, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import env from '../config/environment';
 
-export default function CarOwnerScreen({ user }) {
+export default function CarOwnerScreen({ navigation, user }) {
     const [cars, setCars] = useState([]);
-    const [modalVisible, setModalVisible] = useState(false);
-    const [newCar, setNewCar] = useState({
-        model_car: '',
-        year_of_construction: '',
-        color: ''
-    });
 
-    const fetchCars = async () => {
+    useEffect(() => {
+        fetchUserCars();
+    }, []);
+
+
+
+    const fetchUserCars = async () => {
         try {
             const response = await fetch(`${env.apiUrl}/find-car`, {
                 method: 'POST',
@@ -20,118 +21,121 @@ export default function CarOwnerScreen({ user }) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${env.apiToken}`
                 },
-                body: JSON.stringify({ user_id: user.id })
+                body: JSON.stringify({ user_id: user.user_id })
             });
 
             const data = await response.json();
             if (response.ok) {
                 setCars(data);
-            } else {
-                Alert.alert('Error', data.message || 'Failed to fetch cars');
             }
         } catch (error) {
             console.error('Fetch cars error:', error);
-            Alert.alert('Error', 'Network error');
-        }
-    };
-
-    useEffect(() => {
-        fetchCars();
-    }, []);
-
-    const handleAddCar = async () => {
-        try {
-            const payload = {
-                user_id: user.id,
-                model_car: newCar.model_car,
-                year_of_construction: newCar.year_of_construction,
-                color: newCar.color
-            };
-
-            const response = await fetch(`${env.apiUrl}/add-car`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken}`
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await response.json();
-            if (response.ok) {
-                setModalVisible(false);
-                fetchCars(); // Refresh car list
-                Alert.alert('Success', 'Car added successfully!');
-            } else {
-                Alert.alert('Error', data.message || 'Failed to add car');
-            }
-        } catch (error) {
-            console.error('Add car error:', error);
-            Alert.alert('Error', 'Network error');
         }
     };
 
     const renderCarItem = ({ item }) => (
-        <View style={styles.carItem}>
-            <Text style={styles.carModel}>{item.model_car}</Text>
-            <Text>Year: {item.year_of_construction}</Text>
-            <Text>Color: {item.color}</Text>
+        <View style={styles.carCard}>
+            <View style={styles.carInfo}>
+                <Text style={styles.carTitle}>{item.model} ({item.year})</Text>
+                <Text style={styles.carSubtitle}>Color: {item.color}</Text>
+                <Text style={styles.carSubtitle}>License: {item.license_plate}</Text>
+            </View>
+            <TouchableOpacity
+                style={styles.bookingsButton}
+                onPress={() => navigation.navigate('CarBookings', { carId: item.car_id })}
+            >
+                <Icon name="event" size={24} color="#007AFF" />
+            </TouchableOpacity>
         </View>
     );
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>My Cars</Text>
+            <View style={styles.header}>
+                <TouchableOpacity
+                    style={styles.headerButton}
+                    onPress={() => navigation.navigate('MyBookings')}
+                >
+                    <Icon name="calendar-today" size={32} color="#007AFF" />
+                    <Text>My Bookings</Text>
+                </TouchableOpacity>
 
+                <TouchableOpacity
+                    style={styles.headerButton}
+                    onPress={() => {
+                        if (user) {
+                            // Use setTimeout to ensure navigation stack is ready
+                            setTimeout(() => {
+                                navigation.navigate('AddCarScreen', { user });
+                            }, 0);
+                        }
+                    }}
+                >
+                    <Icon name="directions-car" size={32} color="#007AFF" />
+                    <Text>Add Car</Text>
+                </TouchableOpacity>
+            </View>
+
+            <Text style={styles.title}>My Cars</Text>
             <FlatList
                 data={cars}
                 renderItem={renderCarItem}
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={item => item.car_id.toString()}
                 ListEmptyComponent={<Text style={styles.empty}>No cars found</Text>}
             />
-
-            <Button title="Add New Car" onPress={() => setModalVisible(true)} />
-
-            <Modal visible={modalVisible} animationType="slide">
-                <View style={styles.modalContainer}>
-                    <Text style={styles.modalTitle}>Add New Car</Text>
-                    <TextInput
-                        placeholder="Car Model"
-                        value={newCar.model_car}
-                        onChangeText={(text) => setNewCar({...newCar, model_car: text})}
-                        style={styles.input}
-                    />
-                    <TextInput
-                        placeholder="Year of Construction"
-                        value={newCar.year_of_construction}
-                        onChangeText={(text) => setNewCar({...newCar, year_of_construction: text})}
-                        keyboardType="number-pad"
-                        style={styles.input}
-                    />
-                    <TextInput
-                        placeholder="Color"
-                        value={newCar.color}
-                        onChangeText={(text) => setNewCar({...newCar, color: text})}
-                        style={styles.input}
-                    />
-                    <View style={styles.buttonRow}>
-                        <Button title="Cancel" onPress={() => setModalVisible(false)} />
-                        <Button title="Save" onPress={handleAddCar} />
-                    </View>
-                </View>
-            </Modal>
         </View>
     );
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, padding: 16 },
-    title: { fontSize: 22, fontWeight: 'bold', marginBottom: 16 },
-    carItem: { padding: 16, marginBottom: 8, backgroundColor: '#f0f0f0', borderRadius: 8 },
-    carModel: { fontSize: 18, fontWeight: 'bold' },
-    empty: { textAlign: 'center', marginVertical: 20 },
-    modalContainer: { flex: 1, padding: 24, justifyContent: 'center' },
-    modalTitle: { fontSize: 20, fontWeight: 'bold', marginBottom: 16, textAlign: 'center' },
-    input: { borderWidth: 1, marginBottom: 12, padding: 8, borderRadius: 4 },
-    buttonRow: { flexDirection: 'row', justifyContent: 'space-around', marginTop: 16 }
+    container: {
+        flex: 1,
+        padding: 16,
+        backgroundColor: '#f5f5f5',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginBottom: 20,
+    },
+    headerButton: {
+        alignItems: 'center',
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 16,
+    },
+    carCard: {
+        flexDirection: 'row',
+        backgroundColor: '#fff',
+        padding: 16,
+        marginVertical: 8,
+        borderRadius: 8,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 2,
+    },
+    carInfo: {
+        flex: 1,
+    },
+    carTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    carSubtitle: {
+        fontSize: 14,
+        color: '#666',
+    },
+    bookingsButton: {
+        justifyContent: 'center',
+        padding: 8,
+    },
+    empty: {
+        textAlign: 'center',
+        marginTop: 20,
+        color: '#666',
+    },
 });

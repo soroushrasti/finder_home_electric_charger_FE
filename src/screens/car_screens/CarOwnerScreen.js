@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, TouchableOpacity, FlatList, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-import env from '../config/environment';
+import env from '../../config/environment';
 
 export default function CarOwnerScreen({ navigation, user }) {
     const [cars, setCars] = useState([]);
@@ -42,7 +42,7 @@ export default function CarOwnerScreen({ navigation, user }) {
             </View>
             <TouchableOpacity
                 style={styles.bookingsButton}
-                onPress={() => navigation.navigate('CarBookings', { carId: item.car_id })}
+                onPress={() => navigation.navigate('CarBookings', { car: item, user })}
             >
                 <Icon name="event" size={24} color="#007AFF" />
             </TouchableOpacity>
@@ -54,7 +54,7 @@ export default function CarOwnerScreen({ navigation, user }) {
             <View style={styles.header}>
                 <TouchableOpacity
                     style={styles.headerButton}
-                    onPress={() => navigation.navigate('MyBookings')}
+                    onPress={() => navigation.navigate('MyBookingsScreen', { user })}
                 >
                     <Icon name="calendar-today" size={32} color="#007AFF" />
                     <Text>My Bookings</Text>
@@ -66,7 +66,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                         if (user) {
                             // Use setTimeout to ensure navigation stack is ready
                             setTimeout(() => {
-                                navigation.navigate('AddCarScreen', { user });
+                                onCarAdded: fetchCars // Pass your fetchCars function
                             }, 0);
                         }
                     }}

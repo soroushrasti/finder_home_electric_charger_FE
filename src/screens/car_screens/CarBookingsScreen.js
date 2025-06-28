@@ -1,32 +1,44 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import env from "../../config/environment";
 
 export default function CarBookingsScreen({ navigation, route }) {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
 
-    const { car, user } = route.params;
+    const { car, user } = route.params || {}; // Add default empty object
 
+    // Add safety check
+    if (!car) {
+        return (
+            <View style={styles.centered}>
+                <Text>No car selected</Text>
+                <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <Text style={{ color: '#007AFF' }}>Go Back</Text>
+                </TouchableOpacity>
+            </View>
+        );
+    }
     useEffect(() => {
         fetchBookings();
     }, []);
 
     const fetchBookings = async () => {
         try {
-            const response = await fetch('YOUR_API_URL/find-booking', {
+            const response = await fetch(`${env.apiUrl}/find-booking`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    car_id: car.id,
+                    car_id: car.car_id,
                 }),
             });
 
             if (response.ok) {
                 const data = await response.json();
-                setBookings(data.bookings || []);
+                setBookings(data || []);
             }
         } catch (error) {
             console.error('Error fetching bookings:', error);
@@ -45,7 +57,7 @@ export default function CarBookingsScreen({ navigation, route }) {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Bookings for {car.model}</Text>
+            <Text style={styles.title}>All existing bookings for {car.model}</Text>
             <Text style={styles.subtitle}>{car.license_plate}</Text>
 
             {loading ? (

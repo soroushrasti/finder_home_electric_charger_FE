@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert, Switch } from 'react-native';
+import env from "../../config/environment";
 
-export default function ChargerLocationsScreen({ navigation, route }) {
+export default function FindChargerLocationsScreen({ navigation, route }) {
     const [postCode, setPostCode] = useState('');
     const [alley, setAlley] = useState('');
     const [street, setStreet] = useState('');
@@ -13,14 +14,14 @@ export default function ChargerLocationsScreen({ navigation, route }) {
     const { car, user } = route.params;
 
     const handleSearch = async () => {
-        if (!postCode || !street || !city) {
+        if (!postCode) {
             Alert.alert('Error', 'Please fill required fields');
             return;
         }
 
         setLoading(true);
         try {
-            const response = await fetch('YOUR_API_URL/find-car-charger-location', {
+            const response = await fetch(`${env.apiUrl}/find-car-charger-location`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,15 +37,19 @@ export default function ChargerLocationsScreen({ navigation, route }) {
             });
 
             if (response.ok) {
-                const data = await response.json();
+                const chargingLocation = await response.json();
+                if (!chargingLocation || chargingLocation.length === 0) {
+                    Alert.alert('Error', 'No charging locations found');
+                    return;
+                }
                 // Navigate to booking confirmation with location data
                 navigation.navigate('BookingConfirmation', {
                     car,
                     user,
-                    chargingLocation: data.location
+                    chargingLocation
                 });
             } else {
-                Alert.alert('Error', 'No charging locations found');
+                Alert.alert('Error', 'Network error');
             }
         } catch (error) {
             Alert.alert('Error', 'Network error');

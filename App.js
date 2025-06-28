@@ -5,13 +5,16 @@ import { View, Button, Text, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import RegisterScreen from './src/screens/auth/RegisterScreen';
 import LoginScreen from './src/screens/auth/LoginScreen';
-import CarOwnerScreen from './src/screens/CarOwnerScreen';
-import HomeOwnerScreen from './src/screens/HomeOwnerScreen';
+import CarOwnerScreen from './src/screens/car_screens/CarOwnerScreen';
+import HomeOwnerScreen from './src/screens/charger_screens/HomeOwnerScreen';
 import React, { useState, useEffect } from 'react';
-import AddCarScreen from './src/screens/AddCarScreen';
-import MyBookingsScreen from './src/screens/MyBookingsScreen';
-import CarBookingsScreen from './src/screens/CarBookingsScreen';
-import ChargerLocationsScreen from './src/screens/ChargerLocationsScreen';
+import AddCarScreen from './src/screens/car_screens/AddCarScreen';
+import CarBookingsScreen from './src/screens/car_screens/CarBookingsScreen';
+import FindChargerLocationsScreen from './src/screens/car_screens/FindChargerLocationsScreen';
+import EndBookingScreen from "./src/screens/car_screens/EndBookingScreen";
+import MyBookingsScreen from "./src/screens/car_screens/MyBookingsScreen";
+import MyLocationBookingsScreen from './src/screens/charger_screens/MyLocationBookingsScreen';
+import MyChargerLocationsScreen from './src/screens/charger_screens/MyChargerLocationsScreen';
 
 const Stack = createStackNavigator();
 
@@ -33,10 +36,6 @@ function Home({ navigation }) {
 
 export default function App() {
     const [user, setUser] = useState(null);
-
-    useEffect(() => {
-        console.log('Current user:', user);
-    }, [user]);
 
     const handleLogout = () => {
         setUser(null);
@@ -74,17 +73,23 @@ export default function App() {
                             {props => <CarOwnerScreen {...props} user={user} />}
                         </Stack.Screen>
                         <Stack.Screen name="AddCarScreen" component={AddCarScreen} options={screenOptions} />
-                        <Stack.Screen name="MyBookings" component={MyBookingsScreen} options={screenOptions} />
+                        <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={screenOptions} />
                         <Stack.Screen name="CarBookings" component={CarBookingsScreen} options={screenOptions} />
-                        <Stack.Screen name="ChargerLocations" component={ChargerLocationsScreen} options={screenOptions} />
+                        <Stack.Screen name="ChargerLocations" component={FindChargerLocationsScreen} options={screenOptions} />
+                        <Stack.Screen name="EndBooking" component={EndBookingScreen} options={screenOptions} />
                     </>
                 ) : (
-                    <Stack.Screen
-                        name="HomeOwner"
-                        options={screenOptions}
-                    >
-                        {props => <HomeOwnerScreen {...props} user={user} />}
-                    </Stack.Screen>
+                    <>
+                        <Stack.Screen
+                            name="HomeOwner"
+                            options={screenOptions}
+                        >
+                            {props => <HomeOwnerScreen {...props} user={user} />}
+                        </Stack.Screen>
+                        <Stack.Screen name="MyLocationBookings" component={MyLocationBookingsScreen} options={screenOptions} />
+                        <Stack.Screen name="MyChargerLocations" component={MyChargerLocationsScreen} options={screenOptions} />
+
+                    </>
                 )}
             </Stack.Navigator>
         </NavigationContainer>

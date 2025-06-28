@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import env from "../config/environment";
+import env from "../../config/environment";
 
 export default function AddCarScreen({ navigation, route }) {
     const [model, setModel] = useState('');
@@ -10,6 +10,8 @@ export default function AddCarScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
 
     const user = route.params?.user;
+    const onCarAdded = route.params?.onCarAdded; // Add this line
+
 
     const handleAddCar = async () => {
         if (!model || !color || !year || !licensePlate) {
@@ -35,6 +37,9 @@ export default function AddCarScreen({ navigation, route }) {
 
             if (response.ok) {
                 Alert.alert('Success', 'Car added successfully');
+                if (onCarAdded) {
+                    onCarAdded(); // Call the refresh function
+                }
                 navigation.goBack();
             } else {
                 Alert.alert('Error', 'Failed to add car');

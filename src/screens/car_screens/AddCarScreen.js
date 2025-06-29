@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 
 export default function AddCarScreen({ navigation, route }) {
@@ -10,12 +12,11 @@ export default function AddCarScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
 
     const user = route.params?.user;
-    const onCarAdded = route.params?.onCarAdded; // Add this line
-
+    const onCarAdded = route.params?.onCarAdded;
 
     const handleAddCar = async () => {
         if (!model || !color || !year || !licensePlate) {
-            Alert.alert('Error', 'Please fill all fields');
+            Alert.alert('Missing Information', 'Please fill all fields to continue');
             return;
         }
 
@@ -36,78 +37,214 @@ export default function AddCarScreen({ navigation, route }) {
             });
 
             if (response.ok) {
-                Alert.alert('Success', 'Car added successfully');
+                Alert.alert('Success! 🎉', 'Your car has been added successfully');
                 if (onCarAdded) {
-                    onCarAdded(); // Call the refresh function
+                    onCarAdded();
                 }
                 navigation.goBack();
             } else {
-                Alert.alert('Error', 'Failed to add car');
+                Alert.alert('Error', 'Failed to add car. Please try again.');
             }
         } catch (error) {
-            Alert.alert('Error', 'Network error');
+            Alert.alert('Network Error', 'Please check your connection and try again');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Add New Car</Text>
+        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+            <View style={styles.header}>
+                <View style={styles.iconContainer}>
+                    <MaterialIcons name="directions-car" size={50} color="#4285F4" />
+                </View>
+                <Text style={styles.title}>Add Your Electric Car</Text>
+                <Text style={styles.subtitle}>Let's get your vehicle registered for charging</Text>
+            </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Model (e.g., Tesla)"
-                value={model}
-                onChangeText={setModel}
-            />
+            <View style={styles.form}>
+                <View style={styles.inputContainer}>
+                    <MaterialIcons name="directions-car" size={20} color="#4285F4" style={styles.inputIcon} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Car Model (e.g., Tesla Model 3)"
+                        value={model}
+                        onChangeText={setModel}
+                        placeholderTextColor="#999"
+                    />
+                </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Color"
-                value={color}
-                onChangeText={setColor}
-            />
+                <View style={styles.inputContainer}>
+                    <MaterialIcons name="palette" size={20} color="#4285F4" style={styles.inputIcon} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Color (e.g., White, Black, Red)"
+                        value={color}
+                        onChangeText={setColor}
+                        placeholderTextColor="#999"
+                    />
+                </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="Year"
-                value={year}
-                onChangeText={setYear}
-                keyboardType="numeric"
-            />
+                <View style={styles.inputContainer}>
+                    <MaterialIcons name="calendar-today" size={20} color="#4285F4" style={styles.inputIcon} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="Year (e.g., 2023)"
+                        value={year}
+                        onChangeText={setYear}
+                        keyboardType="numeric"
+                        placeholderTextColor="#999"
+                    />
+                </View>
 
-            <TextInput
-                style={styles.input}
-                placeholder="License Plate"
-                value={licensePlate}
-                onChangeText={setLicensePlate}
-            />
+                <View style={styles.inputContainer}>
+                    <MaterialIcons name="confirmation-number" size={20} color="#4285F4" style={styles.inputIcon} />
+                    <TextInput
+                        style={styles.input}
+                        placeholder="License Plate (e.g., ABC-123)"
+                        value={licensePlate}
+                        onChangeText={setLicensePlate}
+                        autoCapitalize="characters"
+                        placeholderTextColor="#999"
+                    />
+                </View>
 
-            <Button
-                title={loading ? "Adding..." : "Add Car"}
-                onPress={handleAddCar}
-                disabled={loading}
-            />
-        </View>
+                <TouchableOpacity
+                    style={styles.addButton}
+                    onPress={handleAddCar}
+                    disabled={loading}
+                    activeOpacity={0.8}
+                >
+                    <LinearGradient
+                        colors={loading ? ['#ccc', '#999'] : ['#4285F4', '#34A853']}
+                        style={styles.buttonGradient}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }}
+                    >
+                        {loading ? (
+                            <MaterialIcons name="hourglass-empty" size={24} color="#fff" />
+                        ) : (
+                            <MaterialIcons name="add" size={24} color="#fff" />
+                        )}
+                        <Text style={styles.buttonText}>
+                            {loading ? "Adding Car..." : "Add Car"}
+                        </Text>
+                    </LinearGradient>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.infoCard}>
+                <MaterialIcons name="info" size={24} color="#4285F4" />
+                <View style={styles.infoText}>
+                    <Text style={styles.infoTitle}>Why do we need this information?</Text>
+                    <Text style={styles.infoDescription}>
+                        This helps us match your car with compatible charging stations and provide personalized recommendations.
+                    </Text>
+                </View>
+            </View>
+        </ScrollView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
+        backgroundColor: '#f8f9fa',
+    },
+    header: {
+        alignItems: 'center',
+        padding: 24,
+        paddingTop: 40,
+    },
+    iconContainer: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: '#e3f2fd',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 16,
     },
     title: {
         fontSize: 24,
         fontWeight: 'bold',
-        marginBottom: 20,
+        color: '#333',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    subtitle: {
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+    },
+    form: {
+        padding: 20,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        marginBottom: 16,
+        paddingHorizontal: 16,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    inputIcon: {
+        marginRight: 12,
     },
     input: {
-        borderWidth: 1,
-        borderColor: '#ddd',
-        padding: 10,
-        marginBottom: 15,
-        borderRadius: 5,
+        flex: 1,
+        paddingVertical: 16,
+        fontSize: 16,
+        color: '#333',
+    },
+    addButton: {
+        borderRadius: 12,
+        marginTop: 8,
+        elevation: 6,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 3 },
+        shadowOpacity: 0.3,
+        shadowRadius: 6,
+    },
+    buttonGradient: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 16,
+        borderRadius: 12,
+    },
+    buttonText: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginLeft: 8,
+    },
+    infoCard: {
+        flexDirection: 'row',
+        backgroundColor: '#e3f2fd',
+        margin: 20,
+        padding: 16,
+        borderRadius: 12,
+        alignItems: 'flex-start',
+    },
+    infoText: {
+        flex: 1,
+        marginLeft: 12,
+    },
+    infoTitle: {
+        fontSize: 14,
+        fontWeight: 'bold',
+        color: '#1976d2',
+        marginBottom: 4,
+    },
+    infoDescription: {
+        fontSize: 12,
+        color: '#666',
+        lineHeight: 18,
     },
 });

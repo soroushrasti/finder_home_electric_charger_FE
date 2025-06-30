@@ -18,7 +18,8 @@ import MyLocationBookingsScreen from './src/screens/charger_screens/MyLocationBo
 import MyChargerLocationsScreen from './src/screens/charger_screens/MyChargerLocationsScreen';
 import AddChargerLocationScreen from './src/screens/charger_screens/AddChargerLocationScreen';
 import MyCarsScreen from './src/screens/car_screens/MyCarsScreen';
-
+import BookingConfirmationScreen from './src/screens/car_screens/BookingConfirmationScreen';
+import ChargerLocationListScreen from './src/screens/car_screens/ChargerLocationListScreen';
 const Stack = createStackNavigator();
 
 function Home({ navigation }) {
@@ -255,6 +256,16 @@ export default function App() {
                             name="MyCars"
                             component={MyCarsScreen}
                             options={{ title: 'My Cars' }}
+                        />
+                        <Stack.Screen
+                            name="BookingConfirmationScreen"
+                            component={BookingConfirmationScreen}
+                            options={{ title: 'Booking confirmaiton' }}
+                        />
+                        <Stack.Screen
+                            name="ChargerLocationListScreen"
+                            component={ChargerLocationListScreen}
+                            options={{ title: 'Location charger list' }}
                         />
                     </>
                 ) : (

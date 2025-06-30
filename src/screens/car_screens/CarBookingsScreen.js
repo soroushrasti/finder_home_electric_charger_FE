@@ -94,11 +94,11 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingHeader}>
                 <View style={styles.locationContainer}>
                     <MaterialIcons name="location-on" size={20} color="#667eea" />
-                    <Text style={styles.locationText}>{item.location_name || 'Unknown Location'}</Text>
+                    <Text style={styles.locationText}>{item.street + item.city || 'Unknown Location'}</Text>
                 </View>
                 <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
                     <MaterialIcons name={getStatusIcon(item.status)} size={16} color="#fff" />
-                    <Text style={styles.statusText}>{item.status || 'Pending'}</Text>
+                    <Text style={styles.statusText}>{item.status || 'Success'}</Text>
                 </View>
             </View>
 

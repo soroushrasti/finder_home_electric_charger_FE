@@ -7,7 +7,7 @@ export default function CarOwnerScreen({ navigation, user }) {
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <View style={styles.header}>
-                <Text style={styles.welcomeText}>Welcome back, {user?.name || 'Car Owner'}!</Text>
+                <Text style={styles.welcomeText}>Welcome back, {user?.first_name || 'Car Owner'}!</Text>
                 <Text style={styles.subtitle}>Ready for your next journey?</Text>
             </View>
 

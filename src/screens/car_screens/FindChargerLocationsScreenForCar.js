@@ -5,11 +5,11 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 
 export default function FindChargerLocationsScreenForCar({ navigation, route }) {
-    const [postCode, setPostCode] = useState('');
-    const [alley, setAlley] = useState('');
-    const [street, setStreet] = useState('');
-    const [homePhone, setHomePhone] = useState('');
-    const [city, setCity] = useState('');
+    const [postCode, setPostCode] = useState(null);
+    const [alley, setAlley] = useState(null);
+    const [street, setStreet] = useState(null);
+    const [homePhone, setHomePhone] = useState(null);
+    const [city, setCity] = useState(null);
     const [fastCharging, setFastCharging] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -38,16 +38,22 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                 }),
             });
 
+            // In the handleSearch function, replace the navigation call:
             if (response.ok) {
-                const chargingLocation = await response.json();
-                if (!chargingLocation || chargingLocation.length === 0) {
+                const chargingLocations = await response.json();
+                if (!chargingLocations || chargingLocations.length === 0) {
                     Alert.alert('No Results', 'No charging locations found for your search criteria. Try adjusting your search parameters.');
                     return;
                 }
-                navigation.navigate('BookingConfirmation', {
+                navigation.navigate('ChargerLocationListScreen', {
                     car,
                     user,
-                    chargingLocation
+                    chargingLocations,
+                    searchCriteria: {
+                        post_code: postCode,
+                        city,
+                        fast_charging: fastCharging
+                    }
                 });
             } else {
                 Alert.alert('Search Failed', 'Unable to find charging locations. Please try again.');

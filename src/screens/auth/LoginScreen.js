@@ -32,7 +32,7 @@ export default function LoginScreen({ navigation, setUser }) {
             if (response.ok) {
                 const userData = await response.json();
                 setUser(userData);
-                Alert.alert('Welcome Back! 👋', `Good to see you again, ${userData.name}`);
+                Alert.alert('Welcome Back! 👋', `Good to see you again, ${userData.first_name}`);
             } else {
                 const errorData = await response.json();
                 Alert.alert('Login Failed', errorData.message || 'Invalid email or password');

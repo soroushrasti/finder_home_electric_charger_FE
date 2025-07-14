@@ -1,9 +1,9 @@
 // src/config/env.js
 export default {
     dev: {
-        apiToken: 'token'
+        apiToken: '12345'
     },
     prod: {
-        apiToken: 'token'
+        apiToken: '12345'
     }
 };

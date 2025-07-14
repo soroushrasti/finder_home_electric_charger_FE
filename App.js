@@ -20,6 +20,10 @@ import AddChargerLocationScreen from './src/screens/charger_screens/AddChargerLo
 import MyCarsScreen from './src/screens/car_screens/MyCarsScreen';
 import BookingConfirmationScreen from './src/screens/car_screens/BookingConfirmationScreen';
 import ChargerLocationListScreen from './src/screens/car_screens/ChargerLocationListScreen';
+import FindChargerLocationsScreen from './src/screens/car_screens/FindChargerLocationsScreen';
+import ChargerLocationListScreenWithoutCar from './src/screens/car_screens/ChargerLocationListScreenWithoutCar';
+import CarSelectionScreen from './src/screens/car_screens/CarSelectionScreen';
+import EmailVerificationScreen from './src/screens/auth/EmailVerificationScreen';
 const Stack = createStackNavigator();
 
 function Home({ navigation }) {
@@ -210,6 +214,11 @@ export default function App() {
                             }}
                         />
                         <Stack.Screen
+                            name="EmailVerificationScreen"
+                            component={EmailVerificationScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
                             name="Login"
                             options={{
                                 title: 'Sign In',
@@ -240,7 +249,22 @@ export default function App() {
                         <Stack.Screen
                             name="FindChargerLocationsScreenForCar"
                             component={FindChargerLocationsScreenForCar}
+                            options={{ title: 'Find Chargers for car' }}
+                        />
+                        <Stack.Screen
+                            name="FindChargerLocationsScreen"
+                            component={FindChargerLocationsScreen}
                             options={{ title: 'Find Chargers' }}
+                        />
+                        <Stack.Screen
+                            name="ChargerLocationListScreenWithoutCar"
+                            component={ChargerLocationListScreenWithoutCar}
+                            options={{ title: 'list Chargers without car' }}
+                        />
+                        <Stack.Screen
+                            name="CarSelectionScreen"
+                            component={CarSelectionScreen}
+                            options={{ title: 'Car slection after location' }}
                         />
                         <Stack.Screen
                             name="EndBooking"

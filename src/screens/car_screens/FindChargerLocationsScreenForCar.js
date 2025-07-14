@@ -127,7 +127,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <MaterialIcons name="road" size={20} color="#667eea" style={styles.inputIcon} />
+                        <MaterialIcons name="place" size={20} color="#667eea" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
                             placeholder="Street *"

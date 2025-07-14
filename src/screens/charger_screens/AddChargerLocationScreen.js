@@ -200,7 +200,7 @@ export default function AddChargerLocationScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputContainer}>
-                        <MaterialIcons name="add-road" size={20} color="#4285F4" style={styles.inputIcon} />
+                        <MaterialIcons name="place" size={20} color="#4285F4" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
                             placeholder="Alley/Lane (Optional)"

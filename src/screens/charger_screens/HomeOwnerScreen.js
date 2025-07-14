@@ -2,8 +2,17 @@ import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import ActivityDashboard from '../../components/ActivityDashboard';
 
 export default function HomeOwnerScreen({ navigation, user }) {
+    const handleTotalEarningsPress = () => {
+        navigation.navigate('MyLocationBookings', { user });
+    };
+
+    const handleActiveSessionsPress = () => {
+        navigation.navigate('MyLocationBookings', { user });
+    };
+
     return (
         <View style={styles.container}>
             <LinearGradient
@@ -25,96 +34,90 @@ export default function HomeOwnerScreen({ navigation, user }) {
                 contentContainerStyle={styles.scrollContainer}
                 showsVerticalScrollIndicator={false}
             >
-                <View style={styles.statsContainer}>
-                    <View style={styles.statCard}>
-                        <LinearGradient
-                            colors={['#4285F4', '#34A853']}
-                            style={styles.statGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
-                        >
-                            <MaterialIcons name="location-on" size={32} color="#fff" />
-                            <Text style={styles.statNumber}>0</Text>
-                            <Text style={styles.statLabel}>Active Locations</Text>
-                        </LinearGradient>
-                    </View>
-                    <View style={styles.statCard}>
-                        <LinearGradient
-                            colors={['#43e97b', '#38f9d7']}
-                            style={styles.statGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
-                        >
-                            <MaterialIcons name="attach-money" size={32} color="#fff" />
-                            <Text style={styles.statNumber}>€0</Text>
-                            <Text style={styles.statLabel}>Total Earnings</Text>
-                        </LinearGradient>
-                    </View>
-                </View>
-
+                {/* Enhanced Menu Cards - Bigger and Fancier */}
                 <View style={styles.menuContainer}>
+                    <TouchableOpacity
+                        style={styles.menuCard}
+                        onPress={() => navigation.navigate('AddChargerLocationScreen', { user })}
+                        activeOpacity={0.8}
+                    >
+                        <LinearGradient
+                            colors={['#4CAF50', '#45a049']}
+                            style={styles.cardGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                        >
+                            <View style={styles.enhancedCardContent}>
+                                <View style={styles.enhancedIconContainer}>
+                                    <MaterialIcons name="add-location" size={48} color="#fff" />
+                                </View>
+                                <Text style={styles.enhancedCardTitle}>Add Charging Location</Text>
+                                <Text style={styles.enhancedCardSubtitle}>
+                                    Register a new charging station
+                                </Text>
+                                <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
+                            </View>
+                        </LinearGradient>
+                    </TouchableOpacity>
+
                     <TouchableOpacity
                         style={styles.menuCard}
                         onPress={() => navigation.navigate('MyLocationBookings', { user })}
                         activeOpacity={0.8}
                     >
-                        <View style={styles.cardContent}>
-                            <View style={styles.cardHeader}>
-                                <View style={styles.cardIconContainer}>
-                                    <MaterialIcons name="list-alt" size={32} color="#667eea" />
+                        <LinearGradient
+                            colors={['#2196F3', '#1976D2']}
+                            style={styles.cardGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                        >
+                            <View style={styles.enhancedCardContent}>
+                                <View style={styles.enhancedIconContainer}>
+                                    <MaterialIcons name="assignment" size={48} color="#fff" />
                                 </View>
-                                <View style={styles.cardTextContainer}>
-                                    <Text style={styles.cardTitle}>My Location Bookings</Text>
-                                    <Text style={styles.cardSubtitle}>
-                                        View all bookings at your charging stations
-                                    </Text>
-                                </View>
-                                <MaterialIcons name="arrow-forward-ios" size={20} color="#667eea" />
+                                <Text style={styles.enhancedCardTitle}>Location Bookings</Text>
+                                <Text style={styles.enhancedCardSubtitle}>
+                                    View bookings for your stations
+                                </Text>
+                                <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
-                        </View>
+                        </LinearGradient>
                     </TouchableOpacity>
 
                     <TouchableOpacity
                         style={styles.menuCard}
-                        onPress={() => navigation.navigate('MyChargerLocations', { user })}
+                        onPress={() => navigation.navigate('MyLocationsScreen', { user })}
                         activeOpacity={0.8}
                     >
-                        <View style={styles.cardContent}>
-                            <View style={styles.cardHeader}>
-                                <View style={styles.cardIconContainer}>
-                                    <MaterialIcons name="ev-station" size={32} color="#667eea" />
+                        <LinearGradient
+                            colors={['#FF9800', '#F57C00']}
+                            style={styles.cardGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                        >
+                            <View style={styles.enhancedCardContent}>
+                                <View style={styles.enhancedIconContainer}>
+                                    <MaterialIcons name="ev-station" size={48} color="#fff" />
                                 </View>
-                                <View style={styles.cardTextContainer}>
-                                    <Text style={styles.cardTitle}>My Charger Locations</Text>
-                                    <Text style={styles.cardSubtitle}>
-                                        Manage and add new charging stations
-                                    </Text>
-                                </View>
-                                <MaterialIcons name="arrow-forward-ios" size={20} color="#667eea" />
+                                <Text style={styles.enhancedCardTitle}>My Stations</Text>
+                                <Text style={styles.enhancedCardSubtitle}>
+                                    Manage your charging locations
+                                </Text>
+                                <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
-                        </View>
+                        </LinearGradient>
                     </TouchableOpacity>
                 </View>
 
-                <View style={styles.tipsCard}>
-                    <View style={styles.tipsHeader}>
-                        <MaterialIcons name="lightbulb" size={24} color="#ff9800" />
-                        <Text style={styles.tipsTitle}>Quick Tips</Text>
-                    </View>
-                    <View style={styles.tipsList}>
-                        <View style={styles.tipItem}>
-                            <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>Add charging locations to start earning</Text>
-                        </View>
-                        <View style={styles.tipItem}>
-                            <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>Monitor bookings to optimize availability</Text>
-                        </View>
-                        <View style={styles.tipItem}>
-                            <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>Provide clear directions for better reviews</Text>
-                        </View>
-                    </View>
+                {/* Activity Dashboard moved to bottom with better title */}
+                <View style={styles.activitySection}>
+                    <Text style={styles.sectionTitle}>📊 Performance Overview</Text>
+                    <ActivityDashboard
+                        userId={user?.user_id}
+                        userType="location_owner"
+                        onTotalEarningsPress={handleTotalEarningsPress}
+                        onActiveSessionsPress={handleActiveSessionsPress}
+                    />
                 </View>
             </ScrollView>
         </View>
@@ -124,149 +127,89 @@ export default function HomeOwnerScreen({ navigation, user }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#f5f5f5',
     },
     headerGradient: {
+        padding: 40,
         paddingTop: 60,
-        paddingBottom: 40,
-        paddingHorizontal: 20,
         alignItems: 'center',
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
     },
     iconContainer: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        backgroundColor: 'rgba(255,255,255,0.2)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 16,
     },
     title: {
-        fontSize: 28,
+        fontSize: 24,
         fontWeight: 'bold',
         color: '#fff',
-        marginBottom: 8,
         textAlign: 'center',
+        marginBottom: 8,
     },
     subtitle: {
         fontSize: 16,
         color: '#fff',
-        opacity: 0.9,
         textAlign: 'center',
+        opacity: 0.9,
     },
     scrollContainer: {
-        padding: 20,
-    },
-    statsContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        marginBottom: 24,
-        gap: 12,
-    },
-    statCard: {
-        flex: 1,
-        borderRadius: 12,
-        elevation: 4,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.2,
-        shadowRadius: 4,
-    },
-    statGradient: {
-        padding: 16,
-        borderRadius: 12,
-        alignItems: 'center',
-    },
-    statNumber: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        color: '#fff',
-        marginTop: 8,
-        marginBottom: 4,
-    },
-    statLabel: {
-        fontSize: 12,
-        color: '#fff',
-        textAlign: 'center',
-        opacity: 0.9,
+        paddingBottom: 20,
     },
     menuContainer: {
-        gap: 16,
-        marginBottom: 24,
+        padding: 16,
+        gap: 20,
     },
     menuCard: {
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        elevation: 3,
+        borderRadius: 20,
+        elevation: 8,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+        marginHorizontal: 4,
     },
-    cardContent: {
-        padding: 20,
+    cardGradient: {
+        borderRadius: 20,
+        padding: 24,
+        minHeight: 140,
     },
-    cardHeader: {
-        flexDirection: 'row',
+    enhancedCardContent: {
         alignItems: 'center',
-    },
-    cardIconContainer: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        backgroundColor: '#f0f4ff',
         justifyContent: 'center',
-        alignItems: 'center',
-        marginRight: 16,
+        position: 'relative',
     },
-    cardTextContainer: {
-        flex: 1,
+    enhancedIconContainer: {
+        marginBottom: 12,
+        backgroundColor: 'rgba(255,255,255,0.2)',
+        borderRadius: 25,
+        padding: 12,
     },
-    cardTitle: {
-        fontSize: 18,
+    enhancedCardTitle: {
+        fontSize: 20,
         fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 4,
+        color: '#fff',
+        textAlign: 'center',
+        marginBottom: 8,
     },
-    cardSubtitle: {
+    enhancedCardSubtitle: {
         fontSize: 14,
-        color: '#666',
+        color: 'rgba(255,255,255,0.9)',
+        textAlign: 'center',
         lineHeight: 20,
     },
-    tipsCard: {
-        backgroundColor: '#fff',
-        padding: 20,
-        borderRadius: 16,
-        elevation: 3,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
+    cardArrow: {
+        position: 'absolute',
+        top: 12,
+        right: 12,
+        opacity: 0.8,
     },
-    tipsHeader: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
+    activitySection: {
+        marginTop: 20,
+        paddingHorizontal: 16,
     },
-    tipsTitle: {
-        fontSize: 16,
+    sectionTitle: {
+        fontSize: 22,
         fontWeight: 'bold',
         color: '#333',
-        marginLeft: 8,
-    },
-    tipsList: {
-        gap: 12,
-    },
-    tipItem: {
-        flexDirection: 'row',
-        alignItems: 'center',
-    },
-    tipText: {
-        fontSize: 14,
-        color: '#666',
-        marginLeft: 8,
-        flex: 1,
+        marginBottom: 16,
+        textAlign: 'center',
     },
 });

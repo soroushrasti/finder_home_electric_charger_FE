@@ -1,31 +1,71 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    Alert,
+    ScrollView,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform
+} from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Picker } from '@react-native-picker/picker';
-import env from '../../config/environment';
+import env from "../../config/environment";
 
 export default function RegisterScreen({ navigation }) {
-    const [firstName, setFirstName] = useState('');
-    const [lastName, setLastName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [userType, setUserType] = useState('Electric car owner');
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        password: '',
+        confirmPassword: '',
+        phone_number: '',
+        user_type: 'Electric car owner'
+    });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-    const handleRegister = async () => {
-        if (!firstName || !lastName || !email || !password) {
-            Alert.alert('Missing Information', 'Please fill all fields to continue');
-            return;
+    const handleInputChange = (field, value) => {
+        setFormData(prev => ({
+            ...prev,
+            [field]: value
+        }));
+    };
+
+    const validateForm = () => {
+        if (!formData.name || !formData.email || !formData.password || !formData.phone_number) {
+            Alert.alert('Error', 'Please fill in all required fields');
+            return false;
         }
 
-        // if (password.length < 6) {
-        //     Alert.alert('Weak Password', 'Password must be at least 6 characters long');
-        //     return;
-        // }
+        if (formData.password !== formData.confirmPassword) {
+            Alert.alert('Error', 'Passwords do not match');
+            return false;
+        }
+
+        if (formData.password.length < 6) {
+            Alert.alert('Error', 'Password must be at least 6 characters');
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(formData.email)) {
+            Alert.alert('Error', 'Please enter a valid email address');
+            return false;
+        }
+
+        return true;
+    };
+
+    const handleRegister = async () => {
+        if (!validateForm()) return;
 
         setLoading(true);
+
         try {
             const response = await fetch(`${env.apiUrl}/register`, {
                 method: 'POST',
@@ -33,27 +73,38 @@ export default function RegisterScreen({ navigation }) {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    username: firstName + ' ' + lastName,
-                    first_name: firstName,
-                    last_name: lastName,
-                    email: email.toLowerCase(),
-                    password,
-                    user_type: userType,
-                }),
+                    name: formData.name,
+                    email: formData.email,
+                    password: formData.password,
+                    phone_number: formData.phone_number,
+                    user_type: formData.user_type
+                })
             });
+
+            const data = await response.json();
 
             if (response.ok) {
                 Alert.alert(
-                    'Welcome! 🎉',
-                    'Your account has been created successfully. Please login to continue.',
-                    [{ text: 'Login Now', onPress: () => navigation.navigate('Login') }]
+                    'Registration Successful!',
+                    'Please check your email for the verification code.',
+                    [
+                        {
+                            text: 'Continue',
+                            onPress: () => {
+                                navigation.navigate('EmailVerificationScreen', {
+                                    user: data,
+                                    userType: formData.user_type === 'Electric car owner' ? 'car_owner' : 'home_owner'
+                                });
+                            }
+                        }
+                    ]
                 );
             } else {
-                const errorData = await response.json();
-                Alert.alert('Registration Failed', errorData.message || 'Please try again');
+                Alert.alert('Registration Failed', data.message || 'Please try again');
             }
         } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
+            console.error('Registration error:', error);
+            Alert.alert('Error', 'Network error. Please try again.');
         } finally {
             setLoading(false);
         }
@@ -64,141 +115,177 @@ export default function RegisterScreen({ navigation }) {
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-            <ScrollView
-                contentContainerStyle={styles.scrollContainer}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
+            <LinearGradient
+                colors={['#667eea', '#764ba2']}
+                style={styles.header}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
             >
-                <LinearGradient
-                    colors={['#667eea', '#764ba2']}
-                    style={styles.headerGradient}
-                    start={{ x: 0, y: 0 }}
-                    end={{ x: 1, y: 1 }}
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
                 >
+                    <MaterialIcons name="arrow-back" size={24} color="#fff" />
+                </TouchableOpacity>
+                <View style={styles.headerContent}>
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="person-add" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.title}>Create Account</Text>
-                    <Text style={styles.subtitle}>Join the electric future today</Text>
-                </LinearGradient>
+                    <Text style={styles.headerTitle}>Create Account</Text>
+                    <Text style={styles.headerSubtitle}>Join thousands of EV owners</Text>
+                </View>
+            </LinearGradient>
 
+            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
-                    <View style={styles.inputContainer}>
-                        <MaterialIcons name="person" size={20} color="#667eea" style={styles.inputIcon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="First Name"
-                            value={firstName}
-                            onChangeText={setFirstName}
-                            placeholderTextColor="#999"
-                            autoCapitalize="words"
-                        />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Last Name"
-                            value={lastName}
-                            onChangeText={setLastName}
-                            placeholderTextColor="#999"
-                            autoCapitalize="words"
-                        />
-                    </View>
+                    <Text style={styles.sectionTitle}>👤 Personal Information</Text>
 
-                    <View style={styles.inputContainer}>
-                        <MaterialIcons name="email" size={20} color="#667eea" style={styles.inputIcon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Email Address"
-                            value={email}
-                            onChangeText={setEmail}
-                            placeholderTextColor="#999"
-                            keyboardType="email-address"
-                            autoCapitalize="none"
-                        />
-                    </View>
-
-                    <View style={styles.inputContainer}>
-                        <MaterialIcons name="lock" size={20} color="#667eea" style={styles.inputIcon} />
-                        <TextInput
-                            style={styles.input}
-                            placeholder="Password (min. 6 characters)"
-                            value={password}
-                            onChangeText={setPassword}
-                            placeholderTextColor="#999"
-                            secureTextEntry={!showPassword}
-                            autoCapitalize="none"
-                        />
-                        <TouchableOpacity
-                            onPress={() => setShowPassword(!showPassword)}
-                            style={styles.eyeIcon}
-                        >
-                            <MaterialIcons
-                                name={showPassword ? "visibility" : "visibility-off"}
-                                size={20}
-                                color="#999"
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Full Name *</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="person" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter your full name"
+                                value={formData.name}
+                                onChangeText={(value) => handleInputChange('name', value)}
+                                placeholderTextColor="#999"
                             />
-                        </TouchableOpacity>
+                        </View>
                     </View>
 
-                    <View style={styles.pickerContainer}>
-                        <MaterialIcons name="category" size={20} color="#667eea" style={styles.inputIcon} />
-                        <View style={styles.pickerWrapper}>
-                            <Picker
-                                selectedValue={userType}
-                                onValueChange={setUserType}
-                                style={styles.picker}
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Email Address *</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter your email"
+                                value={formData.email}
+                                onChangeText={(value) => handleInputChange('email', value)}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                placeholderTextColor="#999"
+                            />
+                        </View>
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Phone Number *</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter your phone number"
+                                value={formData.phone_number}
+                                onChangeText={(value) => handleInputChange('phone_number', value)}
+                                keyboardType="phone-pad"
+                                placeholderTextColor="#999"
+                            />
+                        </View>
+                    </View>
+
+                    <Text style={styles.sectionTitle}>🔒 Security</Text>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Password *</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Create a password"
+                                value={formData.password}
+                                onChangeText={(value) => handleInputChange('password', value)}
+                                secureTextEntry={!showPassword}
+                                placeholderTextColor="#999"
+                            />
+                            <TouchableOpacity
+                                onPress={() => setShowPassword(!showPassword)}
+                                style={styles.eyeIcon}
                             >
-                                <Picker.Item label="🚗 Electric Car Owner" value="Electric car owner" />
-                                <Picker.Item label="🏠 Home Owner (Charger Host)" value="Home owner" />
+                                <MaterialIcons
+                                    name={showPassword ? "visibility" : "visibility-off"}
+                                    size={20}
+                                    color="#666"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Confirm Password *</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Confirm your password"
+                                value={formData.confirmPassword}
+                                onChangeText={(value) => handleInputChange('confirmPassword', value)}
+                                secureTextEntry={!showConfirmPassword}
+                                placeholderTextColor="#999"
+                            />
+                            <TouchableOpacity
+                                onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                                style={styles.eyeIcon}
+                            >
+                                <MaterialIcons
+                                    name={showConfirmPassword ? "visibility" : "visibility-off"}
+                                    size={20}
+                                    color="#666"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+
+                    <Text style={styles.sectionTitle}>🚗 Account Type</Text>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>I am a... *</Text>
+                        <View style={styles.pickerContainer}>
+                            <MaterialIcons name="person-outline" size={20} color="#666" style={styles.inputIcon} />
+                            <Picker
+                                selectedValue={formData.user_type}
+                                style={styles.picker}
+                                onValueChange={(value) => handleInputChange('user_type', value)}
+                            >
+                                <Picker.Item label="Electric Car Owner" value="Electric car owner" />
+                                <Picker.Item label="Charging Station Owner" value="Charging station owner" />
                             </Picker>
                         </View>
                     </View>
 
-                    <TouchableOpacity
-                        style={styles.registerButton}
-                        onPress={handleRegister}
-                        disabled={loading}
-                        activeOpacity={0.8}
-                    >
-                        <LinearGradient
-                            colors={loading ? ['#ccc', '#999'] : ['#667eea', '#764ba2']}
-                            style={styles.buttonGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
+                    <View style={styles.buttonContainer}>
+                        <TouchableOpacity
+                            style={[styles.registerButton, loading && styles.registerButtonDisabled]}
+                            onPress={handleRegister}
+                            disabled={loading}
+                            activeOpacity={0.8}
                         >
-                            {loading ? (
-                                <MaterialIcons name="hourglass-empty" size={24} color="#fff" />
-                            ) : (
-                                <MaterialIcons name="person-add" size={24} color="#fff" />
-                            )}
-                            <Text style={styles.buttonText}>
-                                {loading ? "Creating Account..." : "Create Account"}
-                            </Text>
-                        </LinearGradient>
-                    </TouchableOpacity>
-
-                    <View style={styles.loginPrompt}>
-                        <Text style={styles.promptText}>Already have an account?</Text>
-                        <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                            <Text style={styles.loginLink}>Sign In</Text>
+                            <LinearGradient
+                                colors={loading ? ['#ccc', '#999'] : ['#43e97b', '#38f9d7']}
+                                style={styles.registerButtonGradient}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 1 }}
+                            >
+                                {loading ? (
+                                    <ActivityIndicator size="small" color="#fff" />
+                                ) : (
+                                    <MaterialIcons name="person-add" size={24} color="#fff" />
+                                )}
+                                <Text style={styles.registerButtonText}>
+                                    {loading ? 'Creating Account...' : 'Create Account'}
+                                </Text>
+                            </LinearGradient>
                         </TouchableOpacity>
-                    </View>
-                </View>
 
-                <View style={styles.featuresContainer}>
-                    <Text style={styles.featuresTitle}>Why Join Us?</Text>
-                    <View style={styles.featuresList}>
-                        <View style={styles.featureItem}>
-                            <MaterialIcons name="electric-bolt" size={20} color="#4285F4" />
-                            <Text style={styles.featureText}>Find charging stations near you</Text>
-                        </View>
-                        <View style={styles.featureItem}>
-                            <MaterialIcons name="attach-money" size={20} color="#34A853" />
-                            <Text style={styles.featureText}>Earn money by sharing your charger</Text>
-                        </View>
-                        <View style={styles.featureItem}>
-                            <MaterialIcons name="eco" size={20} color="#FBBC04" />
-                            <Text style={styles.featureText}>Support sustainable transportation</Text>
-                        </View>
+                        <TouchableOpacity
+                            style={styles.loginRedirectButton}
+                            onPress={() => navigation.navigate('Login')}
+                        >
+                            <Text style={styles.loginRedirectText}>
+                                Already have an account? <Text style={styles.loginRedirectLink}>Sign In</Text>
+                            </Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
             </ScrollView>
@@ -209,156 +296,149 @@ export default function RegisterScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f8f9fa',
+        backgroundColor: '#f5f5f5',
     },
-    scrollContainer: {
-        flexGrow: 1,
-    },
-    headerGradient: {
+    header: {
         paddingTop: 60,
         paddingBottom: 40,
         paddingHorizontal: 20,
+        position: 'relative',
+    },
+    backButton: {
+        position: 'absolute',
+        top: 60,
+        left: 20,
+        zIndex: 1,
+        padding: 8,
+    },
+    headerContent: {
         alignItems: 'center',
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
+        marginTop: 20,
     },
     iconContainer: {
-        width: 100,
-        height: 100,
-        borderRadius: 50,
-        backgroundColor: 'rgba(255,255,255,0.2)',
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
         justifyContent: 'center',
         alignItems: 'center',
         marginBottom: 20,
     },
-    title: {
+    headerTitle: {
         fontSize: 28,
         fontWeight: 'bold',
         color: '#fff',
         marginBottom: 8,
+        textAlign: 'center',
     },
-    subtitle: {
+    headerSubtitle: {
         fontSize: 16,
         color: '#fff',
         opacity: 0.9,
         textAlign: 'center',
     },
-    formContainer: {
-        padding: 24,
+    content: {
         flex: 1,
+    },
+    formContainer: {
+        padding: 20,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 20,
+        marginTop: 10,
+    },
+    inputGroup: {
+        marginBottom: 20,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 8,
     },
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#fff',
         borderRadius: 12,
-        marginBottom: 16,
-        paddingHorizontal: 16,
-        elevation: 3,
+        paddingHorizontal: 15,
+        elevation: 2,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
+        shadowRadius: 2,
     },
     inputIcon: {
-        marginRight: 12,
+        marginRight: 10,
     },
     input: {
         flex: 1,
-        paddingVertical: 16,
+        paddingVertical: 15,
         fontSize: 16,
         color: '#333',
     },
     eyeIcon: {
-        padding: 4,
+        padding: 5,
     },
     pickerContainer: {
         flexDirection: 'row',
         alignItems: 'center',
         backgroundColor: '#fff',
         borderRadius: 12,
-        marginBottom: 24,
-        paddingLeft: 16,
-        elevation: 3,
+        paddingHorizontal: 15,
+        elevation: 2,
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
+        shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
-        shadowRadius: 4,
-    },
-    pickerWrapper: {
-        flex: 1,
+        shadowRadius: 2,
     },
     picker: {
+        flex: 1,
         height: 50,
-        color: '#333',
+    },
+    buttonContainer: {
+        paddingTop: 20,
+        paddingBottom: 40,
     },
     registerButton: {
         borderRadius: 12,
-        marginBottom: 24,
-        elevation: 6,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 3 },
-        shadowOpacity: 0.3,
-        shadowRadius: 6,
-    },
-    buttonGradient: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'center',
-        paddingVertical: 16,
-        borderRadius: 12,
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginLeft: 8,
-    },
-    loginPrompt: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginBottom: 24,
-    },
-    promptText: {
-        fontSize: 16,
-        color: '#666',
-        marginRight: 8,
-    },
-    loginLink: {
-        fontSize: 16,
-        color: '#667eea',
-        fontWeight: 'bold',
-    },
-    featuresContainer: {
-        backgroundColor: '#fff',
-        margin: 20,
-        padding: 20,
-        borderRadius: 16,
-        elevation: 3,
+        elevation: 4,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
+        shadowOpacity: 0.2,
         shadowRadius: 4,
+        marginBottom: 20,
     },
-    featuresTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: '#333',
-        marginBottom: 16,
-        textAlign: 'center',
+    registerButtonDisabled: {
+        elevation: 0,
+        shadowOpacity: 0,
     },
-    featuresList: {
-        gap: 12,
-    },
-    featureItem: {
+    registerButtonGradient: {
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 18,
+        borderRadius: 12,
+        gap: 10,
     },
-    featureText: {
-        fontSize: 14,
+    registerButtonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+    },
+    loginRedirectButton: {
+        alignItems: 'center',
+        paddingVertical: 15,
+    },
+    loginRedirectText: {
+        fontSize: 16,
         color: '#666',
-        marginLeft: 12,
-        flex: 1,
+    },
+    loginRedirectLink: {
+        color: '#667eea',
+        fontWeight: 'bold',
     },
 });

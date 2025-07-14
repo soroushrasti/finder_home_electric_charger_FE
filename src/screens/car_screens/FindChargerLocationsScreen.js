@@ -47,6 +47,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken} `,
                 },
                 body: JSON.stringify(formData)
             });

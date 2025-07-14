@@ -24,6 +24,8 @@ export default function MyLocationBookingsScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken} `,
+
                 },
                 body: JSON.stringify({
                     charger_location_owner_user_id: user.user_id,

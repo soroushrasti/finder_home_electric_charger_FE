@@ -14,13 +14,17 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 
-export default function EmailVerificationScreen({ navigation, route }) {
-    const { user, userType } = route.params;
+export default function EmailVerificationScreen({ navigation, route, setUser }) {
+    const { user } = route.params || {};
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '']);
     const [loading, setLoading] = useState(false);
     const [resendLoading, setResendLoading] = useState(false);
 
     const inputRefs = useRef([]);
+
+    // Add null checks for user data
+    const userEmail = user?.email || '';
+    const userId = user?.user_id || null;
 
     const handleCodeChange = (index, value) => {
         const newCode = [...verificationCode];
@@ -46,6 +50,12 @@ export default function EmailVerificationScreen({ navigation, route }) {
             return;
         }
 
+        if (!userId) {
+            Alert.alert('Error', 'User information is missing. Please try registering again.');
+            navigation.goBack();
+            return;
+        }
+
         setLoading(true);
 
         try {
@@ -53,9 +63,10 @@ export default function EmailVerificationScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken}`,
                 },
                 body: JSON.stringify({
-                    user_id: user.user_id,
+                    user_id: userId,
                     email_verification_code: code
                 })
             });
@@ -64,6 +75,7 @@ export default function EmailVerificationScreen({ navigation, route }) {
 
             if (response.ok) {
                 if (data.is_validated_email) {
+                    setUser(data);
                     Alert.alert(
                         'Success!',
                         'Email verified successfully! You are now logged in.',
@@ -71,17 +83,6 @@ export default function EmailVerificationScreen({ navigation, route }) {
                             {
                                 text: 'Continue',
                                 onPress: () => {
-                                    if (data.user_type === 'Electric car owner') {
-                                        navigation.reset({
-                                            index: 0,
-                                            routes: [{ name: 'CarOwnerScreen', params: { user: data } }]
-                                        });
-                                    } else {
-                                        navigation.reset({
-                                            index: 0,
-                                            routes: [{ name: 'HomeOwnerScreen', params: { user: data } }]
-                                        });
-                                    }
                                 }
                             }
                         ]
@@ -107,6 +108,11 @@ export default function EmailVerificationScreen({ navigation, route }) {
     };
 
     const handleResendCode = async () => {
+        if (!userId) {
+            Alert.alert('Error', 'User information is missing. Please try registering again.');
+            return;
+        }
+
         setResendLoading(true);
 
         try {
@@ -114,10 +120,11 @@ export default function EmailVerificationScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken}`,
                 },
                 body: JSON.stringify({
-                    user_id: user.user_id,
-                    email: user.email
+                    user_id: userId,
+                    email: userEmail
                 })
             });
 
@@ -126,7 +133,8 @@ export default function EmailVerificationScreen({ navigation, route }) {
                 setVerificationCode(['', '', '', '', '']);
                 inputRefs.current[0]?.focus();
             } else {
-                Alert.alert('Error', 'Failed to resend verification code');
+                const data = await response.json();
+                Alert.alert('Error', data.message || 'Failed to resend verification code');
             }
         } catch (error) {
             console.error('Resend error:', error);
@@ -135,6 +143,36 @@ export default function EmailVerificationScreen({ navigation, route }) {
             setResendLoading(false);
         }
     };
+
+    // Early return if user data is missing
+    if (!user || !userEmail) {
+        return (
+            <View style={styles.container}>
+                <LinearGradient
+                    colors={['#667eea', '#764ba2']}
+                    style={styles.header}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                >
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <MaterialIcons name="arrow-back" size={24} color="#fff" />
+                    </TouchableOpacity>
+                    <View style={styles.headerContent}>
+                        <View style={styles.iconContainer}>
+                            <MaterialIcons name="error" size={40} color="#fff" />
+                        </View>
+                        <Text style={styles.headerTitle}>Error</Text>
+                        <Text style={styles.headerSubtitle}>
+                            User information is missing. Please try registering again.
+                        </Text>
+                    </View>
+                </LinearGradient>
+            </View>
+        );
+    }
 
     return (
         <KeyboardAvoidingView
@@ -155,12 +193,12 @@ export default function EmailVerificationScreen({ navigation, route }) {
                 </TouchableOpacity>
                 <View style={styles.headerContent}>
                     <View style={styles.iconContainer}>
-                        <MaterialIcons name="email" size={60} color="#fff" />
+                        <MaterialIcons name="mark-email-read" size={40} color="#fff" />
                     </View>
                     <Text style={styles.headerTitle}>Verify Your Email</Text>
                     <Text style={styles.headerSubtitle}>
-                        We've sent a 5-digit code to{'\n'}
-                        <Text style={styles.emailText}>{user.email}</Text>
+                        We've sent a verification code to {'\n'}
+                        <Text style={styles.emailText}>{userEmail}</Text>
                     </Text>
                 </View>
             </LinearGradient>
@@ -173,17 +211,18 @@ export default function EmailVerificationScreen({ navigation, route }) {
                         {verificationCode.map((digit, index) => (
                             <TextInput
                                 key={index}
-                                ref={(ref) => inputRefs.current[index] = ref}
+                                ref={ref => inputRefs.current[index] = ref}
                                 style={[
                                     styles.codeInput,
-                                    digit ? styles.codeInputFilled : null
+                                    digit && styles.codeInputFilled
                                 ]}
                                 value={digit}
                                 onChangeText={(value) => handleCodeChange(index, value)}
-                                onKeyPress={({ nativeEvent }) => handleKeyPress(index, nativeEvent.key)}
+                                onKeyPress={({ nativeEvent: { key } }) => handleKeyPress(index, key)}
                                 keyboardType="numeric"
                                 maxLength={1}
                                 textAlign="center"
+                                autoFocus={index === 0}
                                 selectTextOnFocus
                             />
                         ))}
@@ -194,32 +233,24 @@ export default function EmailVerificationScreen({ navigation, route }) {
                         onPress={handleResendCode}
                         disabled={resendLoading}
                     >
-                        {resendLoading ? (
-                            <ActivityIndicator size="small" color="#667eea" />
-                        ) : (
-                            <Text style={styles.resendText}>
-                                Didn't receive the code? <Text style={styles.resendLink}>Resend</Text>
+                        <Text style={styles.resendText}>
+                            Didn't receive the code? {' '}
+                            <Text style={styles.resendLink}>
+                                {resendLoading ? 'Resending...' : 'Resend Code'}
                             </Text>
-                        )}
+                        </Text>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.buttonContainer}>
                     <TouchableOpacity
-                        style={[
-                            styles.verifyButton,
-                            (loading || verificationCode.join('').length !== 5) && styles.verifyButtonDisabled
-                        ]}
+                        style={[styles.verifyButton, loading && styles.verifyButtonDisabled]}
                         onPress={handleVerifyCode}
                         disabled={loading || verificationCode.join('').length !== 5}
                         activeOpacity={0.8}
                     >
                         <LinearGradient
-                            colors={
-                                loading || verificationCode.join('').length !== 5
-                                    ? ['#ccc', '#999']
-                                    : ['#43e97b', '#38f9d7']
-                            }
+                            colors={loading ? ['#ccc', '#999'] : ['#43e97b', '#38f9d7']}
                             style={styles.verifyButtonGradient}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
@@ -243,7 +274,7 @@ export default function EmailVerificationScreen({ navigation, route }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#f8f9fa',
     },
     header: {
         paddingTop: 60,
@@ -263,19 +294,19 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     iconContainer: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
+        width: 80,
+        height: 80,
+        borderRadius: 40,
         backgroundColor: 'rgba(255, 255, 255, 0.2)',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 16,
     },
     headerTitle: {
         fontSize: 28,
         fontWeight: 'bold',
         color: '#fff',
-        marginBottom: 10,
+        marginBottom: 8,
         textAlign: 'center',
     },
     headerSubtitle: {
@@ -313,10 +344,10 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     codeInput: {
-        width: 45,
-        height: 55,
+        width: 50,
+        height: 60,
         borderWidth: 2,
-        borderColor: '#ddd',
+        borderColor: '#e0e0e0',
         borderRadius: 12,
         fontSize: 24,
         fontWeight: 'bold',
@@ -327,6 +358,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 2,
+        textAlign: 'center',
     },
     codeInputFilled: {
         borderColor: '#667eea',
@@ -334,10 +366,10 @@ const styles = StyleSheet.create({
     },
     resendContainer: {
         alignItems: 'center',
-        paddingVertical: 10,
+        paddingVertical: 15,
     },
     resendText: {
-        fontSize: 14,
+        fontSize: 16,
         color: '#666',
         textAlign: 'center',
     },

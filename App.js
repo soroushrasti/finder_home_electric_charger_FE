@@ -25,6 +25,7 @@ import ChargerLocationListScreenWithoutCar from './src/screens/car_screens/Charg
 import CarSelectionScreen from './src/screens/car_screens/CarSelectionScreen';
 import EmailVerificationScreen from './src/screens/auth/EmailVerificationScreen';
 const Stack = createStackNavigator();
+import CombinedDashboardScreen from './src/screens/combined/CombinedDashboardScreen';
 
 function Home({ navigation }) {
     return (
@@ -193,6 +194,24 @@ export default function App() {
         ) : undefined,
     };
 
+    // Helper function to determine user capabilities
+    const getUserCapabilities = (user) => {
+        if (!user) return { canUseCarFeatures: false, canUseChargerFeatures: false };
+
+        const userType = user.user_type;
+
+        if (userType === null) {
+            // User can be both car owner and charger provider
+            return { canUseCarFeatures: true, canUseChargerFeatures: true };
+        } else if (userType === 'Electric car owner') {
+            return { canUseCarFeatures: true, canUseChargerFeatures: false };
+        } else {
+            return { canUseCarFeatures: false, canUseChargerFeatures: true };
+        }
+    };
+
+    const userCapabilities = getUserCapabilities(user);
+
     return (
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home" screenOptions={screenOptions}>
@@ -201,120 +220,78 @@ export default function App() {
                         <Stack.Screen
                             name="Home"
                             component={Home}
-                            options={{
-                                headerShown: false
-                            }}
-                        />
-                        <Stack.Screen
-                            name="Register"
-                            component={RegisterScreen}
-                            options={{
-                                title: 'Create Account',
-                                headerShown: false
-                            }}
-                        />
-                        <Stack.Screen
-                            name="EmailVerificationScreen"
-                            component={EmailVerificationScreen}
                             options={{ headerShown: false }}
                         />
                         <Stack.Screen
+                            name="Register"
+                            options={{ title: 'Create Account', headerShown: false }}
+                        >
+                            {props => <RegisterScreen {...props} setUser={setUser} />}
+                        </Stack.Screen>
+                        <Stack.Screen
+                            name="EmailVerificationScreen"
+                            options={{ headerShown: false }}
+                        >
+                            {props => <EmailVerificationScreen {...props} setUser={setUser} />}
+                        </Stack.Screen>
+                        <Stack.Screen
                             name="Login"
-                            options={{
-                                title: 'Sign In',
-                                headerShown: false
-                            }}
+                            options={{ title: 'Sign In', headerShown: false }}
                         >
                             {props => <LoginScreen {...props} setUser={setUser} />}
                         </Stack.Screen>
                     </>
-                ) : user.user_type === 'Electric car owner' ? (
-                    <>
-                        <Stack.Screen
-                            name="CarOwner"
-                            options={{ title: 'Dashboard' }}
-                        >
-                            {props => <CarOwnerScreen {...props} user={user} />}
-                        </Stack.Screen>
-                        <Stack.Screen
-                            name="AddCar"
-                            component={AddCarScreen}
-                            options={{ title: 'Add Vehicle' }}
-                        />
-                        <Stack.Screen
-                            name="CarBookings"
-                            component={CarBookingsScreen}
-                            options={{ title: 'My Vehicles' }}
-                        />
-                        <Stack.Screen
-                            name="FindChargerLocationsScreenForCar"
-                            component={FindChargerLocationsScreenForCar}
-                            options={{ title: 'Find Chargers for car' }}
-                        />
-                        <Stack.Screen
-                            name="FindChargerLocationsScreen"
-                            component={FindChargerLocationsScreen}
-                            options={{ title: 'Find Chargers' }}
-                        />
-                        <Stack.Screen
-                            name="ChargerLocationListScreenWithoutCar"
-                            component={ChargerLocationListScreenWithoutCar}
-                            options={{ title: 'list Chargers without car' }}
-                        />
-                        <Stack.Screen
-                            name="CarSelectionScreen"
-                            component={CarSelectionScreen}
-                            options={{ title: 'Car slection after location' }}
-                        />
-                        <Stack.Screen
-                            name="EndBooking"
-                            component={EndBookingScreen}
-                            options={{ title: 'End Charging' }}
-                        />
-                        <Stack.Screen
-                            name="MyBookingsScreen"
-                            component={MyBookingsScreen}
-                            options={{ title: 'My Bookings' }}
-                        />
-                        <Stack.Screen
-                            name="MyCars"
-                            component={MyCarsScreen}
-                            options={{ title: 'My Cars' }}
-                        />
-                        <Stack.Screen
-                            name="BookingConfirmationScreen"
-                            component={BookingConfirmationScreen}
-                            options={{ title: 'Booking confirmaiton' }}
-                        />
-                        <Stack.Screen
-                            name="ChargerLocationListScreen"
-                            component={ChargerLocationListScreen}
-                            options={{ title: 'Location charger list' }}
-                        />
-                    </>
                 ) : (
                     <>
-                        <Stack.Screen
-                            name="HomeOwner"
-                            options={{ title: 'Dashboard' }}
-                        >
-                            {props => <HomeOwnerScreen {...props} user={user} />}
-                        </Stack.Screen>
-                        <Stack.Screen
-                            name="MyLocationBookings"
-                            component={MyLocationBookingsScreen}
-                            options={{ title: 'Location Bookings' }}
-                        />
-                        <Stack.Screen
-                            name="MyChargerLocations"
-                            component={MyChargerLocationsScreen}
-                            options={{ title: 'My Stations' }}
-                        />
-                        <Stack.Screen
-                            name="AddChargerLocation"
-                            component={AddChargerLocationScreen}
-                            options={{ title: 'Add Station' }}
-                        />
+                        {/* Show appropriate dashboard based on user type */}
+                        {user.user_type === null ? (
+                            <Stack.Screen
+                                name="CombinedDashboardScreen"
+                                options={{ title: 'Dashboard' }}
+                            >
+                                {props => <CombinedDashboardScreen {...props} user={user} />}
+                            </Stack.Screen>
+                        ) : user.user_type === 'Electric car owner' ? (
+                            <Stack.Screen
+                                name="CarOwnerScreen"
+                                options={{ title: 'Dashboard' }}
+                            >
+                                {props => <CarOwnerScreen {...props} user={user} />}
+                            </Stack.Screen>
+                        ) : (
+                            <Stack.Screen
+                                name="HomeOwnerScreen"
+                                options={{ title: 'Dashboard' }}
+                            >
+                                {props => <HomeOwnerScreen {...props} user={user} />}
+                            </Stack.Screen>
+                        )}
+
+                        {/* Car Owner Features - Show if user can use car features */}
+                        {userCapabilities.canUseCarFeatures && (
+                            <>
+                                <Stack.Screen name="AddCar" component={AddCarScreen} options={{ title: 'Add Vehicle' }} />
+                                <Stack.Screen name="CarBookings" component={CarBookingsScreen} options={{ title: 'My Vehicles' }} />
+                                <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: 'Find Chargers for car' }} />
+                                <Stack.Screen name="FindChargerLocationsScreen" component={FindChargerLocationsScreen} options={{ title: 'Find Chargers' }} />
+                                <Stack.Screen name="ChargerLocationListScreenWithoutCar" component={ChargerLocationListScreenWithoutCar} options={{ title: 'List Chargers without car' }} />
+                                <Stack.Screen name="CarSelectionScreen" component={CarSelectionScreen} options={{ title: 'Car selection after location' }} />
+                                <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: 'End Charging' }} />
+                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: 'My Bookings' }} />
+                                <Stack.Screen name="MyCars" component={MyCarsScreen} options={{ title: 'My Cars' }} />
+                                <Stack.Screen name="BookingConfirmationScreen" component={BookingConfirmationScreen} options={{ title: 'Booking confirmation' }} />
+                                <Stack.Screen name="ChargerLocationListScreen" component={ChargerLocationListScreen} options={{ title: 'Location charger list' }} />
+                            </>
+                        )}
+
+                        {/* Charger Provider Features - Show if user can use charger features */}
+                        {userCapabilities.canUseChargerFeatures && (
+                            <>
+                                <Stack.Screen name="MyLocationBookings" component={MyLocationBookingsScreen} options={{ title: 'Location Bookings' }} />
+                                <Stack.Screen name="MyChargerLocations" component={MyChargerLocationsScreen} options={{ title: 'My Stations' }} />
+                                <Stack.Screen name="AddChargerLocation" component={AddChargerLocationScreen} options={{ title: 'Add Station' }} />
+                            </>
+                        )}
                     </>
                 )}
             </Stack.Navigator>

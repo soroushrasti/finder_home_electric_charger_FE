@@ -23,6 +23,7 @@ export default function EndBookingScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken} `,
                 },
                 body: JSON.stringify({
                     end_time: new Date().toISOString(),

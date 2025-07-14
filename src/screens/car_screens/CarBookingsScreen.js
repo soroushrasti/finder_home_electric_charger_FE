@@ -36,6 +36,7 @@ export default function CarBookingsScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken} `,
                 },
                 body: JSON.stringify({
                     car_id: car.car_id,

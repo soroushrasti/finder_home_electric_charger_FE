@@ -35,11 +35,11 @@ export default function LoginScreen({ navigation, setUser }) {
             return false;
         }
 
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!emailRegex.test(formData.email)) {
-            Alert.alert('Error', 'Please enter a valid email address');
-            return false;
-        }
+        // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // if (!emailRegex.test(formData.email)) {
+        //     Alert.alert('Error', 'Please enter a valid email address');
+        //     return false;
+        // }
 
         return true;
     };
@@ -54,6 +54,7 @@ export default function LoginScreen({ navigation, setUser }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken} `,
                 },
                 body: JSON.stringify({
                     email: formData.email,

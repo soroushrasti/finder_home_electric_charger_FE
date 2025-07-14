@@ -26,6 +26,7 @@ export default function AddCarScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken} `,
                 },
                 body: JSON.stringify({
                     user_id: user?.user_id,

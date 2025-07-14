@@ -13,21 +13,44 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Picker } from '@react-native-picker/picker';
 import env from "../../config/environment";
 
-export default function RegisterScreen({ navigation }) {
+export default function RegisterScreen({ navigation, setUser }) {
     const [formData, setFormData] = useState({
         name: '',
         email: '',
         password: '',
         confirmPassword: '',
         phone_number: '',
-        user_type: 'Electric car owner'
+        user_type: 'car_owner'
     });
     const [loading, setLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+    const userTypes = [
+        {
+            id: 'car_owner',
+            title: 'Electric Car Owner',
+            description: 'Find and book charging stations',
+            icon: 'directions-car',
+            colors: ['#4facfe', '#00f2fe']
+        },
+        {
+            id: 'home_owner',
+            title: 'Charger Provider',
+            description: 'Share your charging station',
+            icon: 'ev-station',
+            colors: ['#667eea', '#764ba2']
+        },
+        {
+            id: 'both',
+            title: 'Both',
+            description: 'Car owner & charger provider',
+            icon: 'electric-bolt',
+            colors: ['#43e97b', '#38f9d7']
+        }
+    ];
 
     const handleInputChange = (field, value) => {
         setFormData(prev => ({
@@ -67,18 +90,29 @@ export default function RegisterScreen({ navigation }) {
         setLoading(true);
 
         try {
+            // Map the user type for API
+            let apiUserType;
+            if (formData.user_type === 'car_owner') {
+                apiUserType = 'Electric car owner';
+            } else if (formData.user_type === 'home_owner') {
+                apiUserType = 'Charging station owner';
+            } else {
+                apiUserType = null; // Both types
+            }
+
             const response = await fetch(`${env.apiUrl}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${env.apiToken}`,
                 },
                 body: JSON.stringify({
                     name: formData.name,
                     email: formData.email,
                     password: formData.password,
                     phone_number: formData.phone_number,
-                    user_type: formData.user_type
-                })
+                    user_type: apiUserType
+                }),
             });
 
             const data = await response.json();
@@ -93,7 +127,7 @@ export default function RegisterScreen({ navigation }) {
                             onPress: () => {
                                 navigation.navigate('EmailVerificationScreen', {
                                     user: data,
-                                    userType: formData.user_type === 'Electric car owner' ? 'car_owner' : 'home_owner'
+                                    setUser: setUser
                                 });
                             }
                         }
@@ -129,16 +163,16 @@ export default function RegisterScreen({ navigation }) {
                 </TouchableOpacity>
                 <View style={styles.headerContent}>
                     <View style={styles.iconContainer}>
-                        <MaterialIcons name="person-add" size={60} color="#fff" />
+                        <MaterialIcons name="person-add" size={40} color="#fff" />
                     </View>
                     <Text style={styles.headerTitle}>Create Account</Text>
-                    <Text style={styles.headerSubtitle}>Join thousands of EV owners</Text>
+                    <Text style={styles.headerSubtitle}>Join our charging community</Text>
                 </View>
             </LinearGradient>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>👤 Personal Information</Text>
+                    <Text style={styles.sectionTitle}>Personal Information</Text>
 
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Full Name *</Text>
@@ -185,7 +219,7 @@ export default function RegisterScreen({ navigation }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>🔒 Security</Text>
+                    <Text style={styles.sectionTitle}>Security</Text>
 
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>Password *</Text>
@@ -237,20 +271,47 @@ export default function RegisterScreen({ navigation }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>🚗 Account Type</Text>
+                    <Text style={styles.sectionTitle}>Account Type</Text>
 
-                    <View style={styles.inputGroup}>
-                        <Text style={styles.label}>I am a... *</Text>
-                        <View style={styles.pickerContainer}>
-                            <MaterialIcons name="person-outline" size={20} color="#666" style={styles.inputIcon} />
-                            <Picker
-                                selectedValue={formData.user_type}
-                                style={styles.picker}
-                                onValueChange={(value) => handleInputChange('user_type', value)}
-                            >
-                                <Picker.Item label="Electric Car Owner" value="Electric car owner" />
-                                <Picker.Item label="Charging Station Owner" value="Charging station owner" />
-                            </Picker>
+                    <View style={styles.userTypeContainer}>
+                        <Text style={styles.userTypeLabel}>I am a:</Text>
+                        <View style={styles.userTypeOptions}>
+                            {userTypes.map((type) => (
+                                <TouchableOpacity
+                                    key={type.id}
+                                    style={[
+                                        styles.userTypeOption,
+                                        formData.user_type === type.id && styles.userTypeOptionSelected
+                                    ]}
+                                    onPress={() => setFormData({ ...formData, user_type: type.id })}
+                                    activeOpacity={0.8}
+                                >
+                                    <LinearGradient
+                                        colors={formData.user_type === type.id ? type.colors : ['#f8f9fa', '#e9ecef']}
+                                        style={styles.userTypeGradient}
+                                        start={{ x: 0, y: 0 }}
+                                        end={{ x: 1, y: 1 }}
+                                    >
+                                        <MaterialIcons
+                                            name={type.icon}
+                                            size={32}
+                                            color={formData.user_type === type.id ? '#fff' : '#6c757d'}
+                                        />
+                                        <Text style={[
+                                            styles.userTypeTitle,
+                                            formData.user_type === type.id && styles.userTypeTextSelected
+                                        ]}>
+                                            {type.title}
+                                        </Text>
+                                        <Text style={[
+                                            styles.userTypeDescription,
+                                            formData.user_type === type.id && styles.userTypeDescriptionSelected
+                                        ]}>
+                                            {type.description}
+                                        </Text>
+                                    </LinearGradient>
+                                </TouchableOpacity>
+                            ))}
                         </View>
                     </View>
 
@@ -296,7 +357,7 @@ export default function RegisterScreen({ navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
+        backgroundColor: '#f8f9fa',
     },
     header: {
         paddingTop: 60,
@@ -316,13 +377,13 @@ const styles = StyleSheet.create({
         marginTop: 20,
     },
     iconContainer: {
-        width: 120,
-        height: 120,
-        borderRadius: 60,
-        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+        backgroundColor: 'rgba(255,255,255,0.2)',
         justifyContent: 'center',
         alignItems: 'center',
-        marginBottom: 20,
+        marginBottom: 16,
     },
     headerTitle: {
         fontSize: 28,
@@ -344,7 +405,7 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     sectionTitle: {
-        fontSize: 18,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#333',
         marginBottom: 20,
@@ -383,21 +444,57 @@ const styles = StyleSheet.create({
     eyeIcon: {
         padding: 5,
     },
-    pickerContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: '#fff',
-        borderRadius: 12,
-        paddingHorizontal: 15,
-        elevation: 2,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.1,
-        shadowRadius: 2,
+    userTypeContainer: {
+        marginBottom: 30,
     },
-    picker: {
-        flex: 1,
-        height: 50,
+    userTypeLabel: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 16,
+        textAlign: 'center',
+    },
+    userTypeOptions: {
+        gap: 12,
+    },
+    userTypeOption: {
+        borderRadius: 16,
+        elevation: 3,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+    },
+    userTypeOptionSelected: {
+        elevation: 6,
+        shadowOpacity: 0.2,
+    },
+    userTypeGradient: {
+        padding: 20,
+        borderRadius: 16,
+        alignItems: 'center',
+        minHeight: 100,
+        justifyContent: 'center',
+    },
+    userTypeTitle: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#333',
+        marginTop: 8,
+        textAlign: 'center',
+    },
+    userTypeTextSelected: {
+        color: '#fff',
+    },
+    userTypeDescription: {
+        fontSize: 12,
+        color: '#666',
+        marginTop: 4,
+        textAlign: 'center',
+    },
+    userTypeDescriptionSelected: {
+        color: '#fff',
+        opacity: 0.9,
     },
     buttonContainer: {
         paddingTop: 20,

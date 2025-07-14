@@ -86,7 +86,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
 
                     <TouchableOpacity
                         style={styles.menuCard}
-                        onPress={() => navigation.navigate('MyLocationsScreen', { user })}
+                        onPress={() => navigation.navigate('MyChargerLocationScreen', { user })}
                         activeOpacity={0.8}
                     >
                         <LinearGradient

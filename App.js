@@ -26,6 +26,8 @@ import CarSelectionScreen from './src/screens/car_screens/CarSelectionScreen';
 import EmailVerificationScreen from './src/screens/auth/EmailVerificationScreen';
 const Stack = createStackNavigator();
 import CombinedDashboardScreen from './src/screens/combined/CombinedDashboardScreen';
+import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen';
+import NewPasswordScreen from './src/screens/auth/NewPasswordScreen';
 
 function Home({ navigation }) {
     return (
@@ -235,6 +237,16 @@ export default function App() {
                             {props => <EmailVerificationScreen {...props} setUser={setUser} />}
                         </Stack.Screen>
                         <Stack.Screen
+                            name="ForgotPassword"
+                            component={ForgotPasswordScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
+                            name="NewPassword"
+                            component={NewPasswordScreen}
+                            options={{ headerShown: false }}
+                        />
+                        <Stack.Screen
                             name="Login"
                             options={{ title: 'Sign In', headerShown: false }}
                         >
@@ -287,9 +299,9 @@ export default function App() {
                         {/* Charger Provider Features - Show if user can use charger features */}
                         {userCapabilities.canUseChargerFeatures && (
                             <>
-                                <Stack.Screen name="MyLocationBookings" component={MyLocationBookingsScreen} options={{ title: 'Location Bookings' }} />
-                                <Stack.Screen name="MyChargerLocations" component={MyChargerLocationsScreen} options={{ title: 'My Stations' }} />
-                                <Stack.Screen name="AddChargerLocation" component={AddChargerLocationScreen} options={{ title: 'Add Station' }} />
+                                <Stack.Screen name="MyLocationBookingScreen" component={MyLocationBookingsScreen} options={{ title: 'Location Bookings' }} />
+                                <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: 'My Stations' }} />
+                                <Stack.Screen name="AddChargerLocationScreen" component={AddChargerLocationScreen} options={{ title: 'Add Station' }} />
                             </>
                         )}
                     </>

@@ -10,21 +10,21 @@ export default function CombinedDashboardScreen({ navigation, user }) {
             title: 'Find Chargers',
             subtitle: 'Locate charging stations',
             icon: 'search',
-            onPress: () => navigation.navigate('FindChargerLocationsScreen'),
+            onPress: () => navigation.navigate('FindChargerLocationsScreen', { user }),
             colors: ['#43e97b', '#38f9d7']
         },
         {
             title: 'My Cars',
             subtitle: 'Manage your vehicles',
             icon: 'directions-car',
-            onPress: () => navigation.navigate('MyCars'),
+            onPress: () => navigation.navigate('MyCars', { user }),
             colors: ['#4facfe', '#00f2fe']
         },
         {
             title: 'My Bookings',
             subtitle: 'View charging history',
             icon: 'book-online',
-            onPress: () => navigation.navigate('MyBookingsScreen'),
+            onPress: () => navigation.navigate('MyBookingsScreen', { user }),
             colors: ['#fa709a', '#fee140']
         }
     ];
@@ -34,21 +34,21 @@ export default function CombinedDashboardScreen({ navigation, user }) {
             title: 'My Stations',
             subtitle: 'Manage charger locations',
             icon: 'ev-station',
-            onPress: () => navigation.navigate('MyChargerLocations'),
+            onPress: () => navigation.navigate('MyChargerLocations', { user }),
             colors: ['#667eea', '#764ba2']
         },
         {
             title: 'Add Station',
             subtitle: 'Share your charger',
             icon: 'add-location',
-            onPress: () => navigation.navigate('AddChargerLocation'),
+            onPress: () => navigation.navigate('AddChargerLocationScreen',{ user }),
             colors: ['#f093fb', '#f5576c']
         },
         {
             title: 'Location Bookings',
             subtitle: 'Track your earnings',
             icon: 'monetization-on',
-            onPress: () => navigation.navigate('MyLocationBookings'),
+            onPress: () => navigation.navigate('MyLocationBookings',{ user }),
             colors: ['#ffecd2', '#fcb69f']
         }
     ];

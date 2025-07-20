@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 
 export default function EmailVerificationScreen({ navigation, route, setUser }) {
-    const { user } = route.params || {};
+    const { user, isPasswordReset } = route.params || {};
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '']);
     const [loading, setLoading] = useState(false);
     const [resendLoading, setResendLoading] = useState(false);
@@ -50,7 +50,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
             return;
         }
 
-        if (!userId) {
+        if (!user) {
             Alert.alert('Error', 'User information is missing. Please try registering again.');
             navigation.goBack();
             return;
@@ -75,18 +75,14 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
 
             if (response.ok) {
                 if (data.is_validated_email) {
-                    setUser(data);
-                    Alert.alert(
-                        'Success!',
-                        'Email verified successfully! You are now logged in.',
-                        [
-                            {
-                                text: 'Continue',
-                                onPress: () => {
-                                }
-                            }
-                        ]
-                    );
+                    if (isPasswordReset) {
+                        // For password reset flow
+                        navigation.navigate('NewPassword', { userId: userId || data.user_id });
+                    } else {
+                        // For normal registration flow
+                        setUser(data);
+                        Alert.alert('Success!', 'Email verified successfully! You are now logged in.');
+                    }
                 } else {
                     Alert.alert('Error', 'Email verification failed. Please try again.');
                 }

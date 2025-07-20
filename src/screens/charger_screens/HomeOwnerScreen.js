@@ -6,11 +6,11 @@ import ActivityDashboard from '../../components/ActivityDashboard';
 
 export default function HomeOwnerScreen({ navigation, user }) {
     const handleTotalEarningsPress = () => {
-        navigation.navigate('MyLocationBookings', { user });
+        navigation.navigate('MyLocationBookingScreen', { user });
     };
 
     const handleActiveSessionsPress = () => {
-        navigation.navigate('MyLocationBookings', { user });
+        navigation.navigate('MyLocationBookingScreen', { user });
     };
 
     return (
@@ -62,7 +62,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
 
                     <TouchableOpacity
                         style={styles.menuCard}
-                        onPress={() => navigation.navigate('MyLocationBookings', { user })}
+                        onPress={() => navigation.navigate('MyLocationBookingScreen', { user })}
                         activeOpacity={0.8}
                     >
                         <LinearGradient

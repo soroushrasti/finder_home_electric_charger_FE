@@ -13,8 +13,13 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../context/LanguageContext';
 
-export default function ForgotPasswordScreen({ navigation, setUser }) {
+
+export default function ForgotPasswordScreen({ navigation }) {
+    const { t } = useTranslation();
+    const { isRTL } = useLanguage();
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
 
@@ -48,7 +53,6 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
                                 navigation.navigate('EmailVerificationScreen', {
                                     user: data,
                                     isPasswordReset: true,
-                                    setUser: setUser
                                 });
                             }
                         }
@@ -67,7 +71,7 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
 
     return (
         <KeyboardAvoidingView
-            style={styles.container}
+            style={[styles.container, isRTL && styles.rtl]}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
             <LinearGradient
@@ -86,7 +90,7 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="lock-reset" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>Reset Password</Text>
+                    <Text style={styles.headerTitle}>{t('auth.resetPassword')}</Text>
                     <Text style={styles.headerSubtitle}>Enter your email to reset password</Text>
                 </View>
             </LinearGradient>
@@ -96,7 +100,7 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
                     <Text style={styles.sectionTitle}>🔐 Password Recovery</Text>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Email Address</Text>
+                        <Text style={styles.label}>{t('auth.email')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -135,7 +139,7 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
                                 <MaterialIcons name="send" size={24} color="#fff" />
                             )}
                             <Text style={styles.resetButtonText}>
-                                {loading ? 'Sending...' : 'Send Reset Link'}
+                                {loading ? t('messages.sending') : t('auth.sendResetLink')}
                             </Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -145,7 +149,7 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
                         onPress={() => navigation.navigate('Login')}
                     >
                         <Text style={styles.loginRedirectText}>
-                            Remember password? <Text style={styles.loginRedirectLink}>Sign In</Text>
+                            {t('auth.rememberPassword')} <Text style={styles.loginRedirectLink}>{t('auth.signIn')}</Text>
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -158,6 +162,9 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
+    },
+    rtl: {
+        direction: 'rtl',
     },
     header: {
         paddingTop: 60,

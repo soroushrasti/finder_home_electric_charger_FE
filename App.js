@@ -28,6 +28,11 @@ const Stack = createStackNavigator();
 import CombinedDashboardScreen from './src/screens/combined/CombinedDashboardScreen';
 import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen';
 import NewPasswordScreen from './src/screens/auth/NewPasswordScreen';
+import { LanguageProvider } from './src/context/LanguageContext';
+import './src/localization/i18n';
+import LanguageSwitcher from './src/components/LanguageSwitcher';
+
+
 
 function Home({ navigation }) {
     return (
@@ -185,15 +190,20 @@ export default function App() {
             fontWeight: 'bold',
             fontSize: 18,
         },
-        headerRight: user ? () => (
-            <TouchableOpacity
-                onPress={handleLogout}
-                style={styles.logoutButton}
-                activeOpacity={0.7}
-            >
-                <MaterialIcons name="logout" size={24} color="#fff" />
-            </TouchableOpacity>
-        ) : undefined,
+        headerRight: () => (
+            <View style={styles.headerRightContainer}>
+                <LanguageSwitcher />
+                {user && (
+                    <TouchableOpacity
+                        onPress={handleLogout}
+                        style={styles.logoutButton}
+                        activeOpacity={0.7}
+                    >
+                        <MaterialIcons name="logout" size={24} color="#fff" />
+                    </TouchableOpacity>
+                )}
+            </View>
+        ),
     };
 
     // Helper function to determine user capabilities
@@ -215,6 +225,7 @@ export default function App() {
     const userCapabilities = getUserCapabilities(user);
 
     return (
+        <LanguageProvider>
         <NavigationContainer>
             <Stack.Navigator initialRouteName="Home" screenOptions={screenOptions}>
                 {!user ? (
@@ -222,7 +233,11 @@ export default function App() {
                         <Stack.Screen
                             name="Home"
                             component={Home}
-                            options={{ headerShown: false }}
+                            options={{
+                                headerShown: true,
+                                title: 'EV Charger',
+                                ...screenOptions
+                            }}
                         />
                         <Stack.Screen
                             name="Register"
@@ -308,6 +323,8 @@ export default function App() {
                 )}
             </Stack.Navigator>
         </NavigationContainer>
+        </LanguageProvider>
+
     );
 }
 
@@ -491,10 +508,16 @@ const styles = StyleSheet.create({
         color: '#666',
         textAlign: 'center',
     },
+    headerRightContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginRight: 10,
+        gap: 8,
+    },
+
     logoutButton: {
-        marginRight: 16,
-        padding: 8,
-        borderRadius: 8,
+        padding: 6,
+        borderRadius: 16,
         backgroundColor: 'rgba(255,255,255,0.2)',
     },
 });

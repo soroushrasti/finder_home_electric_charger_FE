@@ -1,0 +1,24 @@
+{
+  "auth": {
+    "login": "ورود",
+    "forgotPassword": "رمز عبور را فراموش کرده‌اید؟",
+    "resetPassword": "بازنشانی رمز عبور",
+    "newPassword": "رمز عبور جدید",
+    "email": "آدرس ایمیل",
+    "password": "رمز عبور",
+    "confirmPassword": "تایید رمز عبور",
+    "signIn": "ورود",
+    "sendResetLink": "ارسال لینک بازنشانی",
+    "updatePassword": "به‌روزرسانی رمز عبور",
+    "rememberPassword": "رمز عبور را به خاطر دارید؟",
+    "backTo": "بازگشت به"
+  },
+  "messages": {
+    "emailRequired": "لطفا آدرس ایمیل خود را وارد کنید",
+    "passwordRequired": "لطفا هر دو فیلد را پر کنید",
+    "passwordMismatch": "رمزهای عبور مطابقت ندارند",
+    "success": "موفقیت",
+    "error": "خطا",
+    "networkError": "خطای شبکه. لطفا دوباره تلاش کنید."
+  }
+}

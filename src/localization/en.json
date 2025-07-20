@@ -1,0 +1,24 @@
+{
+  "auth": {
+    "login": "Login",
+    "forgotPassword": "Forgot Password?",
+    "resetPassword": "Reset Password",
+    "newPassword": "New Password",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password",
+    "signIn": "Sign In",
+    "sendResetLink": "Send Reset Link",
+    "updatePassword": "Update Password",
+    "rememberPassword": "Remember password?",
+    "backTo": "Back to"
+  },
+  "messages": {
+    "emailRequired": "Please enter your email address",
+    "passwordRequired": "Please fill in both fields",
+    "passwordMismatch": "Passwords do not match",
+    "success": "Success",
+    "error": "Error",
+    "networkError": "Network error. Please try again."
+  }
+}

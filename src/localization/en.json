@@ -19,6 +19,7 @@
     "passwordMismatch": "Passwords do not match",
     "success": "Success",
     "error": "Error",
-    "networkError": "Network error. Please try again."
+    "networkError": "Network error. Please try again.",
+    "appTitle": "EV Charger"
   }
 }

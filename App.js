@@ -28,13 +28,16 @@ const Stack = createStackNavigator();
 import CombinedDashboardScreen from './src/screens/combined/CombinedDashboardScreen';
 import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen';
 import NewPasswordScreen from './src/screens/auth/NewPasswordScreen';
-import { LanguageProvider } from './src/context/LanguageContext';
+import {LanguageProvider, useLanguage} from './src/context/LanguageContext';
 import './src/localization/i18n';
 import LanguageSwitcher from './src/components/LanguageSwitcher';
+import {useTranslation} from "react-i18next";
 
 
 
 function Home({ navigation }) {
+    const { t } = useTranslation();
+    const { isRTL } = useLanguage();
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <LinearGradient
@@ -47,7 +50,7 @@ function Home({ navigation }) {
                     <View style={styles.iconWrapper}>
                         <MaterialIcons name="electric-bolt" size={80} color="#fff" />
                     </View>
-                    <Text style={styles.appTitle}>EV Charger</Text>
+                    <Text style={styles.appTitle}>{t('messages.appTitle')}</Text>
                     <Text style={styles.appSubtitle}>Your Electric Vehicle Companion</Text>
                     <Text style={styles.tagline}>Power your journey, share your charger</Text>
                 </View>

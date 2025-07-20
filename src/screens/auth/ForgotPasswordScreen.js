@@ -1,14 +1,25 @@
-// src/screens/ForgotPasswordScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import env from '../../config/environment';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    Alert,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
+import env from "../../config/environment";
 
 export default function ForgotPasswordScreen({ navigation, setUser }) {
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const handleSubmit = async () => {
-        if (!email.trim()) {
+    const handleResetPassword = async () => {
+        if (!email) {
             Alert.alert('Error', 'Please enter your email address');
             return;
         }
@@ -21,9 +32,7 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${env.apiToken}`,
                 },
-                body: JSON.stringify({
-                    email: email
-                }),
+                body: JSON.stringify({ email })
             });
 
             const data = await response.json();
@@ -46,10 +55,10 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
                     ]
                 );
             } else {
-                Alert.alert('Error', data.message || 'Failed to send verification code');
+                Alert.alert('Error', data.message || 'Failed to process request');
             }
         } catch (error) {
-            console.error('Forgot password error:', error);
+            console.error('Reset password error:', error);
             Alert.alert('Error', 'Network error. Please try again.');
         } finally {
             setLoading(false);
@@ -57,89 +66,230 @@ export default function ForgotPasswordScreen({ navigation, setUser }) {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Reset Your Password</Text>
-            <Text style={styles.subtitle}>
-                Enter your email address and we'll send you a verification code
-            </Text>
-
-            <TextInput
-                style={styles.input}
-                placeholder="Email Address"
-                keyboardType="email-address"
-                autoCapitalize="none"
-                value={email}
-                onChangeText={setEmail}
-            />
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={handleSubmit}
-                disabled={loading}
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <LinearGradient
+                colors={['#4facfe', '#00f2fe']}
+                style={styles.header}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
             >
-                {loading ? (
-                    <ActivityIndicator color="#fff" />
-                ) : (
-                    <Text style={styles.buttonText}>Send Verification Code</Text>
-                )}
-            </TouchableOpacity>
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                >
+                    <MaterialIcons name="arrow-back" size={24} color="#fff" />
+                </TouchableOpacity>
+                <View style={styles.headerContent}>
+                    <View style={styles.iconContainer}>
+                        <MaterialIcons name="lock-reset" size={60} color="#fff" />
+                    </View>
+                    <Text style={styles.headerTitle}>Reset Password</Text>
+                    <Text style={styles.headerSubtitle}>Enter your email to reset password</Text>
+                </View>
+            </LinearGradient>
 
-            <TouchableOpacity
-                style={styles.backButton}
-                onPress={() => navigation.goBack()}
-            >
-                <Text style={styles.backButtonText}>Back to Login</Text>
-            </TouchableOpacity>
-        </View>
+            <View style={styles.content}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.sectionTitle}>🔐 Password Recovery</Text>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Email Address</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter your email"
+                                value={email}
+                                onChangeText={setEmail}
+                                keyboardType="email-address"
+                                autoCapitalize="none"
+                                placeholderTextColor="#999"
+                            />
+                        </View>
+                    </View>
+
+                    <Text style={styles.infoText}>
+                        We'll send you a verification code to reset your password
+                    </Text>
+                </View>
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={[styles.resetButton, loading && styles.resetButtonDisabled]}
+                        onPress={handleResetPassword}
+                        disabled={loading}
+                        activeOpacity={0.8}
+                    >
+                        <LinearGradient
+                            colors={loading ? ['#ccc', '#999'] : ['#4facfe', '#00f2fe']}
+                            style={styles.resetButtonGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                        >
+                            {loading ? (
+                                <ActivityIndicator size="small" color="#fff" />
+                            ) : (
+                                <MaterialIcons name="send" size={24} color="#fff" />
+                            )}
+                            <Text style={styles.resetButtonText}>
+                                {loading ? 'Sending...' : 'Send Reset Link'}
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                        style={styles.loginRedirectButton}
+                        onPress={() => navigation.navigate('Login')}
+                    >
+                        <Text style={styles.loginRedirectText}>
+                            Remember password? <Text style={styles.loginRedirectLink}>Sign In</Text>
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
+        backgroundColor: '#f5f5f5',
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
-    },
-    subtitle: {
-        fontSize: 16,
-        marginBottom: 30,
-        textAlign: 'center',
-        color: '#666',
-    },
-    input: {
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 5,
-        marginBottom: 20,
-        paddingHorizontal: 15,
-        fontSize: 16,
-    },
-    button: {
-        backgroundColor: '#4682B4',
-        height: 50,
-        borderRadius: 5,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    buttonText: {
-        color: '#fff',
-        fontSize: 16,
-        fontWeight: '600',
+    header: {
+        paddingTop: 60,
+        paddingBottom: 40,
+        paddingHorizontal: 20,
+        position: 'relative',
     },
     backButton: {
-        marginTop: 20,
-        alignItems: 'center',
+        position: 'absolute',
+        top: 60,
+        left: 20,
+        zIndex: 1,
+        padding: 8,
     },
-    backButtonText: {
-        color: '#4682B4',
+    headerContent: {
+        alignItems: 'center',
+        marginTop: 20,
+    },
+    iconContainer: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        marginBottom: 20,
+    },
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: '#fff',
+        marginBottom: 8,
+        textAlign: 'center',
+    },
+    headerSubtitle: {
         fontSize: 16,
+        color: '#fff',
+        opacity: 0.9,
+        textAlign: 'center',
+    },
+    content: {
+        flex: 1,
+        justifyContent: 'space-between',
+        padding: 20,
+    },
+    formContainer: {
+        flex: 1,
+        paddingTop: 40,
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 30,
+        textAlign: 'center',
+    },
+    inputGroup: {
+        marginBottom: 20,
+    },
+    label: {
+        fontSize: 16,
+        fontWeight: '600',
+        color: '#333',
+        marginBottom: 8,
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        paddingHorizontal: 15,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+    },
+    inputIcon: {
+        marginRight: 10,
+    },
+    input: {
+        flex: 1,
+        paddingVertical: 15,
+        fontSize: 16,
+        color: '#333',
+    },
+    infoText: {
+        fontSize: 14,
+        color: '#666',
+        textAlign: 'center',
+        marginTop: 20,
+        paddingHorizontal: 20,
+    },
+    buttonContainer: {
+        paddingBottom: 20,
+    },
+    resetButton: {
+        borderRadius: 12,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        marginBottom: 20,
+    },
+    resetButtonDisabled: {
+        elevation: 0,
+        shadowOpacity: 0,
+    },
+    resetButtonGradient: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 18,
+        borderRadius: 12,
+        gap: 10,
+    },
+    resetButtonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff',
+    },
+    loginRedirectButton: {
+        alignItems: 'center',
+        paddingVertical: 15,
+    },
+    loginRedirectText: {
+        fontSize: 16,
+        color: '#666',
+    },
+    loginRedirectLink: {
+        color: '#4facfe',
+        fontWeight: 'bold',
     },
 });

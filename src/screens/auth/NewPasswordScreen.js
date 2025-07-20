@@ -1,31 +1,34 @@
-// src/screens/NewPasswordScreen.js
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ActivityIndicator } from 'react-native';
+import {
+    View,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    StyleSheet,
+    Alert,
+    ActivityIndicator,
+    KeyboardAvoidingView,
+    Platform
+} from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 
 export default function NewPasswordScreen({ navigation, route }) {
-    const { userId } = route.params;
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
+    const { userId } = route.params || {};
 
-    const validateForm = () => {
-        if (!password || password.length < 8) {
-            Alert.alert('Error', 'Password must be at least 8 characters');
-            return false;
+    const handleNewPassword = async () => {
+        if (!password || !confirmPassword) {
+            Alert.alert('Error', 'Please fill in both fields');
+            return;
         }
-
         if (password !== confirmPassword) {
             Alert.alert('Error', 'Passwords do not match');
-            return false;
+            return;
         }
-
-        return true;
-    };
-
-    const handleUpdatePassword = async () => {
-        if (!validateForm()) return;
-
         setLoading(true);
         try {
             const response = await fetch(`${env.apiUrl}/update-user/${userId}`, {
@@ -40,7 +43,6 @@ export default function NewPasswordScreen({ navigation, route }) {
             });
 
             const data = await response.json();
-
             if (response.ok) {
                 Alert.alert(
                     'Success',
@@ -64,79 +66,232 @@ export default function NewPasswordScreen({ navigation, route }) {
     };
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.title}>Create New Password</Text>
-            <Text style={styles.subtitle}>Please enter your new password</Text>
-
-            <TextInput
-                style={styles.input}
-                placeholder="New Password"
-                secureTextEntry
-                value={password}
-                onChangeText={setPassword}
-            />
-
-            <TextInput
-                style={styles.input}
-                placeholder="Confirm New Password"
-                secureTextEntry
-                value={confirmPassword}
-                onChangeText={setConfirmPassword}
-            />
-
-            <TouchableOpacity
-                style={styles.button}
-                onPress={handleUpdatePassword}
-                disabled={loading}
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        >
+            <LinearGradient
+                colors={['#4facfe', '#00f2fe']}
+                style={styles.header}
+                start={{ x: 0, y: 0 }}
+                end={{ x: 1, y: 1 }}
             >
-                {loading ? (
-                    <ActivityIndicator color="#fff" />
-                ) : (
-                    <Text style={styles.buttonText}>Update Password</Text>
-                )}
-            </TouchableOpacity>
-        </View>
+                <TouchableOpacity
+                    style={styles.backButton}
+                    onPress={() => navigation.goBack()}
+                >
+                    <MaterialIcons name="arrow-back" size={24} color="#fff" />
+                </TouchableOpacity>
+                <View style={styles.headerContent}>
+                    <View style={styles.iconContainer}>
+                        <MaterialIcons name="lock-outline" size={60} color="#fff" />
+                    </View>
+                    <Text style={styles.headerTitle}>New Password</Text>
+                    <Text style={styles.headerSubtitle}>Set your new password</Text>
+                </View>
+            </LinearGradient>
+
+            <View style={styles.content}>
+                <View style={styles.formContainer}>
+                    <Text style={styles.sectionTitle}>🔒 Create New Password</Text>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>New Password</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Enter new password"
+                                secureTextEntry
+                                value={password}
+                                onChangeText={setPassword}
+                                placeholderTextColor="#999"
+                            />
+                        </View>
+                    </View>
+
+                    <View style={styles.inputGroup}>
+                        <Text style={styles.label}>Confirm Password</Text>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder="Confirm new password"
+                                secureTextEntry
+                                value={confirmPassword}
+                                onChangeText={setConfirmPassword}
+                                placeholderTextColor="#999"
+                            />
+                        </View>
+                    </View>
+                </View>
+
+                <View style={styles.buttonContainer}>
+                    <TouchableOpacity
+                        style={[styles.resetButton, loading && styles.resetButtonDisabled]}
+                        onPress={handleNewPassword}
+                        disabled={loading}
+                        activeOpacity={0.8}
+                    >
+                        <LinearGradient
+                            colors={loading ? ['#ccc', '#999'] : ['#4facfe', '#00f2fe']}
+                            style={styles.resetButtonGradient}
+                            start={{ x: 0, y: 0 }}
+                            end={{ x: 1, y: 1 }}
+                        >
+                            {loading ? (
+                                <ActivityIndicator size="small" color="#fff" />
+                            ) : (
+                                <MaterialIcons name="send" size={24} color="#fff" />
+                            )}
+                            <Text style={styles.resetButtonText}>
+                                {loading ? 'Updating...' : 'Update Password'}
+                            </Text>
+                        </LinearGradient>
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        style={styles.loginRedirectButton}
+                        onPress={() => navigation.navigate('Login')}
+                    >
+                        <Text style={styles.loginRedirectText}>
+                            Back to <Text style={styles.loginRedirectLink}>Sign In</Text>
+                        </Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
+        </KeyboardAvoidingView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: 20,
-        backgroundColor: '#fff',
-        justifyContent: 'center',
+        backgroundColor: '#f5f5f5'
     },
-    title: {
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
+    header: {
+        paddingTop: 60,
+        paddingBottom: 40,
+        paddingHorizontal: 20,
+        position: 'relative'
     },
-    subtitle: {
-        fontSize: 16,
-        marginBottom: 30,
-        textAlign: 'center',
-        color: '#666',
+    backButton: {
+        position: 'absolute',
+        top: 60,
+        left: 20,
+        zIndex: 1,
+        padding: 8
     },
-    input: {
-        height: 50,
-        borderWidth: 1,
-        borderColor: '#ddd',
-        borderRadius: 5,
-        marginBottom: 20,
-        paddingHorizontal: 15,
-        fontSize: 16,
+    headerContent: {
+        alignItems: 'center',
+        marginTop: 20
     },
-    button: {
-        backgroundColor: '#4682B4',
-        height: 50,
-        borderRadius: 5,
+    iconContainer: {
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: 'rgba(255, 255, 255, 0.2)',
         justifyContent: 'center',
         alignItems: 'center',
+        marginBottom: 20
     },
-    buttonText: {
+    headerTitle: {
+        fontSize: 28,
+        fontWeight: 'bold',
         color: '#fff',
+        marginBottom: 8,
+        textAlign: 'center'
+    },
+    headerSubtitle: {
+        fontSize: 16,
+        color: '#fff',
+        opacity: 0.9,
+        textAlign: 'center'
+    },
+    content: {
+        flex: 1,
+        justifyContent: 'space-between',
+        padding: 20
+    },
+    formContainer: {
+        flex: 1,
+        paddingTop: 40
+    },
+    sectionTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#333',
+        marginBottom: 30,
+        textAlign: 'center'
+    },
+    inputGroup: {
+        marginBottom: 20
+    },
+    label: {
         fontSize: 16,
         fontWeight: '600',
+        color: '#333',
+        marginBottom: 8
+    },
+    inputContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        backgroundColor: '#fff',
+        borderRadius: 12,
+        paddingHorizontal: 15,
+        elevation: 2,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2
+    },
+    inputIcon: {
+        marginRight: 10
+    },
+    input: {
+        flex: 1,
+        paddingVertical: 15,
+        fontSize: 16,
+        color: '#333'
+    },
+    buttonContainer: {
+        paddingBottom: 20
+    },
+    resetButton: {
+        borderRadius: 12,
+        elevation: 4,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.2,
+        shadowRadius: 4,
+        marginBottom: 20
+    },
+    resetButtonDisabled: {
+        elevation: 0,
+        shadowOpacity: 0
+    },
+    resetButtonGradient: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        paddingVertical: 18,
+        borderRadius: 12,
+        gap: 10
+    },
+    resetButtonText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#fff'
+    },
+    loginRedirectButton: {
+        alignItems: 'center',
+        paddingVertical: 15
+    },
+    loginRedirectText: {
+        fontSize: 16,
+        color: '#666'
+    },
+    loginRedirectLink: {
+        color: '#4facfe',
+        fontWeight: 'bold'
     }
 });

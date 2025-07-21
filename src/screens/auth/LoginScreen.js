@@ -13,9 +13,12 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import {useTranslation} from "react-i18next";
+
 console.log('Environment config:', env);
 console.log('API URL:', env.apiUrl);
 export default function LoginScreen({ navigation, setUser }) {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         email: '',
         password: ''
@@ -135,7 +138,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="login" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>Welcome Back</Text>
+                    <Text style={styles.headerTitle}>{t('messages.welcomeBackTitle')}</Text>
                     <Text style={styles.headerSubtitle}>Sign in to your account</Text>
                 </View>
             </LinearGradient>

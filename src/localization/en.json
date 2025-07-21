@@ -20,6 +20,7 @@
     "success": "Success",
     "error": "Error",
     "networkError": "Network error. Please try again.",
-    "appTitle": "EV Charger"
+    "appTitle": "EV Charger",
+    "welcomeBackTitle": "Welcome Back"
   }
 }

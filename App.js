@@ -37,7 +37,6 @@ import {useTranslation} from "react-i18next";
 
 function Home({ navigation }) {
     const { t } = useTranslation();
-    const { isRTL } = useLanguage();
     return (
         <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
             <LinearGradient
@@ -93,7 +92,7 @@ function Home({ navigation }) {
                         <MaterialIcons name="login" size={32} color="#fff" />
                         <View style={styles.actionTextContainer}>
                             <Text style={styles.actionText}>Sign In</Text>
-                            <Text style={styles.actionSubtext}>Welcome back!</Text>
+                            <Text style={styles.actionSubtext}>{t('messages.welcomeBackTitle')}</Text>
                         </View>
                         <MaterialIcons name="arrow-forward" size={24} color="#fff" />
                     </LinearGradient>

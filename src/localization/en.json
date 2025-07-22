@@ -21,6 +21,25 @@
     "error": "Error",
     "networkError": "Network error. Please try again.",
     "appTitle": "EV Charger",
-    "welcomeBackTitle": "Welcome Back"
+    "welcomeBackTitle": "Welcome Back",
+    "appMessage" : "our Electric Vehicle Companion",
+    "notification" : "Power your journey, share your charger",
+    "entry" : "Sign In",
+    "account" : "Create Account",
+    "join" : "Join thousands of EV owners",
+    "start": "Get Started",
+    "doing": "What You Can Do",
+    "chargerFinding": "Find Chargers",
+    "stationDiscovering": "Discover charging stations near you with real-time availability",
+    "moneyEarning" : "Earn Money",
+    "homeChargerShare": "Share your home charger and earn passive income",
+    "green" : "Go Green",
+    "supportTransportation" : "Support sustainable transportation and reduce emissions",
+    "community" : "Join Community",
+    "EVOwnersConnecting" : "Connect with other EV owners and charging providers",
+    "joining": "join the Electric Revolution",
+    "chargingStation" : "Charging Stations",
+    "happyUsers" : "Happy Users",
+    "support" : "Support"
   }
 }

@@ -35,7 +35,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
 
     const handleSearch = async () => {
         // Validate required fields
-        if (!formData.city || !formData.street) {
+        if (!formData.city) {
             Alert.alert('Error', 'Please fill in at least City and Street fields');
             return;
         }
@@ -123,7 +123,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Street *</Text>
+                        <Text style={styles.label}>Street</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="road" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput

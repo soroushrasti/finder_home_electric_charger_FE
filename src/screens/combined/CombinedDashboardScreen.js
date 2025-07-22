@@ -41,7 +41,7 @@ export default function CombinedDashboardScreen({ navigation, user }) {
             title: 'Add Station',
             subtitle: 'Share your charger',
             icon: 'add-location',
-            onPress: () => navigation.navigate('AddChargerLocationScreen',{ user }),
+            onPress: () => navigation.navigate('ChargerLocationFormScreen',{ user }),
             colors: ['#f093fb', '#f5576c']
         },
         {

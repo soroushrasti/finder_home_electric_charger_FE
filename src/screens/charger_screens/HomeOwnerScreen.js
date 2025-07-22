@@ -38,7 +38,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
                 <View style={styles.menuContainer}>
                     <TouchableOpacity
                         style={styles.menuCard}
-                        onPress={() => navigation.navigate('AddChargerLocationScreen', { user })}
+                        onPress={() => navigation.navigate('ChargerLocationFormScreen', { user })}
                         activeOpacity={0.8}
                     >
                         <LinearGradient

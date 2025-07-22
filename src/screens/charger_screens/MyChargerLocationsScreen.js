@@ -137,7 +137,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                 </Text>
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={() => navigation.navigate('AddChargerLocationScreen', {
+                    onPress={() => navigation.navigate('ChargerLocationFormScreen', {
                         user,
                         onLocationAdded: fetchChargerLocations
                     })}
@@ -169,7 +169,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                     </Text>
                     <TouchableOpacity
                         style={styles.getStartedButton}
-                        onPress={() => navigation.navigate('AddChargerLocationScreen', {
+                        onPress={() => navigation.navigate('ChargerLocationFormScreen', {
                             user,
                             onLocationAdded: fetchChargerLocations
                         })}

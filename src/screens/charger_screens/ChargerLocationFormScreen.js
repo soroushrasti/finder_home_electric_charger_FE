@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import env from "../../config/environment";
 
-export default function AddChargerLocationScreen({ navigation, route }) {
+export default function ChargerLocationFormScreen({ navigation, route }) {
+    const user = route.params?.user;
     const [formData, setFormData] = useState({
         name: '',
         city: '',
@@ -15,11 +15,18 @@ export default function AddChargerLocationScreen({ navigation, route }) {
         powerOutput: '',
         pricePerHour: '',
         description: '',
-        fast_charging: false
+        fast_charging: false,
+        user_id: user?.user_id || null
     });
     const [loading, setLoading] = useState(false);
+    const handleNext = () => {
+        if (!validateForm()) return;
+        navigation.navigate('FinalizeLocationOnMapScreen', {
+            formData,
+            onLocationAdded // Pass this callback
+        });
+    };
 
-    const user = route.params?.user;
     const onLocationAdded = route.params?.onLocationAdded;
 
     const handleInputChange = (field, value) => {
@@ -83,50 +90,7 @@ export default function AddChargerLocationScreen({ navigation, route }) {
         return true;
     };
 
-    const handleAddLocation = async () => {
-        if (!validateForm()) return;
 
-        setLoading(true);
-        try {
-            const fullAddress = `${formData.street}${formData.alley ? ', ' + formData.alley : ''}`;
-
-            const response = await fetch(`${env.apiUrl}/add-charging-location`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken} `,
-                },
-                body: JSON.stringify({
-                    user_id: user?.user_id,
-                    name: formData.name,
-                    city: formData.city,
-                    post_code: formData.postcode,
-                    address: fullAddress,
-                    phone_number: formData.phone_number,
-                    power_output: parseFloat(formData.powerOutput),
-                    price_per_hour: parseFloat(formData.pricePerHour),
-                    description: formData.description,
-                    fast_charging: formData.fast_charging,
-                    is_available: true,
-                }),
-            });
-
-            if (response.ok) {
-                Alert.alert('Success! 🎉', 'Your charging station has been added successfully');
-                if (onLocationAdded) {
-                    onLocationAdded();
-                }
-                navigation.goBack();
-            } else {
-                const errorData = await response.json();
-                Alert.alert('Error', errorData.message || 'Failed to add charging location. Please try again.');
-            }
-        } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
-        } finally {
-            setLoading(false);
-        }
-    };
 
     return (
         <KeyboardAvoidingView
@@ -138,7 +102,7 @@ export default function AddChargerLocationScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="ev-station" size={50} color="#4285F4" />
                     </View>
-                    <Text style={styles.title}>Add Charging Station</Text>
+                    <Text style={styles.title}>Select Your Charging Station on Map</Text>
                     <Text style={styles.subtitle}>Share your charger and start earning</Text>
                 </View>
 
@@ -287,7 +251,7 @@ export default function AddChargerLocationScreen({ navigation, route }) {
 
                     <TouchableOpacity
                         style={styles.addButton}
-                        onPress={handleAddLocation}
+                        onPress={handleNext}
                         disabled={loading}
                         activeOpacity={0.8}
                     >

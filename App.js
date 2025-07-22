@@ -16,7 +16,7 @@ import EndBookingScreen from "./src/screens/car_screens/EndBookingScreen";
 import MyBookingsScreen from "./src/screens/car_screens/MyBookingsScreen";
 import MyLocationBookingsScreen from './src/screens/charger_screens/MyLocationBookingsScreen';
 import MyChargerLocationsScreen from './src/screens/charger_screens/MyChargerLocationsScreen';
-import AddChargerLocationScreen from './src/screens/charger_screens/AddChargerLocationScreen';
+import ChargerLocationFormScreen from './src/screens/charger_screens/ChargerLocationFormScreen';
 import MyCarsScreen from './src/screens/car_screens/MyCarsScreen';
 import BookingConfirmationScreen from './src/screens/car_screens/BookingConfirmationScreen';
 import ChargerLocationListScreen from './src/screens/car_screens/ChargerLocationListScreen';
@@ -32,6 +32,7 @@ import {LanguageProvider, useLanguage} from './src/context/LanguageContext';
 import './src/localization/i18n';
 import LanguageSwitcher from './src/components/LanguageSwitcher';
 import {useTranslation} from "react-i18next";
+import FinalizeLocationOnMapScreen from './src/screens/charger_screens/FinalizeLocationOnMapScreen';
 
 
 
@@ -318,7 +319,8 @@ export default function App() {
                             <>
                                 <Stack.Screen name="MyLocationBookingScreen" component={MyLocationBookingsScreen} options={{ title: 'Location Bookings' }} />
                                 <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: 'My Stations' }} />
-                                <Stack.Screen name="AddChargerLocationScreen" component={AddChargerLocationScreen} options={{ title: 'Add Station' }} />
+                                <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: 'Add Station' }} />
+                                <Stack.Screen name="FinalizeLocationOnMapScreen" component={FinalizeLocationOnMapScreen} options={{ title: 'Add Station' }} />
                             </>
                         )}
                     </>
@@ -516,7 +518,6 @@ const styles = StyleSheet.create({
         marginRight: 10,
         gap: 8,
     },
-
     logoutButton: {
         padding: 6,
         borderRadius: 16,

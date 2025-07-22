@@ -3,7 +3,7 @@ import tokens from './env';
 
 const ENV = {
     dev: {
-        apiUrl: 'http://192.168.1.100:8080',
+        apiUrl: 'http://10.0.2.2:8080',
         apiToken: tokens.dev.apiToken
     },
     prod: {

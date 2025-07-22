@@ -50,13 +50,13 @@ function Home({ navigation }) {
                         <MaterialIcons name="electric-bolt" size={80} color="#fff" />
                     </View>
                     <Text style={styles.appTitle}>{t('messages.appTitle')}</Text>
-                    <Text style={styles.appSubtitle}>Your Electric Vehicle Companion</Text>
-                    <Text style={styles.tagline}>Power your journey, share your charger</Text>
+                    <Text style={styles.appSubtitle}>{t('messages.appMessage')}</Text>
+                    <Text style={styles.tagline}>{t('messages.notification')}</Text>
                 </View>
             </LinearGradient>
 
             <View style={styles.actionsContainer}>
-                <Text style={styles.sectionTitle}>Get Started</Text>
+                <Text style={styles.sectionTitle}>{t('messages.start')}</Text>
 
                 <TouchableOpacity
                     style={styles.primaryActionButton}
@@ -71,8 +71,8 @@ function Home({ navigation }) {
                     >
                         <MaterialIcons name="person-add" size={32} color="#fff" />
                         <View style={styles.actionTextContainer}>
-                            <Text style={styles.actionText}>Create Account</Text>
-                            <Text style={styles.actionSubtext}>Join thousands of EV owners</Text>
+                            <Text style={styles.actionText}>{t('messages.account')}</Text>
+                            <Text style={styles.actionSubtext}>{t('messages.join')}</Text>
                         </View>
                         <MaterialIcons name="arrow-forward" size={24} color="#fff" />
                     </LinearGradient>
@@ -91,7 +91,7 @@ function Home({ navigation }) {
                     >
                         <MaterialIcons name="login" size={32} color="#fff" />
                         <View style={styles.actionTextContainer}>
-                            <Text style={styles.actionText}>Sign In</Text>
+                            <Text style={styles.actionText}>{t('messages.entry')}</Text>
                             <Text style={styles.actionSubtext}>{t('messages.welcomeBackTitle')}</Text>
                         </View>
                         <MaterialIcons name="arrow-forward" size={24} color="#fff" />
@@ -100,7 +100,7 @@ function Home({ navigation }) {
             </View>
 
             <View style={styles.featuresContainer}>
-                <Text style={styles.featuresTitle}>What You Can Do</Text>
+                <Text style={styles.featuresTitle}>{t('messages.doing')}</Text>
 
                 <View style={styles.featuresList}>
                     <View style={styles.featureCard}>
@@ -108,9 +108,9 @@ function Home({ navigation }) {
                             <MaterialIcons name="search" size={28} color="#4285F4" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>Find Chargers</Text>
+                            <Text style={styles.featureTitle}>{t('messages.chargerFinding')}</Text>
                             <Text style={styles.featureDescription}>
-                                Discover charging stations near you with real-time availability
+                                {t('messages.stationDiscovering')}
                             </Text>
                         </View>
                     </View>
@@ -120,9 +120,9 @@ function Home({ navigation }) {
                             <MaterialIcons name="attach-money" size={28} color="#34A853" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>Earn Money</Text>
+                            <Text style={styles.featureTitle}>{t('messages.moneyEarning')}</Text>
                             <Text style={styles.featureDescription}>
-                                Share your home charger and earn passive income
+                                {t('messages.homeChargerShare')}
                             </Text>
                         </View>
                     </View>
@@ -132,9 +132,9 @@ function Home({ navigation }) {
                             <MaterialIcons name="eco" size={28} color="#FBBC04" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>Go Green</Text>
+                            <Text style={styles.featureTitle}>{t('messages.green')}</Text>
                             <Text style={styles.featureDescription}>
-                                Support sustainable transportation and reduce emissions
+                                {t('messages.supportTransportation')}
                             </Text>
                         </View>
                     </View>
@@ -144,9 +144,9 @@ function Home({ navigation }) {
                             <MaterialIcons name="people" size={28} color="#EA4335" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>Join Community</Text>
+                            <Text style={styles.featureTitle}>{t('messages.community')}</Text>
                             <Text style={styles.featureDescription}>
-                                Connect with other EV owners and charging providers
+                                {t('messages.EVOwnersConnecting')}
                             </Text>
                         </View>
                     </View>
@@ -154,19 +154,19 @@ function Home({ navigation }) {
             </View>
 
             <View style={styles.statsContainer}>
-                <Text style={styles.statsTitle}>Join the Electric Revolution</Text>
+                <Text style={styles.statsTitle}>{t('messages.joining')}</Text>
                 <View style={styles.statsRow}>
                     <View style={styles.statCard}>
                         <Text style={styles.statNumber}>1000+</Text>
-                        <Text style={styles.statLabel}>Charging Stations</Text>
+                        <Text style={styles.statLabel}>{t('messages.chargingStation')}</Text>
                     </View>
                     <View style={styles.statCard}>
                         <Text style={styles.statNumber}>500+</Text>
-                        <Text style={styles.statLabel}>Happy Users</Text>
+                        <Text style={styles.statLabel}>{t('messages.happyUsers')}</Text>
                     </View>
                     <View style={styles.statCard}>
                         <Text style={styles.statNumber}>24/7</Text>
-                        <Text style={styles.statLabel}>Support</Text>
+                        <Text style={styles.statLabel}>{t('messages.support')}</Text>
                     </View>
                 </View>
             </View>

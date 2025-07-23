@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAv
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
+import FarsiText from  "../../components/FarsiText";
 
 export default function BookingConfirmationScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
@@ -31,25 +32,10 @@ export default function BookingConfirmationScreen({ navigation, route }) {
 
             if (response.ok) {
                 const booking = await response.json();
-                Alert.alert(
-                    'Booking Confirmed! ⚡',
-                    'Your charging session has been booked successfully. You can now head to the charging station.',
-                    [
-                        {
-                            text: 'View Booking',
-                            onPress: () => {
-                                navigation.navigate('MyBookingsScreen', {
-                                    user,
-                                    refreshBookings: true
-                                });
-                            }
-                        },
-                        {
-                            text: 'OK',
-                            onPress: () => navigation.goBack()
-                        }
-                    ]
-                );
+                navigation.navigate('MyBookingsScreen', {
+                    user,
+                    refreshBookings: true
+                });
             } else {
                 const errorData = await response.json();
                 Alert.alert('Booking Failed', errorData.message || 'Unable to create booking. Please try again.');

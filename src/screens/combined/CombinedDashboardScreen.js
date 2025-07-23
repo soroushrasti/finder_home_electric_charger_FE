@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import FarsiText from  "../../components/FarsiText";
 
 export default function CombinedDashboardScreen({ navigation, user }) {
     const carOwnerActions = [

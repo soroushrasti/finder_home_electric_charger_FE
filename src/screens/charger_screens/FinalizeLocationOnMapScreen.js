@@ -3,8 +3,8 @@ import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } fr
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
-import { useFocusEffect } from '@react-navigation/native';
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
 
 export default function FinalizeLocationOnMapScreen({ route, navigation }) {
     const [region, setRegion] = useState(null);

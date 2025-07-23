@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
+import FarsiText from  "../../components/FarsiText";
 
 export default function CarOwnerScreen({ navigation, user }) {
     const handleTotalEarningsPress = () => {

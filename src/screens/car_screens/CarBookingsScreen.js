@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, RefreshContr
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
 
 export default function CarBookingsScreen({ navigation, route }) {
     const [bookings, setBookings] = useState([]);
@@ -192,7 +193,7 @@ export default function CarBookingsScreen({ navigation, route }) {
                 <FlatList
                     data={bookings}
                     renderItem={renderBooking}
-                    keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
+                    keyExtractor={(item) => item.booking_id?.toString() || Math.random().toString()}
                     contentContainerStyle={styles.listContainer}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

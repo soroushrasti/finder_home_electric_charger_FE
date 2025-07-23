@@ -14,6 +14,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
+import FarsiText from  "../../components/FarsiText";
 
 console.log('Environment config:', env);
 console.log('API URL:', env.apiUrl);
@@ -70,40 +71,13 @@ export default function LoginScreen({ navigation, setUser }) {
 
             if (response.ok && data.is_validated_email) {
                 setUser(data);
-                Alert.alert(
-                    'Welcome Back!',
-                    'Login successful',
-                    [
-                        {
-                            text: 'Continue',
-                            onPress: () => {
-                                // Navigation will be handled by App.js based on user type
-                            }
-                        }
-                    ]
-                );
             } else if (response.ok && data.is_validated_email === false) {
                 if (data.is_validated_email === false) {
-                    Alert.alert(
-                        'Email Not Verified',
-                        'Please verify your email before logging in.',
-                        [
-                            {
-                                text: 'Resend Verification',
-                                onPress: () => {
-                                    navigation.navigate('EmailVerificationScreen', {
-                                        user: data,
-                                        isPasswordReset: false,
-                                        setUser: setUser
-                                    });
-                                }
-                            },
-                            {
-                                text: 'Cancel',
-                                style: 'cancel'
-                            }
-                        ]
-                    );
+                    navigation.navigate('EmailVerificationScreen', {
+                        user: data,
+                        isPasswordReset: false,
+                        setUser: setUser
+                    });
                 }
             }
             else {

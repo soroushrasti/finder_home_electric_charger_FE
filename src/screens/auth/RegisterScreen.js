@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import {
     View,
     Text,
-    TextInput,
     TouchableOpacity,
     StyleSheet,
     Alert,
@@ -15,6 +14,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from "../../components/FarsiTextInput";
 
 export default function RegisterScreen({ navigation, setUser }) {
     const { t } = useTranslation();
@@ -118,23 +119,11 @@ export default function RegisterScreen({ navigation, setUser }) {
             });
 
             const data = await response.json();
-
             if (response.ok) {
-                Alert.alert(
-                    'Registration Successful!',
-                    'Please check your email for the verification code.',
-                    [
-                        {
-                            text: 'Continue',
-                            onPress: () => {
-                                navigation.navigate('EmailVerificationScreen', {
-                                    user: data,
-                                    setUser: setUser
-                                });
-                            }
-                        }
-                    ]
-                );
+                    navigation.navigate('EmailVerificationScreen', {
+                        user: data,
+                        setUser: setUser
+                    });
             } else {
                 Alert.alert('Registration Failed', data.message || 'Please try again');
             }
@@ -167,20 +156,20 @@ export default function RegisterScreen({ navigation, setUser }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="person-add" size={40} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>{t('messages.account')}</Text>
-                    <Text style={styles.headerSubtitle}>{t('messages.joiningCommunity')}</Text>
+                    <FarsiText style={styles.headerTitle}>{t('messages.account')}</FarsiText>
+                    <FarsiText style={styles.headerSubtitle}>{t('messages.joiningCommunity')}</FarsiText>
                 </View>
             </LinearGradient>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>{t('messages.personalInfo')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.personalInfo')}</FarsiText>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.name')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.name')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="person" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder={t('messages.enterName')}
                                 value={formData.name}
@@ -191,10 +180,10 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.email')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.email')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder={t('messages.enterEmail')}
                                 value={formData.email}
@@ -207,10 +196,10 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.phone')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.phone')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder={t('messages.enterPhone')}
                                 value={formData.phone_number}
@@ -221,13 +210,13 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>{t('messages.security')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.security')}</FarsiText>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.pass')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.pass')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder={t('messages.passwordCreating')}
                                 value={formData.password}
@@ -249,10 +238,10 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.passwordConfirm')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.passwordConfirm')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder= {t('messages.confirmingPass')}
                                 value={formData.confirmPassword}
@@ -273,10 +262,10 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>{t('messages.accountType')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.accountType')}</FarsiText>
 
                     <View style={styles.userTypeContainer}>
-                        <Text style={styles.userTypeLabel}>{t('messages.me')}</Text>
+                        <FarsiText style={styles.userTypeLabel}>{t('messages.me')}</FarsiText>
                         <View style={styles.userTypeOptions}>
                             {userTypes.map((type) => (
                                 <TouchableOpacity
@@ -299,18 +288,18 @@ export default function RegisterScreen({ navigation, setUser }) {
                                             size={32}
                                             color={formData.user_type === type.id ? '#fff' : '#6c757d'}
                                         />
-                                        <Text style={[
+                                        <FarsiText style={[
                                             styles.userTypeTitle,
                                             formData.user_type === type.id && styles.userTypeTextSelected
                                         ]}>
                                             {type.title}
-                                        </Text>
-                                        <Text style={[
+                                        </FarsiText>
+                                        <FarsiText style={[
                                             styles.userTypeDescription,
                                             formData.user_type === type.id && styles.userTypeDescriptionSelected
                                         ]}>
                                             {type.description}
-                                        </Text>
+                                        </FarsiText>
                                     </LinearGradient>
                                 </TouchableOpacity>
                             ))}
@@ -335,9 +324,9 @@ export default function RegisterScreen({ navigation, setUser }) {
                                 ) : (
                                     <MaterialIcons name="person-add" size={24} color="#fff" />
                                 )}
-                                <Text style={styles.registerButtonText}>
+                                <FarsiText style={styles.registerButtonText}>
                                     {loading ? 'Creating Account...' : t('messages.account')}
-                                </Text>
+                                </FarsiText>
                             </LinearGradient>
                         </TouchableOpacity>
 
@@ -345,9 +334,9 @@ export default function RegisterScreen({ navigation, setUser }) {
                             style={styles.loginRedirectButton}
                             onPress={() => navigation.navigate('Login')}
                         >
-                            <Text style={styles.loginRedirectText}>
-                                {t('messages.haveAccount')} <Text style={styles.loginRedirectLink}>{t('messages.signIn')}</Text>
-                            </Text>
+                            <FarsiText style={styles.loginRedirectText}>
+                                {t('messages.haveAccount')} <FarsiText style={styles.loginRedirectLink}>{t('messages.signIn')}</FarsiText>
+                            </FarsiText>
                         </TouchableOpacity>
                     </View>
                 </View>

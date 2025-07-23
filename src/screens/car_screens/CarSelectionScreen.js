@@ -11,6 +11,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
 
 export default function CarSelectionScreen({ navigation, route }) {
     const { user, chargingLocation } = route.params;

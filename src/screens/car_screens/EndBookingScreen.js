@@ -3,6 +3,7 @@ import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ScrollView,
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
+import FarsiText from  "../../components/FarsiText";
 
 export default function EndBookingScreen({ navigation, route }) {
     const [reviewRate, setReviewRate] = useState(5);
@@ -33,21 +34,10 @@ export default function EndBookingScreen({ navigation, route }) {
             });
 
             if (response.ok) {
-                Alert.alert(
-                    'Session Completed! ⚡',
-                    'Thank you for your review. Your charging session has been ended successfully.',
-                    [
-                        {
-                            text: 'OK',
-                            onPress: () => {
-                                if (onBookingEnded) {
-                                    onBookingEnded();
-                                }
-                                navigation.goBack();
-                            }
-                        }
-                    ]
-                );
+                if (onBookingEnded) {
+                    onBookingEnded();
+                }
+                navigation.goBack();
             } else {
                 Alert.alert('Error', 'Failed to end booking. Please try again.');
             }

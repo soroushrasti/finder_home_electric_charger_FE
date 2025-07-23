@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView 
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
 
 export default function AddCarScreen({ navigation, route }) {
     const [model, setModel] = useState('');
@@ -38,7 +39,6 @@ export default function AddCarScreen({ navigation, route }) {
             });
 
             if (response.ok) {
-                Alert.alert('Success! 🎉', 'Your car has been added successfully');
                 if (onCarAdded) {
                     onCarAdded();
                 }

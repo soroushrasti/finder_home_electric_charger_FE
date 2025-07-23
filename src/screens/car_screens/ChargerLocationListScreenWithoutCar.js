@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import MapView, { Marker } from 'react-native-maps';
 import { Dimensions } from 'react-native';
 import env from '../../config/environment';
+import FarsiText from  "../../components/FarsiText";
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {
     const { user, searchResults, searchCriteria } = route.params;
@@ -203,7 +204,6 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             if (response.ok) {
                 const nearbyLocations = await response.json();
                 setChargingLocations(nearbyLocations);
-                console.log('Found nearby locations:', nearbyLocations.length);
             } else {
                 const errorText = await response.text();
                 console.error('API Error:', response.status, errorText);
@@ -295,7 +295,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
     const renderLocationCard = (location) => {
         const isAvailable = location.is_available === true;
-        const pricePerHour = location.price_per_hour || 'N/A';
+        const price_per_hour = location.price_per_hour || 'N/A';
         const isSelected = selectedLocationId === location.charging_location_id;
 
         return (
@@ -345,7 +345,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="attach-money" size={20} color="#4CAF50" />
                         <Text style={styles.detailText}>
-                            £{pricePerHour}/hour
+                            £{price_per_hour}/hour
                         </Text>
                     </View>
 

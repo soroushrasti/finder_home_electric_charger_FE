@@ -14,7 +14,6 @@ import CarBookingsScreen from './src/screens/car_screens/CarBookingsScreen';
 import FindChargerLocationsScreenForCar from './src/screens/car_screens/FindChargerLocationsScreenForCar';
 import EndBookingScreen from "./src/screens/car_screens/EndBookingScreen";
 import MyBookingsScreen from "./src/screens/car_screens/MyBookingsScreen";
-import MyLocationBookingsScreen from './src/screens/charger_screens/MyLocationBookingsScreen';
 import MyChargerLocationsScreen from './src/screens/charger_screens/MyChargerLocationsScreen';
 import ChargerLocationFormScreen from './src/screens/charger_screens/ChargerLocationFormScreen';
 import MyCarsScreen from './src/screens/car_screens/MyCarsScreen';
@@ -33,8 +32,7 @@ import './src/localization/i18n';
 import LanguageSwitcher from './src/components/LanguageSwitcher';
 import {useTranslation} from "react-i18next";
 import FinalizeLocationOnMapScreen from './src/screens/charger_screens/FinalizeLocationOnMapScreen';
-
-
+import FarsiText from './src/components/FarsiText';
 
 function Home({ navigation }) {
     const { t } = useTranslation();
@@ -50,14 +48,14 @@ function Home({ navigation }) {
                     <View style={styles.iconWrapper}>
                         <MaterialIcons name="electric-bolt" size={80} color="#fff" />
                     </View>
-                    <Text style={styles.appTitle}>{t('messages.appTitle')}</Text>
-                    <Text style={styles.appSubtitle}>{t('messages.appMessage')}</Text>
-                    <Text style={styles.tagline}>{t('messages.notification')}</Text>
+                    <FarsiText style={styles.appTitle}>{t('messages.appTitle')}</FarsiText>
+                    <FarsiText style={styles.appSubtitle}>{t('messages.appMessage')}</FarsiText>
+                    <FarsiText style={styles.tagline}>{t('messages.notification')}</FarsiText>
                 </View>
             </LinearGradient>
 
             <View style={styles.actionsContainer}>
-                <Text style={styles.sectionTitle}>{t('messages.start')}</Text>
+                <FarsiText style={styles.sectionTitle}>{t('messages.start')}</FarsiText>
 
                 <TouchableOpacity
                     style={styles.primaryActionButton}
@@ -72,8 +70,8 @@ function Home({ navigation }) {
                     >
                         <MaterialIcons name="person-add" size={32} color="#fff" />
                         <View style={styles.actionTextContainer}>
-                            <Text style={styles.actionText}>{t('messages.account')}</Text>
-                            <Text style={styles.actionSubtext}>{t('messages.join')}</Text>
+                            <FarsiText style={styles.actionText}>{t('messages.account')}</FarsiText>
+                            <FarsiText style={styles.actionSubtext}>{t('messages.join')}</FarsiText>
                         </View>
                         <MaterialIcons name="arrow-forward" size={24} color="#fff" />
                     </LinearGradient>
@@ -92,8 +90,8 @@ function Home({ navigation }) {
                     >
                         <MaterialIcons name="login" size={32} color="#fff" />
                         <View style={styles.actionTextContainer}>
-                            <Text style={styles.actionText}>{t('messages.entry')}</Text>
-                            <Text style={styles.actionSubtext}>{t('messages.welcomeBackTitle')}</Text>
+                            <FarsiText style={styles.actionText}>{t('messages.entry')}</FarsiText>
+                            <FarsiText style={styles.actionSubtext}>{t('messages.welcomeBackTitle')}</FarsiText>
                         </View>
                         <MaterialIcons name="arrow-forward" size={24} color="#fff" />
                     </LinearGradient>
@@ -101,7 +99,7 @@ function Home({ navigation }) {
             </View>
 
             <View style={styles.featuresContainer}>
-                <Text style={styles.featuresTitle}>{t('messages.doing')}</Text>
+                <FarsiText style={styles.featuresTitle}>{t('messages.doing')}</FarsiText>
 
                 <View style={styles.featuresList}>
                     <View style={styles.featureCard}>
@@ -109,10 +107,10 @@ function Home({ navigation }) {
                             <MaterialIcons name="search" size={28} color="#4285F4" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>{t('messages.chargerFinding')}</Text>
-                            <Text style={styles.featureDescription}>
+                            <FarsiText style={styles.featureTitle}>{t('messages.chargerFinding')}</FarsiText>
+                            <FarsiText style={styles.featureDescription}>
                                 {t('messages.stationDiscovering')}
-                            </Text>
+                            </FarsiText>
                         </View>
                     </View>
 
@@ -121,10 +119,10 @@ function Home({ navigation }) {
                             <MaterialIcons name="attach-money" size={28} color="#34A853" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>{t('messages.moneyEarning')}</Text>
-                            <Text style={styles.featureDescription}>
+                            <FarsiText style={styles.featureTitle}>{t('messages.moneyEarning')}</FarsiText>
+                            <FarsiText style={styles.featureDescription}>
                                 {t('messages.homeChargerShare')}
-                            </Text>
+                            </FarsiText>
                         </View>
                     </View>
 
@@ -133,10 +131,10 @@ function Home({ navigation }) {
                             <MaterialIcons name="eco" size={28} color="#FBBC04" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>{t('messages.green')}</Text>
-                            <Text style={styles.featureDescription}>
+                            <FarsiText style={styles.featureTitle}>{t('messages.green')}</FarsiText>
+                            <FarsiText style={styles.featureDescription}>
                                 {t('messages.supportTransportation')}
-                            </Text>
+                            </FarsiText>
                         </View>
                     </View>
 
@@ -145,29 +143,29 @@ function Home({ navigation }) {
                             <MaterialIcons name="people" size={28} color="#EA4335" />
                         </View>
                         <View style={styles.featureContent}>
-                            <Text style={styles.featureTitle}>{t('messages.community')}</Text>
-                            <Text style={styles.featureDescription}>
+                            <FarsiText style={styles.featureTitle}>{t('messages.community')}</FarsiText>
+                            <FarsiText style={styles.featureDescription}>
                                 {t('messages.EVOwnersConnecting')}
-                            </Text>
+                            </FarsiText>
                         </View>
                     </View>
                 </View>
             </View>
 
             <View style={styles.statsContainer}>
-                <Text style={styles.statsTitle}>{t('messages.joining')}</Text>
+                <FarsiText style={styles.statsTitle}>{t('messages.joining')}</FarsiText>
                 <View style={styles.statsRow}>
                     <View style={styles.statCard}>
-                        <Text style={styles.statNumber}>1000+</Text>
-                        <Text style={styles.statLabel}>{t('messages.chargingStation')}</Text>
+                        <FarsiText style={styles.statNumber}>1000+</FarsiText>
+                        <FarsiText style={styles.statLabel}>{t('messages.chargingStation')}</FarsiText>
                     </View>
                     <View style={styles.statCard}>
-                        <Text style={styles.statNumber}>500+</Text>
-                        <Text style={styles.statLabel}>{t('messages.happyUsers')}</Text>
+                        <FarsiText style={styles.statNumber}>500+</FarsiText>
+                        <FarsiText style={styles.statLabel}>{t('messages.happyUsers')}</FarsiText>
                     </View>
                     <View style={styles.statCard}>
-                        <Text style={styles.statNumber}>24/7</Text>
-                        <Text style={styles.statLabel}>{t('messages.support')}</Text>
+                        <FarsiText style={styles.statNumber}>24/7</FarsiText>
+                        <FarsiText style={styles.statLabel}>{t('messages.support')}</FarsiText>
                     </View>
                 </View>
             </View>
@@ -307,17 +305,18 @@ export default function App() {
                                 <Stack.Screen name="ChargerLocationListScreenWithoutCar" component={ChargerLocationListScreenWithoutCar} options={{ title: 'List Chargers without car' }} />
                                 <Stack.Screen name="CarSelectionScreen" component={CarSelectionScreen} options={{ title: 'Car selection after location' }} />
                                 <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: 'End Charging' }} />
-                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: 'My Bookings' }} />
                                 <Stack.Screen name="MyCars" component={MyCarsScreen} options={{ title: 'My Cars' }} />
                                 <Stack.Screen name="BookingConfirmationScreen" component={BookingConfirmationScreen} options={{ title: 'Booking confirmation' }} />
                                 <Stack.Screen name="ChargerLocationListScreen" component={ChargerLocationListScreen} options={{ title: 'Location charger list' }} />
+                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: 'My Bookings' }} />
+
                             </>
                         )}
 
                         {/* Charger Provider Features - Show if user can use charger features */}
                         {userCapabilities.canUseChargerFeatures && (
                             <>
-                                <Stack.Screen name="MyLocationBookingScreen" component={MyLocationBookingsScreen} options={{ title: 'Location Bookings' }} />
+                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: 'My Bookings' }} />
                                 <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: 'My Stations' }} />
                                 <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: 'Add Station' }} />
                                 <Stack.Screen name="FinalizeLocationOnMapScreen" component={FinalizeLocationOnMapScreen} options={{ title: 'Add Station' }} />

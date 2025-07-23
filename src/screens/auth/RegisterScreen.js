@@ -13,9 +13,11 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import {useTranslation} from "react-i18next";
 import env from "../../config/environment";
 
 export default function RegisterScreen({ navigation, setUser }) {
+    const { t } = useTranslation();
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -31,22 +33,22 @@ export default function RegisterScreen({ navigation, setUser }) {
     const userTypes = [
         {
             id: 'car_owner',
-            title: 'Electric Car Owner',
-            description: 'Find and book charging stations',
+            title: t('messages.carOwner'),
+            description: t('messages.findCharging'),
             icon: 'directions-car',
             colors: ['#4facfe', '#00f2fe']
         },
         {
             id: 'home_owner',
-            title: 'Charger Provider',
-            description: 'Share your charging station',
+            title: t('messages.chargerProvider'),
+            description: t('messages.shareStation'),
             icon: 'ev-station',
             colors: ['#667eea', '#764ba2']
         },
         {
             id: 'both',
-            title: 'Both',
-            description: 'Car owner & charger provider',
+            title: t('messages.both'),
+            description: t('messages.bothProvider'),
             icon: 'electric-bolt',
             colors: ['#43e97b', '#38f9d7']
         }
@@ -165,22 +167,22 @@ export default function RegisterScreen({ navigation, setUser }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="person-add" size={40} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>Create Account</Text>
-                    <Text style={styles.headerSubtitle}>Join our charging community</Text>
+                    <Text style={styles.headerTitle}>{t('messages.account')}</Text>
+                    <Text style={styles.headerSubtitle}>{t('messages.joiningCommunity')}</Text>
                 </View>
             </LinearGradient>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>Personal Information</Text>
+                    <Text style={styles.sectionTitle}>{t('messages.personalInfo')}</Text>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Full Name *</Text>
+                        <Text style={styles.label}>{t('messages.name')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="person" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter your full name"
+                                placeholder={t('messages.enterName')}
                                 value={formData.name}
                                 onChangeText={(value) => handleInputChange('name', value)}
                                 placeholderTextColor="#999"
@@ -189,12 +191,12 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Email Address *</Text>
+                        <Text style={styles.label}>{t('messages.email')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter your email"
+                                placeholder={t('messages.enterEmail')}
                                 value={formData.email}
                                 onChangeText={(value) => handleInputChange('email', value)}
                                 keyboardType="email-address"
@@ -205,12 +207,12 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Phone Number *</Text>
+                        <Text style={styles.label}>{t('messages.phone')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter your phone number"
+                                placeholder={t('messages.enterPhone')}
                                 value={formData.phone_number}
                                 onChangeText={(value) => handleInputChange('phone_number', value)}
                                 keyboardType="phone-pad"
@@ -219,15 +221,15 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>Security</Text>
+                    <Text style={styles.sectionTitle}>{t('messages.security')}</Text>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Password *</Text>
+                        <Text style={styles.label}>{t('messages.pass')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Create a password"
+                                placeholder={t('messages.passwordCreating')}
                                 value={formData.password}
                                 onChangeText={(value) => handleInputChange('password', value)}
                                 secureTextEntry={!showPassword}
@@ -247,12 +249,12 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Confirm Password *</Text>
+                        <Text style={styles.label}>{t('messages.passwordConfirm')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Confirm your password"
+                                placeholder= {t('messages.confirmingPass')}
                                 value={formData.confirmPassword}
                                 onChangeText={(value) => handleInputChange('confirmPassword', value)}
                                 secureTextEntry={!showConfirmPassword}
@@ -271,10 +273,10 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>Account Type</Text>
+                    <Text style={styles.sectionTitle}>{t('messages.accountType')}</Text>
 
                     <View style={styles.userTypeContainer}>
-                        <Text style={styles.userTypeLabel}>I am a:</Text>
+                        <Text style={styles.userTypeLabel}>{t('messages.me')}</Text>
                         <View style={styles.userTypeOptions}>
                             {userTypes.map((type) => (
                                 <TouchableOpacity
@@ -334,7 +336,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                                     <MaterialIcons name="person-add" size={24} color="#fff" />
                                 )}
                                 <Text style={styles.registerButtonText}>
-                                    {loading ? 'Creating Account...' : 'Create Account'}
+                                    {loading ? 'Creating Account...' : t('messages.account')}
                                 </Text>
                             </LinearGradient>
                         </TouchableOpacity>
@@ -344,7 +346,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                             onPress={() => navigation.navigate('Login')}
                         >
                             <Text style={styles.loginRedirectText}>
-                                Already have an account? <Text style={styles.loginRedirectLink}>Sign In</Text>
+                                {t('messages.haveAccount')} <Text style={styles.loginRedirectLink}>{t('messages.signIn')}</Text>
                             </Text>
                         </TouchableOpacity>
                     </View>

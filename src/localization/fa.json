@@ -40,6 +40,32 @@
     "joining" : "به انقلاب الکتریک بپیوندید",
     "chargingStation" : "ایستگاه های شارژ",
     "happyUsers" : "کاربران راضی",
-    "support": "پشتیبانی"
+    "support": "پشتیبانی",
+    "joiningCommunity" : "به انجمن شارژ ما بپیوندید",
+    "personalInfo" : "اطلاعات شخصی",
+    "name": "نام کامل *",
+    "enterName" : "نام کامل خود را وارد کنید",
+    "email": "ادرس ایمیل *",
+    "enterEmail" : "ایمیل خود را وارد کنید",
+    "phone" : "شماره تلفن *",
+    "enterPhone" : "شماره تلفن خود را وارد کنید",
+    "security" : "امنیت",
+    "pass" : "رمز عبور *",
+    "passwordCreating" : "رمز عبور ایجاد کنید",
+    "passwordConfirm" : "رمز عبور را تایید کنید *",
+    "confirmingPass" : "رمز عبور خود را تایید کنید",
+    "accountType" : "نوع حساب",
+    "me": "من هستم:",
+    "haveAccount" : "قبلا یک حساب کاربری داشته اید؟",
+    "signIn": "وارد شوید",
+    "carOwner" : "مالک خودرو",
+    "findCharging" : "ایستگاه های شارژ را پیدا و رزرو کنید",
+    "chargerProvider": "ارائه دهنده شارژر",
+    "shareStation": "ایستگاه شارژ را به اشتراک بگذارید",
+    "both" : "هر دو",
+    "bothProvider" : "مالک خودرو و ارائه دهنده شارژر",
+    "signing" : "وارد حساب کاربری خود شوید",
+    "emailAddress" : "آدرس ایمیل"
+
   }
 }

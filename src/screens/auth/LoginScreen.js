@@ -139,7 +139,7 @@ export default function LoginScreen({ navigation, setUser }) {
                         <MaterialIcons name="login" size={60} color="#fff" />
                     </View>
                     <Text style={styles.headerTitle}>{t('messages.welcomeBackTitle')}</Text>
-                    <Text style={styles.headerSubtitle}>Sign in to your account</Text>
+                    <Text style={styles.headerSubtitle}>sign in to your account</Text>
                 </View>
             </LinearGradient>
 
@@ -164,7 +164,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Password</Text>
+                        <Text style={styles.label}>Password *</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput

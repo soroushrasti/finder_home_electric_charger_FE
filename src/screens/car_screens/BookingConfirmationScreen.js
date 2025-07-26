@@ -11,7 +11,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
 
     const handleCreateBooking = async () => {
         if (!car?.car_id || !chargingLocation?.charging_location_id) {
-            Alert.alert('Error', 'Missing required information. Please try again.');
+            Alert.alert(t('messages.error'), t('messages.missingInfo'));
             return;
         }
 
@@ -32,30 +32,30 @@ export default function BookingConfirmationScreen({ navigation, route }) {
             if (response.ok) {
                 const booking = await response.json();
                 Alert.alert(
-                    'Booking Confirmed! ⚡',
-                    'Your charging session has been booked successfully. You can now head to the charging station.',
+                    t('messages.confirmBooking'),
+                    t('messages.stationBooked'),
                     [
                         {
-                            text: 'View Booking',
+                            text: t('messages.bookingView'),
                             onPress: () => {
-                                navigation.navigate('MyBookingsScreen', {
+                                navigation.navigate(t('messages.bookingScreen'), {
                                     user,
                                     refreshBookings: true
                                 });
                             }
                         },
                         {
-                            text: 'OK',
+                            text: t('messages.ok'),
                             onPress: () => navigation.goBack()
                         }
                     ]
                 );
             } else {
                 const errorData = await response.json();
-                Alert.alert('Booking Failed', errorData.message || 'Unable to create booking. Please try again.');
+                Alert.alert(t('messages.failBooking'), errorData.message || t('messages.noCreateBooking'));
             }
         } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
+            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }
@@ -83,32 +83,32 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="confirmation-number" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.title}>Confirm Your Booking</Text>
+                    <Text style={styles.title}>{t('messages.bookingConfirm')}</Text>
                     <Text style={styles.subtitle}>
-                        Review details and confirm your charging session
+                        {t('messages.review')}
                     </Text>
                 </LinearGradient>
 
                 <View style={styles.carInfoCard}>
                     <View style={styles.cardHeader}>
                         <MaterialIcons name="directions-car" size={24} color="#667eea" />
-                        <Text style={styles.cardTitle}>Your Vehicle</Text>
+                        <Text style={styles.cardTitle}>{t('messages.vehicle')}</Text>
                     </View>
                     <View style={styles.infoGrid}>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>Model</Text>
+                            <Text style={styles.infoLabel}>{t('messages.model')}</Text>
                             <Text style={styles.infoValue}>{car?.model || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>License Plate</Text>
+                            <Text style={styles.infoLabel}>{t('messages.licensePlate')}</Text>
                             <Text style={styles.infoValue}>{car?.license_plate || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>Year</Text>
+                            <Text style={styles.infoLabel}>{t('messages.yearCar')}</Text>
                             <Text style={styles.infoValue}>{car?.year || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>Color</Text>
+                            <Text style={styles.infoLabel}>{t('messages.colorCar')}</Text>
                             <Text style={styles.infoValue}>{car?.color || 'N/A'}</Text>
                         </View>
                     </View>
@@ -117,7 +117,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                 <View style={styles.locationCard}>
                     <View style={styles.cardHeader}>
                         <MaterialIcons name="ev-station" size={24} color="#667eea" />
-                        <Text style={styles.cardTitle}>Charging Station</Text>
+                        <Text style={styles.cardTitle}>{t('messages.chargingStation')}</Text>
                     </View>
                     <View style={styles.locationInfo}>
                         <View style={styles.locationRow}>
@@ -135,16 +135,16 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                         <View style={styles.featureGrid}>
                             <View style={styles.featureItem}>
                                 <MaterialIcons name="electric-bolt" size={20} color="#667eea" />
-                                <Text style={styles.featureLabel}>Power Output</Text>
+                                <Text style={styles.featureLabel}>{t('messages.power')}</Text>
                                 <Text style={styles.featureValue}>
                                     {chargingLocation?.power_output || 'N/A'} kW
                                 </Text>
                             </View>
                             <View style={styles.featureItem}>
                                 <MaterialIcons name="speed" size={20} color="#667eea" />
-                                <Text style={styles.featureLabel}>Charging Type</Text>
+                                <Text style={styles.featureLabel}>{t('messages.chargingType')}</Text>
                                 <Text style={styles.featureValue}>
-                                    {chargingLocation?.fast_charging ? 'Fast Charging' : 'Standard'}
+                                    {chargingLocation?.fast_charging ? t('messages.fastCharging') : t('messages.standard')}
                                 </Text>
                             </View>
                         </View>
@@ -154,11 +154,11 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                 <View style={styles.pricingCard}>
                     <View style={styles.cardHeader}>
                         <MaterialIcons name="attach-money" size={24} color="#667eea" />
-                        <Text style={styles.cardTitle}>Pricing Information</Text>
+                        <Text style={styles.cardTitle}>{t('messages.pricingInfo')}</Text>
                     </View>
                     <View style={styles.pricingDetails}>
                         <View style={styles.pricingRow}>
-                            <Text style={styles.pricingLabel}>Rate per hour</Text>
+                            <Text style={styles.pricingLabel}>{t('messages.rate')}</Text>
                             <Text style={styles.pricingValue}>
                                 {formatPrice(chargingLocation?.price_per_hour)}/hour
                             </Text>
@@ -166,7 +166,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                         <View style={styles.pricingNote}>
                             <MaterialIcons name="info" size={16} color="#ff9800" />
                             <Text style={styles.noteText}>
-                                You will be charged based on actual usage time
+                                {t('messages.charged')}
                             </Text>
                         </View>
                     </View>
@@ -183,12 +183,12 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                             styles.availabilityText,
                             { color: chargingLocation?.is_available ? "#4CAF50" : "#ff6b6b" }
                         ]}>
-                            {chargingLocation?.is_available ? 'Available Now' : 'Currently Occupied'}
+                            {chargingLocation?.is_available ? t('messages.available') : t('messages.occupy')}
                         </Text>
                     </View>
                     {chargingLocation?.is_available && (
                         <Text style={styles.availabilitySubtext}>
-                            This charging station is ready for immediate use
+                            {t('messages.stationReady')}
                         </Text>
                     )}
                 </View>
@@ -232,7 +232,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                 <View style={styles.termsCard}>
                     <MaterialIcons name="assignment" size={20} color="#ff9800" />
                     <Text style={styles.termsText}>
-                        By confirming this booking, you agree to our terms of service and charging policies.
+                        {t('messages.ourService')}
                     </Text>
                 </View>
             </ScrollView>

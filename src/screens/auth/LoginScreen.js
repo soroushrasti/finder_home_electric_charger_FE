@@ -35,7 +35,7 @@ export default function LoginScreen({ navigation, setUser }) {
 
     const validateForm = () => {
         if (!formData.email || !formData.password) {
-            Alert.alert('Error', 'Please fill in all fields');
+            Alert.alert(t('messages.error'), t('messages.fillingField'));
             return false;
         }
 
@@ -71,11 +71,11 @@ export default function LoginScreen({ navigation, setUser }) {
             if (response.ok && data.is_validated_email) {
                 setUser(data);
                 Alert.alert(
-                    'Welcome Back!',
-                    'Login successful',
+                    t('messages.welcome'),
+                    t('messages.login'),
                     [
                         {
-                            text: 'Continue',
+                            text: t('messages.continue'),
                             onPress: () => {
                                 // Navigation will be handled by App.js based on user type
                             }
@@ -85,13 +85,13 @@ export default function LoginScreen({ navigation, setUser }) {
             } else if (response.ok && data.is_validated_email === false) {
                 if (data.is_validated_email === false) {
                     Alert.alert(
-                        'Email Not Verified',
-                        'Please verify your email before logging in.',
+                        t('messages.noVerifyEmail'),
+                        t('messages.verifyEmail'),
                         [
                             {
-                                text: 'Resend Verification',
+                                text: t('messages.verifyResend'),
                                 onPress: () => {
-                                    navigation.navigate('EmailVerificationScreen', {
+                                    navigation.navigate(t('messages.emailVerifyScreen'), {
                                         user: data,
                                         isPasswordReset: false,
                                         setUser: setUser
@@ -99,7 +99,7 @@ export default function LoginScreen({ navigation, setUser }) {
                                 }
                             },
                             {
-                                text: 'Cancel',
+                                text: t('messages.cancel'),
                                 style: 'cancel'
                             }
                         ]
@@ -107,11 +107,11 @@ export default function LoginScreen({ navigation, setUser }) {
                 }
             }
             else {
-                Alert.alert('Login Failed', data.message || 'Invalid credentials');
+                Alert.alert(t('messages.loginFail'), data.message || t('messages.invalidCredential'));
             }
         } catch (error) {
-            console.error('Login error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.errorLogin'), error);
+            Alert.alert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }
@@ -139,21 +139,21 @@ export default function LoginScreen({ navigation, setUser }) {
                         <MaterialIcons name="login" size={60} color="#fff" />
                     </View>
                     <Text style={styles.headerTitle}>{t('messages.welcomeBackTitle')}</Text>
-                    <Text style={styles.headerSubtitle}>sign in to your account</Text>
+                    <Text style={styles.headerSubtitle}>{t('messages.signing')}</Text>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>👋 Sign In</Text>
+                    <Text style={styles.sectionTitle}> {t('messages.signIn')} 👋</Text>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Email Address</Text>
+                        <Text style={styles.label}>{t('messages.email')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter your email"
+                                placeholder={t('messages.enterEmail')}
                                 value={formData.email}
                                 onChangeText={(value) => handleInputChange('email', value)}
                                 keyboardType="email-address"
@@ -164,12 +164,12 @@ export default function LoginScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Password *</Text>
+                        <Text style={styles.label}>{t('messages.pass')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter your password"
+                                placeholder= {t('messages.enterPassword')}
                                 value={formData.password}
                                 onChangeText={(value) => handleInputChange('password', value)}
                                 secureTextEntry={!showPassword}
@@ -192,7 +192,7 @@ export default function LoginScreen({ navigation, setUser }) {
                         style={styles.forgotPasswordButton}
                         onPress={() => navigation.navigate('ForgotPassword')}
                     >
-                        <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+                        <Text style={styles.forgotPasswordText}>{t('messages.passForgot')}</Text>
                     </TouchableOpacity>
                 </View>
 
@@ -215,7 +215,7 @@ export default function LoginScreen({ navigation, setUser }) {
                                 <MaterialIcons name="login" size={24} color="#fff" />
                             )}
                             <Text style={styles.loginButtonText}>
-                                {loading ? 'Signing In...' : 'Sign In'}
+                                {loading ? t('messages.signingIn') : t('messages.signIn')}
                             </Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -225,7 +225,7 @@ export default function LoginScreen({ navigation, setUser }) {
                         onPress={() => navigation.navigate('Register')}
                     >
                         <Text style={styles.registerRedirectText}>
-                            Don't have an account? <Text style={styles.registerRedirectLink}>Create Account</Text>
+                            {t('messages.noAccount')} <Text style={styles.registerRedirectLink}>{t('messages.accountCreating')}</Text>
                         </Text>
                     </TouchableOpacity>
                 </View>

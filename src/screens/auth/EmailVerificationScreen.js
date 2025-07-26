@@ -13,8 +13,11 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import {useTranslation} from "react-i18next";
+
 
 export default function EmailVerificationScreen({ navigation, route, setUser }) {
+    const { t } = useTranslation();
     const { user, isPasswordReset } = route.params || {};
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '']);
     const [loading, setLoading] = useState(false);
@@ -46,12 +49,12 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
         const code = verificationCode.join('');
 
         if (code.length !== 5) {
-            Alert.alert('Error', 'Please enter the complete 5-digit verification code');
+            Alert.alert(t('messages.error'), t('messages.enter5DigitCode'));
             return;
         }
 
         if (!user) {
-            Alert.alert('Error', 'User information is missing. Please try registering again.');
+            Alert.alert(t('messages.error'), t('messages.registerInfo'));
             navigation.goBack();
             return;
         }
@@ -77,27 +80,27 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                 if (data.is_validated_email) {
                     if (isPasswordReset) {
                         // For password reset flow
-                        navigation.navigate('NewPassword', { userId: userId || data.user_id });
+                        navigation.navigate(t('messages.newPassword'), { userId: userId || data.user_id });
                     } else {
                         // For normal registration flow
                         setUser(data);
-                        Alert.alert('Success!', 'Email verified successfully! You are now logged in.');
+                        Alert.alert(t('messages.success') , t('messages.emailLoggIn'));
                     }
                 } else {
-                    Alert.alert('Error', 'Email verification failed. Please try again.');
+                    Alert.alert(t('messages.error'), t('messages.emailFail'));
                 }
             } else {
                 if (response.status === 401) {
-                    Alert.alert('Invalid Code', 'Please enter the correct verification code');
+                    Alert.alert(t('messages.invalidCode'), t('messages.correctCode'));
                     setVerificationCode(['', '', '', '', '']);
                     inputRefs.current[0]?.focus();
                 } else {
-                    Alert.alert('Error', data.message || 'Verification failed');
+                    Alert.alert(t('messages.error'), data.message || t('messages.failVerify'));
                 }
             }
         } catch (error) {
-            console.error('Verification error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.errorVerify'), error);
+            Alert.alert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }
@@ -105,7 +108,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
 
     const handleResendCode = async () => {
         if (!userId) {
-            Alert.alert('Error', 'User information is missing. Please try registering again.');
+            Alert.alert(t('messages.error'), t('messages.registerInfo'));
             return;
         }
 
@@ -125,16 +128,16 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
             });
 
             if (response.ok) {
-                Alert.alert('Success', 'Verification code has been resent to your email');
+                Alert.alert(t('messages.success'), t('messages.resendVerify'));
                 setVerificationCode(['', '', '', '', '']);
                 inputRefs.current[0]?.focus();
             } else {
                 const data = await response.json();
-                Alert.alert('Error', data.message || 'Failed to resend verification code');
+                Alert.alert(t('messages.error'), data.message || t('messages.resendVerifyError'));
             }
         } catch (error) {
-            console.error('Resend error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.errorResending'), error);
+            Alert.alert(t('messages.error'), t('messages.networkError'));
         } finally {
             setResendLoading(false);
         }
@@ -160,9 +163,9 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                         <View style={styles.iconContainer}>
                             <MaterialIcons name="error" size={40} color="#fff" />
                         </View>
-                        <Text style={styles.headerTitle}>Error</Text>
+                        <Text style={styles.headerTitle}>{t('messages.error')}</Text>
                         <Text style={styles.headerSubtitle}>
-                            User information is missing. Please try registering again.
+                            {t('messages.registerInfo')}
                         </Text>
                     </View>
                 </LinearGradient>
@@ -191,9 +194,9 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="mark-email-read" size={40} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>Verify Your Email</Text>
+                    <Text style={styles.headerTitle}>{t('messages.emailVerify')}</Text>
                     <Text style={styles.headerSubtitle}>
-                        We've sent a verification code to {'\n'}
+                        {t('messages.sendingVerify')} {'\n'}
                         <Text style={styles.emailText}>{userEmail}</Text>
                     </Text>
                 </View>
@@ -201,7 +204,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
 
             <View style={styles.content}>
                 <View style={styles.codeContainer}>
-                    <Text style={styles.instructionText}>Enter the verification code</Text>
+                    <Text style={styles.instructionText}>{t('messages.enterVerify')}</Text>
 
                     <View style={styles.codeInputContainer}>
                         {verificationCode.map((digit, index) => (
@@ -230,9 +233,9 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                         disabled={resendLoading}
                     >
                         <Text style={styles.resendText}>
-                            Didn't receive the code? {' '}
+                            {t('messages.noCode')} {' '}
                             <Text style={styles.resendLink}>
-                                {resendLoading ? 'Resending...' : 'Resend Code'}
+                                {resendLoading ? t('messages.resending') : t('messages.resend')}
                             </Text>
                         </Text>
                     </TouchableOpacity>
@@ -257,7 +260,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                                 <MaterialIcons name="verified" size={24} color="#fff" />
                             )}
                             <Text style={styles.verifyButtonText}>
-                                {loading ? 'Verifying...' : 'Verify Email'}
+                                {loading ? t('messages.verify') : t('messages.emailVerifying')}
                             </Text>
                         </LinearGradient>
                     </TouchableOpacity>

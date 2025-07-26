@@ -63,23 +63,23 @@ export default function RegisterScreen({ navigation, setUser }) {
 
     const validateForm = () => {
         if (!formData.name || !formData.email || !formData.password || !formData.phone_number) {
-            Alert.alert('Error', 'Please fill in all required fields');
+            Alert.alert(t('messages.error'), t('messages.fillAll'));
             return false;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            Alert.alert('Error', 'Passwords do not match');
+            Alert.alert(t('messages.error'), t('messages.passNotMatch'));
             return false;
         }
 
         if (formData.password.length < 6) {
-            Alert.alert('Error', 'Password must be at least 6 characters');
+            Alert.alert(t('messages.error'), t('messages.PassChar'));
             return false;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            Alert.alert('Error', 'Please enter a valid email address');
+            Alert.alert(t('messages.error'), t('messages.validEmail'));
             return false;
         }
 
@@ -121,13 +121,13 @@ export default function RegisterScreen({ navigation, setUser }) {
 
             if (response.ok) {
                 Alert.alert(
-                    'Registration Successful!',
-                    'Please check your email for the verification code.',
+                    t('messages.successRegister'),
+                    t('messages.checkEmail'),
                     [
                         {
-                            text: 'Continue',
+                            text: t('messages.continue'),
                             onPress: () => {
-                                navigation.navigate('EmailVerificationScreen', {
+                                navigation.navigate(t('messages.emailVerifyScreen'), {
                                     user: data,
                                     setUser: setUser
                                 });
@@ -136,11 +136,11 @@ export default function RegisterScreen({ navigation, setUser }) {
                     ]
                 );
             } else {
-                Alert.alert('Registration Failed', data.message || 'Please try again');
+                Alert.alert(t('messages.registerFail'), data.message || t('messages.try'));
             }
         } catch (error) {
-            console.error('Registration error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t(',messages.registerError'), error);
+            Alert.alert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }
@@ -336,7 +336,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                                     <MaterialIcons name="person-add" size={24} color="#fff" />
                                 )}
                                 <Text style={styles.registerButtonText}>
-                                    {loading ? 'Creating Account...' : t('messages.account')}
+                                    {loading ? t('messages.creatingAccount') : t('messages.account')}
                                 </Text>
                             </LinearGradient>
                         </TouchableOpacity>

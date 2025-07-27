@@ -3,8 +3,11 @@ import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ScrollView,
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
+import {useTranslation} from "react-i18next";
 
 export default function EndBookingScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const [reviewRate, setReviewRate] = useState(5);
     const [reviewMessage, setReviewMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -13,7 +16,7 @@ export default function EndBookingScreen({ navigation, route }) {
 
     const handleEndBooking = async () => {
         if (!reviewMessage.trim()) {
-            Alert.alert('Review Required', 'Please share your experience to help other users');
+            Alert.alert(t('messages.reviewRequire'), t('messages.shareExperience'));
             return;
         }
 
@@ -34,11 +37,11 @@ export default function EndBookingScreen({ navigation, route }) {
 
             if (response.ok) {
                 Alert.alert(
-                    'Session Completed! ⚡',
-                    'Thank you for your review. Your charging session has been ended successfully.',
+                    t('messages.completeSession'),
+                    t('messages.thankYou'),
                     [
                         {
-                            text: 'OK',
+                            text: t('messages.ok'),
                             onPress: () => {
                                 if (onBookingEnded) {
                                     onBookingEnded();
@@ -49,10 +52,10 @@ export default function EndBookingScreen({ navigation, route }) {
                     ]
                 );
             } else {
-                Alert.alert('Error', 'Failed to end booking. Please try again.');
+                Alert.alert(t('messages.error'), t('messages.failEndingBooking'));
             }
         } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
+            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }
@@ -71,8 +74,8 @@ export default function EndBookingScreen({ navigation, route }) {
     const renderStarRating = () => {
         return (
             <View style={styles.ratingContainer}>
-                <Text style={styles.ratingLabel}>Rate your experience</Text>
-                <Text style={styles.ratingSubtext}>Help other drivers by sharing your experience</Text>
+                <Text style={styles.ratingLabel}>{t('messages.rateExperience')}</Text>
+                <Text style={styles.ratingSubtext}>{t('messages.help')}</Text>
                 <View style={styles.starsContainer}>
                     {[1, 2, 3, 4, 5].map((star) => (
                         <TouchableOpacity
@@ -119,23 +122,23 @@ export default function EndBookingScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="stop-circle" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.title}>End Charging Session</Text>
+                    <Text style={styles.title}>{t('messages.endSession')}</Text>
                     <Text style={styles.subtitle}>
-                        Complete your session and share your experience
+                        {t('messages.completeAndShare')}
                     </Text>
                 </LinearGradient>
 
                 <View style={styles.bookingInfoCard}>
                     <View style={styles.bookingHeader}>
                         <MaterialIcons name="confirmation-number" size={24} color="#667eea" />
-                        <Text style={styles.bookingTitle}>Session Details</Text>
+                        <Text style={styles.bookingTitle}>{t('messages.sessionDetail')}</Text>
                     </View>
 
                     <View style={styles.infoGrid}>
                         <View style={styles.infoItem}>
                             <MaterialIcons name="confirmation-number" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>Booking ID</Text>
+                                <Text style={styles.infoLabel}>{t('messages.bookingId')}</Text>
                                 <Text style={styles.infoValue}>#{booking?.booking_id || 'N/A'}</Text>
                             </View>
                         </View>
@@ -143,7 +146,7 @@ export default function EndBookingScreen({ navigation, route }) {
                         <View style={styles.infoItem}>
                             <MaterialIcons name="directions-car" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>Car ID</Text>
+                                <Text style={styles.infoLabel}>{t('messages.carId')}</Text>
                                 <Text style={styles.infoValue}>{booking?.car_id || 'N/A'}</Text>
                             </View>
                         </View>
@@ -151,7 +154,7 @@ export default function EndBookingScreen({ navigation, route }) {
                         <View style={styles.infoItem}>
                             <MaterialIcons name="location-on" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>Location ID</Text>
+                                <Text style={styles.infoLabel}>{t('messages.locId')}</Text>
                                 <Text style={styles.infoValue}>{booking?.charging_location_id || 'N/A'}</Text>
                             </View>
                         </View>
@@ -159,7 +162,7 @@ export default function EndBookingScreen({ navigation, route }) {
                         <View style={styles.infoItem}>
                             <MaterialIcons name="schedule" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>Started</Text>
+                                <Text style={styles.infoLabel}>{t('messages.started')}</Text>
                                 <Text style={styles.infoValue}>
                                     {booking?.start_time ? formatDate(booking.start_time) : 'N/A'}
                                 </Text>
@@ -171,15 +174,15 @@ export default function EndBookingScreen({ navigation, route }) {
                 {renderStarRating()}
 
                 <View style={styles.reviewContainer}>
-                    <Text style={styles.reviewLabel}>Share your experience</Text>
+                    <Text style={styles.reviewLabel}>{t('messages.shareExp')}</Text>
                     <Text style={styles.reviewSubtext}>
-                        Tell us about the charging station, location, and overall experience
+                        {t('messages.tellUs')}
                     </Text>
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="comment" size={20} color="#667eea" style={styles.inputIcon} />
                         <TextInput
                             style={styles.messageInput}
-                            placeholder="How was your charging experience? Was the station easy to find and use?"
+                            placeholder={t('messages.chargingQuestion')}
                             value={reviewMessage}
                             onChangeText={setReviewMessage}
                             multiline
@@ -208,7 +211,7 @@ export default function EndBookingScreen({ navigation, route }) {
                             color="#fff"
                         />
                         <Text style={styles.buttonText}>
-                            {loading ? "Ending Session..." : "End Charging Session"}
+                            {loading ? t('messages.endingSession') : t('messages.endChargeSession')}
                         </Text>
                     </LinearGradient>
                 </TouchableOpacity>
@@ -216,7 +219,7 @@ export default function EndBookingScreen({ navigation, route }) {
                 <View style={styles.noteContainer}>
                     <MaterialIcons name="info" size={20} color="#ff9800" />
                     <Text style={styles.noteText}>
-                        Ending this session will stop the charging process and finalize your booking.
+                        {t('messages.finalizeBooking')}
                     </Text>
                 </View>
             </ScrollView>

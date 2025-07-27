@@ -13,8 +13,11 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import {useTranslation} from "react-i18next";
 
 export default function FindChargerLocationsScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const { user } = route.params;
     const [loading, setLoading] = useState(false);
     const [formData, setFormData] = useState({
@@ -36,7 +39,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
     const handleSearch = async () => {
         // Validate required fields
         if (!formData.city || !formData.street) {
-            Alert.alert('Error', 'Please fill in at least City and Street fields');
+            Alert.alert(t('messages.error'), t('messages.fill'));
             return;
         }
 
@@ -62,11 +65,11 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     searchCriteria: formData
                 });
             } else {
-                Alert.alert('Error', data.message || 'Failed to search charging locations');
+                Alert.alert(t('messages.error'), data.message || t('messages.failSearchLoc'));
             }
         } catch (error) {
-            console.error('Search error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.searchError'), error);
+            Alert.alert(t('messages.error'), t('messages.tryAgain'));
         } finally {
             setLoading(false);
         }
@@ -99,22 +102,22 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                 </TouchableOpacity>
                 <View style={styles.headerContent}>
                     <MaterialIcons name="search" size={40} color="#fff" />
-                    <Text style={styles.headerTitle}>Find Charging Stations</Text>
-                    <Text style={styles.headerSubtitle}>Search for available charging locations</Text>
+                    <Text style={styles.headerTitle}>{t('messages.findStation')}</Text>
+                    <Text style={styles.headerSubtitle}>S{t('messages.searchLoc')}</Text>
                 </View>
             </LinearGradient>
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>📍 Location Details</Text>
+                    <Text style={styles.sectionTitle}>📍 {t('messages.locDetail')}</Text>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>City *</Text>
+                        <Text style={styles.label}>{t('messages.city')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="location-city" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter city name"
+                                placeholder={t('messages.cityName')}
                                 value={formData.city}
                                 onChangeText={(value) => handleInputChange('city', value)}
                                 placeholderTextColor="#999"
@@ -123,12 +126,12 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Street *</Text>
+                        <Text style={styles.label}>{t('messages.street')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="road" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter street name"
+                                placeholder={t('messages.streetName')}
                                 value={formData.street}
                                 onChangeText={(value) => handleInputChange('street', value)}
                                 placeholderTextColor="#999"
@@ -137,12 +140,12 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Alley</Text>
+                        <Text style={styles.label}>{t('messages.alley')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="near-me" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter alley (optional)"
+                                placeholder={t('messages.enterAlley')}
                                 value={formData.alley}
                                 onChangeText={(value) => handleInputChange('alley', value)}
                                 placeholderTextColor="#999"
@@ -151,12 +154,12 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Post Code</Text>
+                        <Text style={styles.label}>{t('messages.postCode')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="markunread-mailbox" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter post code"
+                                placeholder={t('messages.enterCode')}
                                 value={formData.post_code}
                                 onChangeText={(value) => handleInputChange('post_code', value)}
                                 keyboardType="numeric"
@@ -166,12 +169,12 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Phone Number</Text>
+                        <Text style={styles.label}>{t('messages.phone')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter phone number"
+                                placeholder={t('messages.enterPhoneNumber')}
                                 value={formData.home_phone_number}
                                 onChangeText={(value) => handleInputChange('home_phone_number', value)}
                                 keyboardType="phone-pad"
@@ -180,14 +183,14 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>⚡ Charging Preferences</Text>
+                    <Text style={styles.sectionTitle}>{t('messages.chargingPre')}</Text>
 
                     <View style={styles.switchContainer}>
                         <View style={styles.switchInfo}>
                             <MaterialIcons name="flash-on" size={24} color="#FF6B35" />
                             <View style={styles.switchTextContainer}>
-                                <Text style={styles.switchLabel}>Fast Charging</Text>
-                                <Text style={styles.switchSubtitle}>Filter for fast charging stations only</Text>
+                                <Text style={styles.switchLabel}>{t('messages.fastCharging')}</Text>
+                                <Text style={styles.switchSubtitle}>{t('messages.filterStation')}</Text>
                             </View>
                         </View>
                         <Switch
@@ -206,7 +209,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                         activeOpacity={0.8}
                     >
                         <MaterialIcons name="clear" size={20} color="#666" />
-                        <Text style={styles.clearButtonText}>Clear Form</Text>
+                        <Text style={styles.clearButtonText}>{t('messages.clear')}</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -227,7 +230,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                                 <MaterialIcons name="search" size={24} color="#fff" />
                             )}
                             <Text style={styles.searchButtonText}>
-                                {loading ? 'Searching...' : 'Search Locations'}
+                                {loading ? t('messages.searching') : t('messages.searchLocation')}
                             </Text>
                         </LinearGradient>
                     </TouchableOpacity>

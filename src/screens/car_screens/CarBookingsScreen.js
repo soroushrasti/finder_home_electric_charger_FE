@@ -3,8 +3,12 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, RefreshContr
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import {useTranslation} from "react-i18next";
+
 
 export default function CarBookingsScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -15,12 +19,12 @@ export default function CarBookingsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="error" size={64} color="#ff6b6b" />
-                <Text style={styles.errorText}>No car selected</Text>
+                <Text style={styles.errorText}>{t('messages.noCar')}</Text>
                 <TouchableOpacity
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
                 >
-                    <Text style={styles.backButtonText}>Go Back</Text>
+                    <Text style={styles.backButtonText}>{t('messages.goBack')}</Text>
                 </TouchableOpacity>
             </View>
         );
@@ -47,10 +51,10 @@ export default function CarBookingsScreen({ navigation, route }) {
                 const data = await response.json();
                 setBookings(Array.isArray(data) ? data : []);
             } else {
-                Alert.alert('Error', 'Failed to fetch bookings');
+                Alert.alert(t('messages.error'), t('messages.failFetchBooking'));
             }
         } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
+            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -125,12 +129,12 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingActions}>
                 <TouchableOpacity style={styles.viewButton}>
                     <MaterialIcons name="visibility" size={16} color="#667eea" />
-                    <Text style={styles.viewButtonText}>View Details</Text>
+                    <Text style={styles.viewButtonText}>{t('messages.view')}</Text>
                 </TouchableOpacity>
                 {item.status?.toLowerCase() === 'active' && (
                     <TouchableOpacity style={styles.endButton}>
                         <MaterialIcons name="stop" size={16} color="#ff6b6b" />
-                        <Text style={styles.endButtonText}>End Session</Text>
+                        <Text style={styles.endButtonText}>{t('messages.end')}</Text>
                     </TouchableOpacity>
                 )}
             </View>
@@ -141,7 +145,7 @@ export default function CarBookingsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="history" size={64} color="#ccc" />
-                <Text style={styles.loadingText}>Loading booking history...</Text>
+                <Text style={styles.loadingText}>{t('messages.loadingBooking')}</Text>
             </View>
         );
     }
@@ -169,7 +173,7 @@ export default function CarBookingsScreen({ navigation, route }) {
                         end={{ x: 1, y: 0 }}
                     >
                         <MaterialIcons name="add" size={20} color="#fff" />
-                        <Text style={styles.addBookingText}>New Booking</Text>
+                        <Text style={styles.addBookingText}>{t('messages.newBooking')}</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
@@ -177,15 +181,15 @@ export default function CarBookingsScreen({ navigation, route }) {
             {bookings.length === 0 ? (
                 <View style={styles.centered}>
                     <MaterialIcons name="event_busy" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>No bookings yet</Text>
+                    <Text style={styles.emptyText}>{t('messages.noBooking')}</Text>
                     <Text style={styles.emptySubtext}>
-                        Start your first charging session to see your booking history here
+                        {t('messages.startSession')}
                     </Text>
                     <TouchableOpacity
                         style={styles.getStartedButton}
                         onPress={() => navigation.navigate('FindChargerLocationsScreenForCar', { car, user })}
                     >
-                        <Text style={styles.getStartedText}>Find Chargers</Text>
+                        <Text style={styles.getStartedText}>{t('messages.findCharger')}</Text>
                     </TouchableOpacity>
                 </View>
             ) : (

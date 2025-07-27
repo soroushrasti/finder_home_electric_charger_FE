@@ -11,8 +11,12 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import {useTranslation} from "react-i18next";
+
 
 export default function CarSelectionScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const { user, chargingLocation } = route.params;
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -40,11 +44,11 @@ export default function CarSelectionScreen({ navigation, route }) {
             if (response.ok) {
                 setCars(data);
             } else {
-                Alert.alert('Error', data.message || 'Failed to fetch cars');
+                Alert.alert(t('messages.error'), data.message || t('messages.failFetchCar'));
             }
         } catch (error) {
-            console.error('Fetch cars error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.fetchError'), error);
+            Alert.alert(t('messages.error'), t('messages.tryAgain'));
         } finally {
             setLoading(false);
         }
@@ -56,7 +60,7 @@ export default function CarSelectionScreen({ navigation, route }) {
 
     const handleConfirmSelection = () => {
         if (!selectedCar) {
-            Alert.alert('Error', 'Please select a car');
+            Alert.alert(t('messages.error'), t('messages.selectCar'));
             return;
         }
 
@@ -72,7 +76,7 @@ export default function CarSelectionScreen({ navigation, route }) {
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#4CAF50" />
-                <Text style={styles.loadingText}>Loading your cars...</Text>
+                <Text style={styles.loadingText}>{t('messages.loading')}</Text>
             </View>
         );
     }
@@ -93,8 +97,8 @@ export default function CarSelectionScreen({ navigation, route }) {
                 </TouchableOpacity>
                 <View style={styles.headerContent}>
                     <MaterialIcons name="directions-car" size={40} color="#fff" />
-                    <Text style={styles.headerTitle}>Select Your Car</Text>
-                    <Text style={styles.headerSubtitle}>Choose which car to charge</Text>
+                    <Text style={styles.headerTitle}>{t('messages.selectYourCar')}</Text>
+                    <Text style={styles.headerSubtitle}>{t('messages.chooseCar')}</Text>
                 </View>
             </LinearGradient>
 
@@ -103,13 +107,13 @@ export default function CarSelectionScreen({ navigation, route }) {
                     {cars.length === 0 ? (
                         <View style={styles.noCarsContainer}>
                             <MaterialIcons name="directions-car" size={80} color="#ccc" />
-                            <Text style={styles.noCarsText}>No cars found</Text>
-                            <Text style={styles.noCarsSubtext}>Add a car to your profile first</Text>
+                            <Text style={styles.noCarsText}>{t('messages.noCars')}</Text>
+                            <Text style={styles.noCarsSubtext}>{t('messages.addCarToProfile')}</Text>
                             <TouchableOpacity
                                 style={styles.addCarButton}
                                 onPress={() => navigation.navigate('MyCarScreen', { user })}
                             >
-                                <Text style={styles.addCarButtonText}>Add Car</Text>
+                                <Text style={styles.addCarButtonText}>{t('messages.addedCar')}</Text>
                             </TouchableOpacity>
                         </View>
                     ) : (
@@ -135,11 +139,11 @@ export default function CarSelectionScreen({ navigation, route }) {
                                         <Text style={styles.carName}>
                                             {car.make} {car.model}
                                         </Text>
-                                        <Text style={styles.carYear}>Year: {car.year}</Text>
-                                        <Text style={styles.carPlate}>Plate: {car.license_plate}</Text>
+                                        <Text style={styles.carYear}>{t('messages.year')}: {car.year}</Text>
+                                        <Text style={styles.carPlate}>{t('messages.plate')}: {car.license_plate}</Text>
                                         {car.battery_capacity && (
                                             <Text style={styles.carBattery}>
-                                                Battery: {car.battery_capacity} kWh
+                                                {t('messages.battery')}: {car.battery_capacity} kWh
                                             </Text>
                                         )}
                                     </View>
@@ -170,7 +174,7 @@ export default function CarSelectionScreen({ navigation, route }) {
                                 end={{ x: 1, y: 1 }}
                             >
                                 <MaterialIcons name="check" size={24} color="#fff" />
-                                <Text style={styles.confirmButtonText}>Confirm Selection</Text>
+                                <Text style={styles.confirmButtonText}>{t('messages.confirmSelect')}</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>

@@ -139,7 +139,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                 Alert.alert(t('messages.registerFail'), data.message || t('messages.try'));
             }
         } catch (error) {
-            console.error(t(',messages.registerError'), error);
+            console.error(t('messages.registerError'), error);
             Alert.alert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);

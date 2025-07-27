@@ -3,8 +3,12 @@ import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAv
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
+import {useTranslation} from "react-i18next";
+
 
 export default function BookingConfirmationScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const [loading, setLoading] = useState(false);
 
     const { car, user, chargingLocation } = route.params;

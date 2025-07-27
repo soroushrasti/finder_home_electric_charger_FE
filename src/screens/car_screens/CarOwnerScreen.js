@@ -3,8 +3,11 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
+import {useTranslation} from "react-i18next";
+
 
 export default function CarOwnerScreen({ navigation, user }) {
+    const { t } = useTranslation();
     const handleTotalEarningsPress = () => {
         navigation.navigate('MyBookingsScreen', { user });
     };
@@ -24,9 +27,9 @@ export default function CarOwnerScreen({ navigation, user }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="directions-car" size={60} color="#fff" />
                 </View>
-                <Text style={styles.title}>Welcome, {user?.first_name || 'Car Owner'}!</Text>
+                <Text style={styles.title}>{t('messages.welcome2')}, {user?.first_name || t('messages.carOwner2')}!</Text>
                 <Text style={styles.subtitle}>
-                    Find charging stations and manage your bookings
+                    {t('messages.findChargerStation')}
                 </Text>
             </LinearGradient>
 
@@ -76,7 +79,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                                 </View>
                                 <Text style={styles.enhancedCardTitle}>My Bookings</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
-                                    View your charging history and sessions
+                                    {t('messages.viewCharging')}
                                 </Text>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
@@ -100,7 +103,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                                 </View>
                                 <Text style={styles.enhancedCardTitle}>My Cars</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
-                                    Manage your vehicle information
+                                    {t('messages.manageVehicle')}
                                 </Text>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>

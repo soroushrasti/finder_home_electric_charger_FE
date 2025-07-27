@@ -10,8 +10,12 @@ import {
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import {useTranslation} from "react-i18next";
+
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {
+    const { t } = useTranslation();
+
     const { user, searchResults, searchCriteria } = route.params;
     const [chargingLocations, setChargingLocations] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -34,11 +38,11 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             if (response.ok) {
                 setChargingLocations(data);
             } else {
-                Alert.alert('Error', data.message || 'Failed to fetch charging locations');
+                Alert.alert(t('messages.error'), data.message || t('messages.failFetchCharger'));
             }
         } catch (error) {
-            console.error('Fetch locations error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.fetchLocError'), error);
+            Alert.alert(t('messages.error'), t('messages.tryAgain'));
         } finally {
             setLoading(false);
         }
@@ -57,7 +61,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
         return (
             <View style={styles.searchCriteriaContainer}>
-                <Text style={styles.searchCriteriaTitle}>Search Results for:</Text>
+                <Text style={styles.searchCriteriaTitle}>{t('messages.searchResult')}</Text>
                 <View style={styles.criteriaRow}>
                     {searchCriteria.city && (
                         <Text style={styles.criteriaItem}>📍 {searchCriteria.city}</Text>
@@ -66,7 +70,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         <Text style={styles.criteriaItem}>🛣️ {searchCriteria.street}</Text>
                     )}
                     {searchCriteria.fast_charging && (
-                        <Text style={styles.criteriaItem}>⚡ Fast Charging</Text>
+                        <Text style={styles.criteriaItem}>⚡ {t('messages.fastCharging')}</Text>
                     )}
                 </View>
             </View>
@@ -91,10 +95,10 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                 <View style={styles.cardHeader}>
                     <View style={styles.locationInfo}>
                         <Text style={styles.locationTitle}>
-                            {location.street_address || 'Charging Station'}
+                            {location.street_address || t('messages.chargingStation')}
                         </Text>
                         <Text style={styles.locationAddress}>
-                            {location.city}, {location.state || 'Unknown State'}
+                            {location.city}, {location.state || t('messages.unknown')}
                         </Text>
                         {location.postcode && (
                             <Text style={styles.locationPostcode}>
@@ -107,7 +111,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         { backgroundColor: isAvailable ? '#4CAF50' : '#f44336' }
                     ]}>
                         <Text style={styles.statusText}>
-                            {isAvailable ? 'Available' : 'Occupied'}
+                            {isAvailable ? t('messages.avail') : t('messages.occupied')}
                         </Text>
                     </View>
                 </View>
@@ -116,7 +120,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="flash-on" size={20} color="#FF6B35" />
                         <Text style={styles.detailText}>
-                            {location.fast_charging ? 'Fast Charging' : 'Standard Charging'}
+                            {location.fast_charging ? t('messages.fastCharging') : t('messages.standardCharge')}
                         </Text>
                     </View>
 
@@ -147,14 +151,14 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
                 {isAvailable && (
                     <View style={styles.cardFooter}>
-                        <Text style={styles.selectText}>Tap to select this location</Text>
+                        <Text style={styles.selectText}>{t('messages.selectLoc')}</Text>
                         <MaterialIcons name="arrow-forward" size={20} color="#4CAF50" />
                     </View>
                 )}
 
                 {!isAvailable && (
                     <View style={styles.cardFooter}>
-                        <Text style={styles.unavailableText}>Currently unavailable</Text>
+                        <Text style={styles.unavailableText}>{t('messages.unavailable')}</Text>
                         <MaterialIcons name="block" size={20} color="#f44336" />
                     </View>
                 )}
@@ -166,7 +170,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#4CAF50" />
-                <Text style={styles.loadingText}>Loading charging locations...</Text>
+                <Text style={styles.loadingText}>{t('messages.loadingLocation')}</Text>
             </View>
         );
     }
@@ -187,7 +191,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                 </TouchableOpacity>
                 <View style={styles.headerContent}>
                     <MaterialIcons name="ev-station" size={40} color="#fff" />
-                    <Text style={styles.headerTitle}>Available Charging Stations</Text>
+                    <Text style={styles.headerTitle}>{t('messages.availableChargingStation')}</Text>
                     <Text style={styles.headerSubtitle}>
                         {chargingLocations.length} location{chargingLocations.length !== 1 ? 's' : ''} found
                     </Text>
@@ -201,15 +205,15 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     {chargingLocations.length === 0 ? (
                         <View style={styles.noResultsContainer}>
                             <MaterialIcons name="search-off" size={80} color="#ccc" />
-                            <Text style={styles.noResultsText}>No charging locations found</Text>
+                            <Text style={styles.noResultsText}>{t('messages.noChargingLoc')}</Text>
                             <Text style={styles.noResultsSubtext}>
-                                Try adjusting your search criteria
+                                {t('messages.tryAdjust')}
                             </Text>
                             <TouchableOpacity
                                 style={styles.searchAgainButton}
                                 onPress={() => navigation.goBack()}
                             >
-                                <Text style={styles.searchAgainButtonText}>Search Again</Text>
+                                <Text style={styles.searchAgainButtonText}>{t('messages.searchAgain')}</Text>
                             </TouchableOpacity>
                         </View>
                     ) : (

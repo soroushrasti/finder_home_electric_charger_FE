@@ -11,6 +11,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
+import FarsiText from  "../../components/FarsiText";
 
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {

@@ -14,6 +14,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
+import FarsiText from  "../../components/FarsiText";
+
 
 export default function FindChargerLocationsScreen({ navigation, route }) {
     const { t } = useTranslation();

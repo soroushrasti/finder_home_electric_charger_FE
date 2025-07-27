@@ -15,6 +15,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
 
 export default function RegisterScreen({ navigation, setUser }) {
     const { t } = useTranslation();

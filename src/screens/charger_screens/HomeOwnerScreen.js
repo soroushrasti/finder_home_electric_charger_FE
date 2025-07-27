@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
+import FarsiText from  "../../components/FarsiText";
 
 export default function HomeOwnerScreen({ navigation, user }) {
     const handleTotalEarningsPress = () => {
@@ -38,7 +39,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
                 <View style={styles.menuContainer}>
                     <TouchableOpacity
                         style={styles.menuCard}
-                        onPress={() => navigation.navigate('AddChargerLocationScreen', { user })}
+                        onPress={() => navigation.navigate('ChargerLocationFormScreen', { user })}
                         activeOpacity={0.8}
                     >
                         <LinearGradient
@@ -62,7 +63,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
 
                     <TouchableOpacity
                         style={styles.menuCard}
-                        onPress={() => navigation.navigate('MyLocationBookingScreen', { user })}
+                        onPress={() => navigation.navigate('MyBookingsScreen', { user })}
                         activeOpacity={0.8}
                     >
                         <LinearGradient

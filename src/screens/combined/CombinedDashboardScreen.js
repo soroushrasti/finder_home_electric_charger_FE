@@ -3,6 +3,7 @@ import React from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import FarsiText from  "../../components/FarsiText";
 
 export default function CombinedDashboardScreen({ navigation, user }) {
     const carOwnerActions = [
@@ -41,7 +42,7 @@ export default function CombinedDashboardScreen({ navigation, user }) {
             title: 'Add Station',
             subtitle: 'Share your charger',
             icon: 'add-location',
-            onPress: () => navigation.navigate('AddChargerLocationScreen',{ user }),
+            onPress: () => navigation.navigate('ChargerLocationFormScreen',{ user }),
             colors: ['#f093fb', '#f5576c']
         },
         {

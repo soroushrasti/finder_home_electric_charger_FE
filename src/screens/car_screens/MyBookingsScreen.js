@@ -3,6 +3,7 @@ import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, RefreshContr
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
+import FarsiText from  "../../components/FarsiText";
 
 export default function MyBookingsScreen({ navigation, route }) {
     const [bookings, setBookings] = useState([]);
@@ -10,25 +11,35 @@ export default function MyBookingsScreen({ navigation, route }) {
     const [refreshing, setRefreshing] = useState(false);
 
     const { user } = route.params || {};
-
+    const user_type = user.user_type;
+    const car_owner = user_type === null || user_type === 'Electric car owner';
     useEffect(() => {
         if (user) {
-            console.log('Fetching bookings for user:', user.user_id);
             fetchBookings();
         }
     }, [user]);
 
     const fetchBookings = async () => {
         try {
+            let body;
+
+            if (car_owner) {
+                body = JSON.stringify({
+                car_owner_user_id: user.user_id,
+            });}
+            else{
+                 body= JSON.stringify({
+                    charger_location_owner_user_id: user.user_id,
+                });
+            }
+
             const response = await fetch(`${env.apiUrl}/find-booking`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${env.apiToken} `,
                 },
-                body: JSON.stringify({
-                    car_owner_user_id: user.user_id,
-                }),
+                body: body,
             });
 
             if (response.ok) {
@@ -92,7 +103,7 @@ export default function MyBookingsScreen({ navigation, route }) {
                 <View style={styles.bookingHeader}>
                     <View style={styles.bookingIdContainer}>
                         <MaterialIcons name="confirmation-number" size={20} color="#667eea" />
-                        <Text style={styles.bookingId}>#{item.booking_id}</Text>
+                        <Text style={styles.bookingId}>{item.car.model} at {item.charging_location.city}</Text>
                     </View>
                     <View style={[styles.statusBadge, { backgroundColor: statusInfo.color }]}>
                         <MaterialIcons name={statusInfo.icon} size={16} color="#fff" />
@@ -103,14 +114,14 @@ export default function MyBookingsScreen({ navigation, route }) {
                 <View style={styles.bookingDetails}>
                     <View style={styles.detailRow}>
                         <MaterialIcons name="directions-car" size={18} color="#666" />
-                        <Text style={styles.detailLabel}>Car ID:</Text>
-                        <Text style={styles.detailValue}>{item.car_id}</Text>
+                        <Text style={styles.detailLabel}>Car License Plate:  </Text>
+                        <Text style={styles.detailValue}>{item.car.license_plate}</Text>
                     </View>
 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="location-on" size={18} color="#666" />
-                        <Text style={styles.detailLabel}>Location ID:</Text>
-                        <Text style={styles.detailValue}>{item.charging_location_id}</Text>
+                        <Text style={styles.detailLabel}>Location Address:  </Text>
+                        <Text style={styles.detailValue}>{item.charging_location.street}, {item.charging_location.alley}</Text>
                     </View>
 
                     <View style={styles.detailRow}>

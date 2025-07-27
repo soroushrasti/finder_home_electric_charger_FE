@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView 
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
 import {useTranslation} from "react-i18next";
 
 
@@ -62,8 +63,8 @@ export default function AddCarScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="directions-car" size={50} color="#4285F4" />
                 </View>
-                <Text style={styles.title}>{t('messages.addElCar')}</Text>
-                <Text style={styles.subtitle}>{t('messages.getVehicle')}</Text>
+                <FarsiText style={styles.title}>{t('messages.addElCar')}</FarsiText>
+                <FarsiText style={styles.subtitle}>{t('messages.getVehicle')}</FarsiText>
             </View>
 
             <View style={styles.form}>
@@ -130,9 +131,9 @@ export default function AddCarScreen({ navigation, route }) {
                         ) : (
                             <MaterialIcons name="add" size={24} color="#fff" />
                         )}
-                        <Text style={styles.buttonText}>
+                        <FarsiText style={styles.buttonText}>
                             {loading ? t('messages.addingCar') : t('messages.addedCar')}
-                        </Text>
+                        </FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
@@ -140,10 +141,10 @@ export default function AddCarScreen({ navigation, route }) {
             <View style={styles.infoCard}>
                 <MaterialIcons name="info" size={24} color="#4285F4" />
                 <View style={styles.infoText}>
-                    <Text style={styles.infoTitle}>{t('messages.whyInfo')}</Text>
-                    <Text style={styles.infoDescription}>
+                    <FarsiText style={styles.infoTitle}>{t('messages.whyInfo')}</FarsiText>
+                    <FarsiText style={styles.infoDescription}>
                         {t('messages.matchCarWithStation')}
-                    </Text>
+                    </FarsiText>
                 </View>
             </View>
         </ScrollView>

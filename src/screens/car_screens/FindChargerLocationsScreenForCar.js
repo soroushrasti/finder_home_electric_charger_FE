@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, Scr
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
+import FarsiText from  "../../components/FarsiText";
 
 export default function FindChargerLocationsScreenForCar({ navigation, route }) {
     const [postCode, setPostCode] = useState(null);

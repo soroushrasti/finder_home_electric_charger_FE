@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/LanguageContext';
+import FarsiText from  "../../components/FarsiText";
 
 
 export default function ForgotPasswordScreen({ navigation }) {

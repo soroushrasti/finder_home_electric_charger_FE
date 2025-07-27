@@ -26,7 +26,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 
     const handleResetPassword = async () => {
         if (!email) {
-            Alert.alert('Error', 'Please enter your email address');
+            Alert.alert(t('messages.error'), t('messages.emailAddress'));
             return;
         }
 
@@ -45,13 +45,13 @@ export default function ForgotPasswordScreen({ navigation }) {
 
             if (response.ok) {
                 Alert.alert(
-                    'Success',
-                    'A verification code has been sent to your email',
+                    t('messages.success'),
+                    t('messages.emailVerifySend'),
                     [
                         {
-                            text: 'Continue',
+                            text: t('messages.continue'),
                             onPress: () => {
-                                navigation.navigate('EmailVerificationScreen', {
+                                navigation.navigate(t('messages.emailVerifyScreen'), {
                                     user: data,
                                     isPasswordReset: true,
                                 });
@@ -60,11 +60,11 @@ export default function ForgotPasswordScreen({ navigation }) {
                     ]
                 );
             } else {
-                Alert.alert('Error', data.message || 'Failed to process request');
+                Alert.alert(t('messages.error'), data.message || t('messages.failRequest'));
             }
         } catch (error) {
-            console.error('Reset password error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.errorResetPass'), error);
+            Alert.alert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }
@@ -92,13 +92,13 @@ export default function ForgotPasswordScreen({ navigation }) {
                         <MaterialIcons name="lock-reset" size={60} color="#fff" />
                     </View>
                     <Text style={styles.headerTitle}>{t('auth.resetPassword')}</Text>
-                    <Text style={styles.headerSubtitle}>Enter your email to reset password</Text>
+                    <Text style={styles.headerSubtitle}>{t('messages.resetPassword')}</Text>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>🔐 Password Recovery</Text>
+                    <Text style={styles.sectionTitle}> {t('messages.passRecover')} 🔐</Text>
 
                     <View style={styles.inputGroup}>
                         <Text style={styles.label}>{t('auth.email')}</Text>
@@ -106,7 +106,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter your email"
+                                placeholder= {t('messages.enterEmail')}
                                 value={email}
                                 onChangeText={setEmail}
                                 keyboardType="email-address"
@@ -117,7 +117,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     </View>
 
                     <Text style={styles.infoText}>
-                        We'll send you a verification code to reset your password
+                        {t('messages.verificationCode')}
                     </Text>
                 </View>
 

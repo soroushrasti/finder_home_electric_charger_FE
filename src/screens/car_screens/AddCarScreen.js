@@ -4,8 +4,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
+import {useTranslation} from "react-i18next";
+
 
 export default function AddCarScreen({ navigation, route }) {
+    const { t } = useTranslation();
     const [model, setModel] = useState('');
     const [color, setColor] = useState('');
     const [year, setYear] = useState('');
@@ -17,7 +20,7 @@ export default function AddCarScreen({ navigation, route }) {
 
     const handleAddCar = async () => {
         if (!model || !color || !year || !licensePlate) {
-            Alert.alert('Missing Information', 'Please fill all fields to continue');
+            Alert.alert(t('messages.infoMissing'), t('messages.fillToContinue'));
             return;
         }
 
@@ -39,15 +42,16 @@ export default function AddCarScreen({ navigation, route }) {
             });
 
             if (response.ok) {
+                Alert.alert(t('messages.success') , '🎉', t('messages.addCar'));
                 if (onCarAdded) {
                     onCarAdded();
                 }
                 navigation.goBack();
             } else {
-                Alert.alert('Error', 'Failed to add car. Please try again.');
+                Alert.alert(t('messages.error'), t('messages.addCarFail'));
             }
         } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
+            Alert.alert(t('messages.Network Error'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }
@@ -59,8 +63,8 @@ export default function AddCarScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="directions-car" size={50} color="#4285F4" />
                 </View>
-                <Text style={styles.title}>Add Your Electric Car</Text>
-                <Text style={styles.subtitle}>Let's get your vehicle registered for charging</Text>
+                <FarsiText style={styles.title}>{t('messages.addElCar')}</FarsiText>
+                <FarsiText style={styles.subtitle}>{t('messages.getVehicle')}</FarsiText>
             </View>
 
             <View style={styles.form}>
@@ -68,7 +72,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="directions-car" size={20} color="#4285F4" style={styles.inputIcon} />
                     <TextInput
                         style={styles.input}
-                        placeholder="Car Model (e.g., Tesla Model 3)"
+                        placeholder= {t('messages.carModel')}
                         value={model}
                         onChangeText={setModel}
                         placeholderTextColor="#999"
@@ -79,7 +83,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="palette" size={20} color="#4285F4" style={styles.inputIcon} />
                     <TextInput
                         style={styles.input}
-                        placeholder="Color (e.g., White, Black, Red)"
+                        placeholder= {t('messages.color')}
                         value={color}
                         onChangeText={setColor}
                         placeholderTextColor="#999"
@@ -90,7 +94,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="calendar-today" size={20} color="#4285F4" style={styles.inputIcon} />
                     <TextInput
                         style={styles.input}
-                        placeholder="Year (e.g., 2023)"
+                        placeholder= {t('messages.year')}
                         value={year}
                         onChangeText={setYear}
                         keyboardType="numeric"
@@ -102,7 +106,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="confirmation-number" size={20} color="#4285F4" style={styles.inputIcon} />
                     <TextInput
                         style={styles.input}
-                        placeholder="License Plate (e.g., ABC-123)"
+                        placeholder= {t('messages.license')}
                         value={licensePlate}
                         onChangeText={setLicensePlate}
                         autoCapitalize="characters"
@@ -127,9 +131,9 @@ export default function AddCarScreen({ navigation, route }) {
                         ) : (
                             <MaterialIcons name="add" size={24} color="#fff" />
                         )}
-                        <Text style={styles.buttonText}>
-                            {loading ? "Adding Car..." : "Add Car"}
-                        </Text>
+                        <FarsiText style={styles.buttonText}>
+                            {loading ? t('messages.addingCar') : t('messages.addedCar')}
+                        </FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
@@ -137,10 +141,10 @@ export default function AddCarScreen({ navigation, route }) {
             <View style={styles.infoCard}>
                 <MaterialIcons name="info" size={24} color="#4285F4" />
                 <View style={styles.infoText}>
-                    <Text style={styles.infoTitle}>Why do we need this information?</Text>
-                    <Text style={styles.infoDescription}>
-                        This helps us match your car with compatible charging stations and provide personalized recommendations.
-                    </Text>
+                    <FarsiText style={styles.infoTitle}>{t('messages.whyInfo')}</FarsiText>
+                    <FarsiText style={styles.infoDescription}>
+                        {t('messages.matchCarWithStation')}
+                    </FarsiText>
                 </View>
             </View>
         </ScrollView>

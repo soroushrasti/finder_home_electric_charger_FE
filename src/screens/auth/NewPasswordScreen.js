@@ -13,9 +13,12 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
+import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 
+
 export default function NewPasswordScreen({ navigation, route }) {
+    const { t } = useTranslation();
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [loading, setLoading] = useState(false);
@@ -23,11 +26,11 @@ export default function NewPasswordScreen({ navigation, route }) {
 
     const handleNewPassword = async () => {
         if (!password || !confirmPassword) {
-            Alert.alert('Error', 'Please fill in both fields');
+            Alert.alert(t('messages.error'), t('messages.fillBoth'));
             return;
         }
         if (password !== confirmPassword) {
-            Alert.alert('Error', 'Passwords do not match');
+            Alert.alert(t('messages.error'), t('messages.passNotMatch'));
             return;
         }
         setLoading(true);
@@ -46,21 +49,21 @@ export default function NewPasswordScreen({ navigation, route }) {
             const data = await response.json();
             if (response.ok) {
                 Alert.alert(
-                    'Success',
-                    'Your password has been updated successfully. Please log in with your new password.',
+                    t('messages.success'),
+                    t('messages.updatePassword'),
                     [
                         {
-                            text: 'Log In',
+                            text: t('messages.logIn'),
                             onPress: () => navigation.navigate('Login')
                         }
                     ]
                 );
             } else {
-                Alert.alert('Error', data.message || 'Failed to update password');
+                Alert.alert(t('messages.error'), data.message || t('messages.updatePassFail'));
             }
         } catch (error) {
-            console.error('Password update error:', error);
-            Alert.alert('Error', 'Network error. Please try again.');
+            console.error(t('messages.errorUpdatePass'), error);
+            Alert.alert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }
@@ -87,22 +90,22 @@ export default function NewPasswordScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="lock-outline" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>New Password</Text>
-                    <Text style={styles.headerSubtitle}>Set your new password</Text>
+                    <Text style={styles.headerTitle}>{t('messages.newPass')}</Text>
+                    <Text style={styles.headerSubtitle}>{t('messages.setPass')}</Text>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>🔒 Create New Password</Text>
+                    <Text style={styles.sectionTitle}>🔒 {t('messages.createPass')}</Text>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>New Password</Text>
+                        <Text style={styles.label}>{t('messages.newPass')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Enter new password"
+                                placeholder= {t('messages.enterPassword')}
                                 secureTextEntry
                                 value={password}
                                 onChangeText={setPassword}
@@ -112,12 +115,12 @@ export default function NewPasswordScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>Confirm Password</Text>
+                        <Text style={styles.label}>{t('messages.confirmPass')}</Text>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Confirm new password"
+                                placeholder= {t('messages.confirm')}
                                 secureTextEntry
                                 value={confirmPassword}
                                 onChangeText={setConfirmPassword}
@@ -146,7 +149,7 @@ export default function NewPasswordScreen({ navigation, route }) {
                                 <MaterialIcons name="send" size={24} color="#fff" />
                             )}
                             <Text style={styles.resetButtonText}>
-                                {loading ? 'Updating...' : 'Update Password'}
+                                {loading ? t('messages.update'): t('messages.updatePass')}
                             </Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -155,7 +158,7 @@ export default function NewPasswordScreen({ navigation, route }) {
                         onPress={() => navigation.navigate('Login')}
                     >
                         <Text style={styles.loginRedirectText}>
-                            Back to <Text style={styles.loginRedirectLink}>Sign In</Text>
+                            {t('messages.back')} <Text style={styles.loginRedirectLink}>{t('messages.signIn')}</Text>
                         </Text>
                     </TouchableOpacity>
                 </View>

@@ -2,9 +2,13 @@ import React from 'react';
 import { View, Text, FlatList, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 
+
 export default function ChargerLocationListScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const { car, user, chargingLocations, searchCriteria } = route.params;
 
     const formatPrice = (price) => {
@@ -40,33 +44,33 @@ export default function ChargerLocationListScreen({ navigation, route }) {
                         size={16}
                         color="#fff"
                     />
-                    <Text style={styles.statusText}>{item.is_available ? 'Available' : 'Occupied'}</Text>
+                    <Text style={styles.statusText}>{item.is_available ? t('messages.avail') : t('messages.occupied')}</Text>
                 </View>
             </View>
 
             <View style={styles.locationDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="electric-bolt" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>Power:</Text>
-                    <Text style={styles.detailValue}>{item.power_output || 'N/A'} kW</Text>
+                    <Text style={styles.detailLabel}>{t('messages.pw')}</Text>
+                    <Text style={styles.detailValue}>{item.power_output || 'N/A'} {t('messages.kw')}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="attach-money" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>Rate:</Text>
+                    <Text style={styles.detailLabel}>{t('messages.rat')}</Text>
                     <Text style={styles.detailValue}>{formatPrice(item.price_per_hour)}/hour</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="speed" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>Type:</Text>
+                    <Text style={styles.detailLabel}>{t('messages.type')}</Text>
                     <Text style={styles.detailValue}>
-                        {item.fast_charging ? 'Fast Charging' : 'Standard'}
+                        {item.fast_charging ? t('messages.fastCharging') : t('messages.standard')}
                     </Text>
                 </View>
             </View>
 
             <View style={styles.selectButton}>
                 <MaterialIcons name="arrow-forward" size={20} color="#667eea" />
-                <Text style={styles.selectText}>Select This Station</Text>
+                <Text style={styles.selectText}>{t('messages.selectStation')}</Text>
             </View>
         </TouchableOpacity>
     );
@@ -82,7 +86,7 @@ export default function ChargerLocationListScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="list" size={60} color="#fff" />
                 </View>
-                <Text style={styles.title}>Available Stations</Text>
+                <Text style={styles.title}>{t('messages.availableStation')}</Text>
                 <Text style={styles.subtitle}>
                     {chargingLocations.length} charging station{chargingLocations.length !== 1 ? 's' : ''} found
                 </Text>
@@ -99,9 +103,9 @@ export default function ChargerLocationListScreen({ navigation, route }) {
             {chargingLocations.length === 0 ? (
                 <ScrollView contentContainerStyle={styles.emptyContainer}>
                     <MaterialIcons name="ev-station" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>No charging stations found</Text>
+                    <Text style={styles.emptyText}>{t('messages.noStation')}</Text>
                     <Text style={styles.emptySubtext}>
-                        Try adjusting your search criteria or search in a different area
+                        {t('messages.searchDifferent')}
                     </Text>
                     <TouchableOpacity
                         style={styles.backButton}
@@ -109,7 +113,7 @@ export default function ChargerLocationListScreen({ navigation, route }) {
                         activeOpacity={0.8}
                     >
                         <MaterialIcons name="arrow-back" size={20} color="#667eea" />
-                        <Text style={styles.backText}>Back to Search</Text>
+                        <Text style={styles.backText}>{t('messages.searchBack')}</Text>
                     </TouchableOpacity>
                 </ScrollView>
             ) : (

@@ -53,9 +53,9 @@ export default function CarOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="search" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>Find Charger Locations</Text>
+                                <Text style={styles.enhancedCardTitle}>{t('messages.findLoc')}</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
-                                    Search for nearby charging stations
+                                    {t('messages.nearbyCharge')}
                                 </Text>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
@@ -77,7 +77,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="list-alt" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>My Bookings</Text>
+                                <Text style={styles.enhancedCardTitle}>{t('messages.myBooking')}</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
                                     {t('messages.viewCharging')}
                                 </Text>

@@ -4,8 +4,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
+import {useTranslation} from "react-i18next";
+
 
 export default function MyChargerLocationsScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const [locations, setLocations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -14,7 +18,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
 
     useEffect(() => {
         if (user) {
-            console.log('Fetching charger locations for user:', user.user_id);
+            console.log(t('messages.fetchLoc'), user.user_id);
             fetchChargerLocations();
         }
     }, [user]);
@@ -34,14 +38,14 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
 
             if (response.ok) {
                 const data = await response.json();
-                console.log('API Response:', data);
+                console.log(t('messages.apiResponse'), data);
                 setLocations(data || []);
             } else {
-                Alert.alert('Error', 'Failed to fetch charger locations');
+                Alert.alert(t('messages.error'), t('messages.failFetchLoc'));
             }
         } catch (error) {
-            console.error('Network error:', error);
-            Alert.alert('Error', 'Network error for this request');
+            console.error(t('messages.networkErr'), error);
+            Alert.alert(t('messages.error'), t('messages.netErrorRequest'));
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -69,26 +73,26 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                         size={16}
                         color="#fff"
                     />
-                    <Text style={styles.statusText}>{item.is_available ? 'Available' : 'Occupied'}</Text>
+                    <Text style={styles.statusText}>{item.is_available ? t('messages.avail') : t('messages.occupied')}</Text>
                 </View>
             </View>
 
             <View style={styles.locationDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="electric-bolt" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>Power Output:</Text>
-                    <Text style={styles.detailValue}>{item.power_output || 'N/A'} kW</Text>
+                    <Text style={styles.detailLabel}>{t('messages.power')}:</Text>
+                    <Text style={styles.detailValue}>{item.power_output || 'N/A'} {t('messages.kw')}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="attach-money" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>Rate:</Text>
-                    <Text style={styles.detailValue}>€{item.price_per_hour || 0}/hour</Text>
+                    <Text style={styles.detailLabel}>{t('messages.rat')}</Text>
+                    <Text style={styles.detailValue}>€{item.price_per_hour || 0}{t('messages.hour')}</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="speed" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>Type:</Text>
+                    <Text style={styles.detailLabel}>{t('messages.type')}</Text>
                     <Text style={styles.detailValue}>
-                        {item.fast_charging ? 'Fast Charging' : 'Standard Charging'}
+                        {item.fast_charging ? t('messages.fastCharging') : t('messages.standardCharge')}
                     </Text>
                 </View>
             </View>
@@ -96,7 +100,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
             <View style={styles.locationActions}>
                 <TouchableOpacity style={styles.actionButton}>
                     <MaterialIcons name="edit" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>Edit</Text>
+                    <Text style={styles.actionText}>{t('messages.edit')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.actionButton}
@@ -106,7 +110,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                     })}
                 >
                     <MaterialIcons name="history" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>Bookings</Text>
+                    <Text style={styles.actionText}>{t('messages.booking')}</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -116,7 +120,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="ev-station" size={64} color="#ccc" />
-                <Text style={styles.loadingText}>Loading your charger locations...</Text>
+                <Text style={styles.loadingText}>{t('messages.loadingLoc')}</Text>
             </View>
         );
     }
@@ -132,9 +136,9 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="ev-station" size={60} color="#fff" />
                 </View>
-                <Text style={styles.title}>My Charging Stations</Text>
+                <Text style={styles.title}>{t('messages.myChargingStation')}</Text>
                 <Text style={styles.subtitle}>
-                    Manage your charging locations and track performance
+                    {t('messages.manageLocationPerformance')}
                 </Text>
                 <TouchableOpacity
                     style={styles.addButton}
@@ -151,7 +155,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                         end={{ x: 1, y: 0 }}
                     >
                         <MaterialIcons name="add" size={20} color="#fff" />
-                        <Text style={styles.addButtonText}>Add Location</Text>
+                        <Text style={styles.addButtonText}>{t('messages.addLocation')}</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </LinearGradient>
@@ -164,9 +168,9 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                     }
                 >
                     <MaterialIcons name="ev-station" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>No charging stations yet</Text>
+                    <Text style={styles.emptyText}>{t('messages.noStationYet')}</Text>
                     <Text style={styles.emptySubtext}>
-                        Add your first charging station to start earning money from EV drivers
+                        {t('messages.addStation')}
                     </Text>
                     <TouchableOpacity
                         style={styles.getStartedButton}
@@ -183,7 +187,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                             end={{ x: 1, y: 0 }}
                         >
                             <MaterialIcons name="add-business" size={20} color="#fff" />
-                            <Text style={styles.getStartedText}>Get Started</Text>
+                            <Text style={styles.getStartedText}>{t('messages.getStarted')}</Text>
                         </LinearGradient>
                     </TouchableOpacity>
                 </ScrollView>

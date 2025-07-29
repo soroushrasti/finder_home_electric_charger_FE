@@ -175,10 +175,10 @@ export default function RegisterScreen({ navigation, setUser }) {
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>{t('messages.personalInfo')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.personalInfo')}</FarsiText>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.name')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.name')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="person" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -192,7 +192,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.email')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.email')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -208,7 +208,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.phone')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.phone')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -222,10 +222,10 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>{t('messages.security')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.security')}</FarsiText>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.pass')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.pass')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -250,7 +250,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.passwordConfirm')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.passwordConfirm')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -274,7 +274,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>{t('messages.accountType')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.accountType')}</FarsiText>
 
                     <View style={styles.userTypeContainer}>
                         <Text style={styles.userTypeLabel}>{t('messages.me')}</Text>

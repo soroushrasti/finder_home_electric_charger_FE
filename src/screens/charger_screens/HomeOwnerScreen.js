@@ -4,8 +4,12 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
 import FarsiText from  "../../components/FarsiText";
+import {useTranslation} from "react-i18next";
+
 
 export default function HomeOwnerScreen({ navigation, user }) {
+    const { t } = useTranslation();
+
     const handleTotalEarningsPress = () => {
         navigation.navigate('MyLocationBookingScreen', { user });
     };
@@ -27,7 +31,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
                 </View>
                 <Text style={styles.title}>Welcome, {user?.first_name || 'Home Owner'}!</Text>
                 <Text style={styles.subtitle}>
-                    Manage your charging locations and track earnings
+                    {t('messages.manageLoc')}
                 </Text>
             </LinearGradient>
 
@@ -52,9 +56,9 @@ export default function HomeOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="add-location" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>Add Charging Location</Text>
+                                <Text style={styles.enhancedCardTitle}>{t('messages.addLoc')}</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
-                                    Register a new charging station
+                                    {t('messages.registerStation')}
                                 </Text>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
@@ -76,9 +80,9 @@ export default function HomeOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="assignment" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>Location Bookings</Text>
+                                <Text style={styles.enhancedCardTitle}>{t('messages.locBooking')}</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
-                                    View bookings for your stations
+                                    {t('messages.viewBooking')}
                                 </Text>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
@@ -100,9 +104,9 @@ export default function HomeOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="ev-station" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>My Stations</Text>
+                                <Text style={styles.enhancedCardTitle}>{t('messages.myStation')}</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
-                                    Manage your charging locations
+                                    {t('messages.manageLocation')}
                                 </Text>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
@@ -112,7 +116,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
 
                 {/* Activity Dashboard moved to bottom with better title */}
                 <View style={styles.activitySection}>
-                    <Text style={styles.sectionTitle}>📊 Performance Overview</Text>
+                    <Text style={styles.sectionTitle}>📊 {t('messages.performanceOverview')}</Text>
                     <ActivityDashboard
                         userId={user?.user_id}
                         userType="location_owner"

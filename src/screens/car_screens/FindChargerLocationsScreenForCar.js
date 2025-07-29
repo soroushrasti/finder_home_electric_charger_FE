@@ -6,6 +6,8 @@ import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
 
 export default function FindChargerLocationsScreenForCar({ navigation, route }) {
+    const { t } = useTranslation();
+
     const [postCode, setPostCode] = useState(null);
     const [alley, setAlley] = useState(null);
     const [street, setStreet] = useState(null);
@@ -18,7 +20,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
 
     const handleSearch = async () => {
         if (!postCode || !street || !city) {
-            Alert.alert('Missing Information', 'Please fill all required fields (Post Code, Street, City)');
+            Alert.alert(t('messages.missingInformation'), t('messages.fillField'));
             return;
         }
 
@@ -44,7 +46,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
             if (response.ok) {
                 const chargingLocations = await response.json();
                 if (!chargingLocations || chargingLocations.length === 0) {
-                    Alert.alert('No Results', 'No charging locations found for your search criteria. Try adjusting your search parameters.');
+                    Alert.alert(t('messages.noResult'), t('messages.noCharging'));
                     return;
                 }
                 navigation.navigate('ChargerLocationListScreen', {
@@ -58,10 +60,10 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     }
                 });
             } else {
-                Alert.alert('Search Failed', 'Unable to find charging locations. Please try again.');
+                Alert.alert(t('messages.searchFail'), t('messages.noChargingLocation'));
             }
         } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
+            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }
@@ -86,16 +88,16 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="search" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.title}>Find Charging Stations</Text>
+                    <Text style={styles.title}>{t('messages.findStation')}</Text>
                     <Text style={styles.subtitle}>
-                        Search for available charging locations near you
+                        {t('messages.searchNearLoc')}
                     </Text>
                 </LinearGradient>
 
                 <View style={styles.carInfoCard}>
                     <MaterialIcons name="directions-car" size={24} color="#667eea" />
                     <View style={styles.carInfoText}>
-                        <Text style={styles.carModel}>{car?.model || 'Your Car'}</Text>
+                        <Text style={styles.carModel}>{car?.model || t('messages.yourCar')}</Text>
                         <Text style={styles.carDetails}>
                             {car?.license_plate} • {car?.year} • {car?.color}
                         </Text>
@@ -103,14 +105,14 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                 </View>
 
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>Search Location</Text>
+                    <Text style={styles.sectionTitle}>{t('messages.searchLocation')}</Text>
 
                     <View style={styles.inputRow}>
                         <View style={[styles.inputContainer, styles.halfInput]}>
                             <MaterialIcons name="location-on" size={20} color="#667eea" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="Post Code *"
+                                placeholder={t('messages.postCode')}
                                 value={postCode}
                                 onChangeText={setPostCode}
                                 placeholderTextColor="#999"
@@ -120,7 +122,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                             <MaterialIcons name="location-city" size={20} color="#667eea" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
-                                placeholder="City *"
+                                placeholder={t('messages.city')}
                                 value={city}
                                 onChangeText={setCity}
                                 placeholderTextColor="#999"
@@ -132,7 +134,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                         <MaterialIcons name="place" size={20} color="#667eea" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
-                            placeholder="Street *"
+                            placeholder={t('messages.street')}
                             value={street}
                             onChangeText={setStreet}
                             placeholderTextColor="#999"
@@ -143,7 +145,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                         <MaterialIcons name="streetview" size={20} color="#667eea" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
-                            placeholder="Alley (Optional)"
+                            placeholder={t('messages.alleyOptional')}
                             value={alley}
                             onChangeText={setAlley}
                             placeholderTextColor="#999"
@@ -154,7 +156,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                         <MaterialIcons name="phone" size={20} color="#667eea" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
-                            placeholder="Phone Number (Optional)"
+                            placeholder={t('messages.phoneOptional')}
                             value={homePhone}
                             onChangeText={setHomePhone}
                             keyboardType="phone-pad"
@@ -166,9 +168,9 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                         <View style={styles.switchContent}>
                             <MaterialIcons name="flash-on" size={24} color="#667eea" />
                             <View style={styles.switchTextContainer}>
-                                <Text style={styles.switchLabel}>Fast Charging</Text>
+                                <Text style={styles.switchLabel}>{t('messages.fastCharging')}</Text>
                                 <Text style={styles.switchDescription}>
-                                    Show only fast charging stations (50kW+)
+                                    {t('messages.showFastCharge')}
                                 </Text>
                             </View>
                         </View>
@@ -198,7 +200,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                                 color="#fff"
                             />
                             <Text style={styles.buttonText}>
-                                {loading ? "Searching..." : "Find Charging Stations"}
+                                {loading ? t('messages.searching') : t('messages.findChargingLoc')}
                             </Text>
                         </LinearGradient>
                     </TouchableOpacity>
@@ -207,20 +209,20 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                 <View style={styles.tipsCard}>
                     <View style={styles.tipsHeader}>
                         <MaterialIcons name="lightbulb" size={24} color="#ff9800" />
-                        <Text style={styles.tipsTitle}>Search Tips</Text>
+                        <Text style={styles.tipsTitle}>{t('messages.searchTip')}</Text>
                     </View>
                     <View style={styles.tipsList}>
                         <View style={styles.tipItem}>
                             <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>Use specific post codes for better results</Text>
+                            <Text style={styles.tipText}>{t('messages.specificPostCode')}</Text>
                         </View>
                         <View style={styles.tipItem}>
                             <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>Enable fast charging for quicker sessions</Text>
+                            <Text style={styles.tipText}>{t('messages.enableFastCharge')}</Text>
                         </View>
                         <View style={styles.tipItem}>
                             <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>All fields marked with * are required</Text>
+                            <Text style={styles.tipText}>{t('messages.requiredFields')}</Text>
                         </View>
                     </View>
                 </View>

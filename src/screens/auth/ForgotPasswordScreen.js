@@ -51,7 +51,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                         {
                             text: t('messages.continue'),
                             onPress: () => {
-                                navigation.navigate(t('messages.emailVerifyScreen'), {
+                                navigation.navigate(t('EmailVerificationScreen'), {
                                     user: data,
                                     isPasswordReset: true,
                                 });

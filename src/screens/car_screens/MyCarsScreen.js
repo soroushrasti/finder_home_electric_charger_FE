@@ -6,6 +6,8 @@ import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
 
 export default function MyCarsScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
@@ -35,10 +37,10 @@ export default function MyCarsScreen({ navigation, route }) {
                 const carsData = await response.json();
                 setCars(Array.isArray(carsData) ? carsData : []);
             } else {
-                Alert.alert('Error', 'Failed to fetch your cars');
+                Alert.alert(t('messages.error'), t('messages.failCar'));
             }
         } catch (error) {
-            Alert.alert('Network Error', 'Please check your connection and try again');
+            Alert.alert(t('messages.netError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -71,14 +73,14 @@ export default function MyCarsScreen({ navigation, route }) {
                 </View>
                 <View style={styles.statusContainer}>
                     <View style={[styles.statusDot, { backgroundColor: '#4CAF50' }]} />
-                    <Text style={styles.statusText}>Active</Text>
+                    <Text style={styles.statusText}>{t('messages.active')}</Text>
                 </View>
             </View>
 
             <View style={styles.carActions}>
                 <TouchableOpacity style={styles.actionButton}>
                     <MaterialIcons name="edit" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>Edit</Text>
+                    <Text style={styles.actionText}>{t('messages.edit')}</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.actionButton}
@@ -94,7 +96,7 @@ export default function MyCarsScreen({ navigation, route }) {
                     })}
                 >
                     <MaterialIcons name="history" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>History</Text>
+                    <Text style={styles.actionText}>{t('messages.history')}</Text>
                 </TouchableOpacity>
             </View>
         </View>
@@ -104,7 +106,7 @@ export default function MyCarsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="directions-car" size={64} color="#ccc" />
-                <Text style={styles.loadingText}>Loading your cars...</Text>
+                <Text style={styles.loadingText}>{t('messages.loadCars')}</Text>
             </View>
         );
     }
@@ -112,7 +114,7 @@ export default function MyCarsScreen({ navigation, route }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>My Electric Cars</Text>
+                <Text style={styles.title}>{t('messages.myElCars')}</Text>
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={handleAddCar}
@@ -125,7 +127,7 @@ export default function MyCarsScreen({ navigation, route }) {
                         end={{ x: 1, y: 0 }}
                     >
                         <MaterialIcons name="add" size={20} color="#fff" />
-                        <Text style={styles.addButtonText}>Add Car</Text>
+                        <Text style={styles.addButtonText}>{t('messages.adCar')}</Text>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
@@ -133,15 +135,15 @@ export default function MyCarsScreen({ navigation, route }) {
             {cars.length === 0 ? (
                 <View style={styles.centered}>
                     <MaterialIcons name="directions-car" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>No cars registered yet</Text>
+                    <Text style={styles.emptyText}>{t('messages.noCarRegister')}</Text>
                     <Text style={styles.emptySubtext}>
-                        Add your first electric car to start finding charging stations
+                        {t('messages.addFirstCar')}
                     </Text>
                     <TouchableOpacity
                         style={styles.getStartedButton}
                         onPress={handleAddCar}
                     >
-                        <Text style={styles.getStartedText}>Add Your First Car</Text>
+                        <Text style={styles.getStartedText}>{t('messages.addFirst')}</Text>
                     </TouchableOpacity>
                 </View>
             ) : (

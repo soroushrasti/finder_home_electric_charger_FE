@@ -93,7 +93,7 @@ export default function LoginScreen({ navigation, setUser }) {
                             {
                                 text: t('messages.verifyResend'),
                                 onPress: () => {
-                                    navigation.navigate(t('messages.emailVerifyScreen'), {
+                                    navigation.navigate('EmailVerificationScreen', {
                                         user: data,
                                         isPasswordReset: false,
                                         setUser: setUser
@@ -150,7 +150,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     <Text style={styles.sectionTitle}> {t('messages.signIn')} 👋</Text>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.email')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.email')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -166,7 +166,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.pass')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.pass')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput

@@ -17,7 +17,7 @@ import {useTranslation} from "react-i18next";
 
 
 export default function EmailVerificationScreen({ navigation, route, setUser }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { user, isPasswordReset } = route.params || {};
     const [verificationCode, setVerificationCode] = useState(['', '', '', '', '']);
     const [loading, setLoading] = useState(false);
@@ -80,7 +80,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                 if (data.is_validated_email) {
                     if (isPasswordReset) {
                         // For password reset flow
-                        navigation.navigate(t('messages.newPassword'), { userId: userId || data.user_id });
+                        navigation.navigate('NewPassword', { userId: userId || data.user_id });
                     } else {
                         // For normal registration flow
                         setUser(data);
@@ -123,7 +123,8 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                 },
                 body: JSON.stringify({
                     user_id: userId,
-                    email: userEmail
+                    email: userEmail,
+                    language: i18n.language === 'fa' ? 'Farsi' : 'English', // Map language code to your API format
                 })
             });
 

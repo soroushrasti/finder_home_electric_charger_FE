@@ -17,7 +17,6 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 
 
-console.log('Environment config:', env);
 console.log('API URL:', env.apiUrl);
 export default function LoginScreen({ navigation, setUser }) {
     const { t } = useTranslation();
@@ -93,7 +92,7 @@ export default function LoginScreen({ navigation, setUser }) {
                             {
                                 text: t('messages.verifyResend'),
                                 onPress: () => {
-                                    navigation.navigate(t('messages.emailVerifyScreen'), {
+                                    navigation.navigate('EmailVerificationScreen', {
                                         user: data,
                                         isPasswordReset: false,
                                         setUser: setUser

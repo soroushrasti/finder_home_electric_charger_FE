@@ -264,6 +264,9 @@
     "searching": "Searching...",
     "searchLocation": "Search Locations",
     "welcome2": "Welcome",
-    "carOwner2": "Car Owner"
+    "carOwner2": "Car Owner",
+    "userExistEmail": "User with this email already exists",
+    "userExistMobileNumber": "User with this phone number already exists",
+    "UserExistUsername": "User with this username already exists",
   }
 }

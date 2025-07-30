@@ -364,6 +364,9 @@
     "addLocation": "Add Location",
     "noStationYet": "No charging stations yet",
     "addStation": "Add your first charging station to start earning money from EV drivers",
-    "getStarted": "Get Started"
+    "getStarted": "Get Started",
+    "userExistEmail": "User with this email already exists",
+    "userExistMobileNumber": "User with this phone number already exists",
+    "UserExistUsername": "User with this username already exists"
   }
 }

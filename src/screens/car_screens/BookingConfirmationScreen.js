@@ -43,7 +43,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                         {
                             text: t('messages.bookingView'),
                             onPress: () => {
-                                navigation.navigate(t('messages.bookingScreen'), {
+                                navigation.navigate('MyBookingsScreen', {
                                     user,
                                     refreshBookings: true
                                 });

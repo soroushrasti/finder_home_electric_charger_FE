@@ -20,7 +20,7 @@ export default function CarBookingsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="error" size={64} color="#ff6b6b" />
-                <Text style={styles.errorText}>{t('messages.noCar')}</Text>
+                <FarsiText style={styles.errorText}>{t('messages.noCar')}</FarsiText>
                 <TouchableOpacity
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}

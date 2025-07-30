@@ -19,7 +19,7 @@ import FarsiText from  "../../components/FarsiText";
 
 
 export default function ForgotPasswordScreen({ navigation }) {
-    const { t } = useTranslation();
+    const { t, i18n } = useTranslation();
     const { isRTL } = useLanguage();
     const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
@@ -38,7 +38,9 @@ export default function ForgotPasswordScreen({ navigation }) {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${env.apiToken}`,
                 },
-                body: JSON.stringify({ email })
+                body: JSON.stringify({ email,
+                    language: i18n.language === 'fa' ? 'Farsi' : 'English',
+                })
             });
 
             const data = await response.json();
@@ -51,7 +53,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                         {
                             text: t('messages.continue'),
                             onPress: () => {
-                                navigation.navigate(t('EmailVerificationScreen'), {
+                                navigation.navigate('EmailVerificationScreen', {
                                     user: data,
                                     isPasswordReset: true,
                                 });

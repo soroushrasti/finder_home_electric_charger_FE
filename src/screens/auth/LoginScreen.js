@@ -17,7 +17,6 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 
 
-console.log('Environment config:', env);
 console.log('API URL:', env.apiUrl);
 export default function LoginScreen({ navigation, setUser }) {
     const { t } = useTranslation();

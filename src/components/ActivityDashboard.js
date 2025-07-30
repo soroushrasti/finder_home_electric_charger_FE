@@ -72,7 +72,7 @@ export default function ActivityDashboard({
         return (
             <View style={styles.loadingContainer}>
                 <MaterialIcons name="hourglass-empty" size={24} color="#666" />
-                <Text style={styles.loadingText}>Loading activity...</Text>
+                <Text style={styles.loadingText}>{t('messages.loadActivity')}</Text>
             </View>
         );
     }
@@ -107,7 +107,7 @@ export default function ActivityDashboard({
                         </View>
                         <View style={styles.cardContent}>
                             <Text style={styles.cardValue}>{activityData.numberBooking}</Text>
-                            <Text style={styles.cardLabel}>Number of Bookings</Text>
+                            <Text style={styles.cardLabel}>{t('messages.bookingNumber')}</Text>
                         </View>
                         <MaterialIcons name="arrow-forward-ios" size={16} color="#999" />
                     </TouchableOpacity>
@@ -119,7 +119,7 @@ export default function ActivityDashboard({
                             </View>
                             <View style={styles.cardContent}>
                                 <Text style={styles.cardValue}>{activityData.numberLocations}</Text>
-                                <Text style={styles.cardLabel}>Your Stations</Text>
+                                <Text style={styles.cardLabel}>{t('messages.yourStation')}</Text>
                             </View>
                         </View>
                     )}

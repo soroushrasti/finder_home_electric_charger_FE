@@ -5,8 +5,12 @@ import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
+import {useTranslation} from "react-i18next";
+
 
 export default function FinalizeLocationOnMapScreen({ route, navigation }) {
+    const { t } = useTranslation();
+
     const [region, setRegion] = useState(null);
     const [marker, setMarker] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -19,7 +23,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 // Request location permissions
                 const { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
-                    Alert.alert('Permission denied', 'Location permission is required to use this feature.');
+                    Alert.alert(t('messages.permissionDeny'), t('messages.locPermission'));
                     setDefaultLocation();
                     return;
                 }
@@ -52,14 +56,14 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                             longitudeDelta: 0.05,
                         };
                         setRegion(initialRegion);
-                        Alert.alert('Address not found', 'Could not find the exact address. Showing general area - please select your location manually.');
+                        Alert.alert(t('messages.noAddress'), t('messages.addressNotFind'));
                     } else {
                         setDefaultLocation();
                     }
                 }
             } catch (error) {
-                console.error('Geocoding error:', error);
-                Alert.alert('Error', 'Failed to find location. Please select manually.');
+                console.error(t('messages.geoError'), error);
+                Alert.alert(t('messages.error'), t('messages.locNotFind'));
                 setDefaultLocation();
             } finally {
                 setLoading(false);
@@ -77,7 +81,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
             latitudeDelta: 0.0922,
             longitudeDelta: 0.0421,
         });
-        Alert.alert('Location not found', 'Could not find the address. Please select your location manually on the map.');
+        Alert.alert(t('messages.noLoc'), t('messages.noAddressFound'));
     };
 
     const handleMapPress = (event) => {
@@ -86,7 +90,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
 
     const handleConfirm = () => {
         if (!marker) {
-            Alert.alert('Select Location', 'Please tap on the map to select a location.');
+            Alert.alert(t('messages.selectLocation'), t('messages.tapOnMap'));
             return;
         }
         handleAddLocationWithCoordinates(marker);
@@ -94,7 +98,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
 
     const validateForm = () => {
         if (!formData.name || !formData.city || !formData.postcode || !formData.street) {
-            Alert.alert('Incomplete Form', 'Please fill in all required fields.');
+            Alert.alert(t('messages.incompleteForm'), t('messages.fillFields'));
             return false;
         }
         return true;
@@ -146,19 +150,19 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 Alert.alert('Error', `Failed to add charging station: ${response.status} ${errorText}`);
             }
         } catch (error) {
-            console.error('Network Error Details:', error);
+            console.error(t('messages.netError'), error);
 
-            if (error.message.includes('Network request failed')) {
+            if (error.message.includes(t('messages.netRequest'))) {
                 Alert.alert(
-                    'Network Error',
-                    'Unable to connect to the server. Please check:\n\n• Your internet connection\n• Server availability\n• API endpoint configuration',
+                    t('messages.NetError'),
+                    t('messages.noConnectToServer'),
                     [
-                        { text: 'Retry', onPress: () => handleAddLocationWithCoordinates(location) },
-                        { text: 'Cancel', style: 'cancel' }
+                        { text: t('messages.retry'), onPress: () => handleAddLocationWithCoordinates(location) },
+                        { text: t('messages.cancel'), style: t('messages.cancel') }
                     ]
                 );
             } else {
-                Alert.alert('Error', `Network error: ${error.message}`);
+                Alert.alert(t('messages.error'), `Network error: ${error.message}`);
             }
         } finally {
             setLoading(false);
@@ -169,7 +173,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
         return (
             <View style={styles.centered}>
                 <ActivityIndicator size="large" color="#4285F4" />
-                <Text style={styles.loadingText}>Finding location...</Text>
+                <Text style={styles.loadingText}>{t('messages.findingLoc')}</Text>
             </View>
         );
     }
@@ -177,8 +181,8 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>Select Exact Location</Text>
-                <Text style={styles.subHeaderText}>Tap on the map to adjust the marker position</Text>
+                <Text style={styles.headerText}>{t('messages.selectExactLocation')}</Text>
+                <Text style={styles.subHeaderText}>{t('messages.tapPosition')}</Text>
             </View>
 
             <MapView
@@ -210,7 +214,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
                     <MaterialIcons name="check" size={24} color="#fff" />
-                    <Text style={styles.confirmButtonText}>Confirm Location</Text>
+                    <Text style={styles.confirmButtonText}>{t('messages.confirmLoc')}</Text>
                 </TouchableOpacity>
             </View>
         </View>

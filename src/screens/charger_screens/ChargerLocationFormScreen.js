@@ -3,8 +3,12 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView,
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
+import {useTranslation} from "react-i18next";
+
 
 export default function ChargerLocationFormScreen({ navigation, route }) {
+    const { t } = useTranslation();
+
     const user = route.params?.user;
     const [formData, setFormData] = useState({
         name: '',
@@ -41,50 +45,50 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
         const { name, city, postcode, street, phone_number, power_output, price_per_hour } = formData;
 
         if (!name.trim()) {
-            Alert.alert('Validation Error', 'Station name is required');
+            Alert.alert(t('messages.validationError'), t('messages.stationName'));
             return false;
         }
         if (!city.trim()) {
-            Alert.alert('Validation Error', 'City is required');
+            Alert.alert(t('messages.validationError'), t('messages.cityRequire'));
             return false;
         }
         if (!postcode.trim()) {
-            Alert.alert('Validation Error', 'Postcode is required');
+            Alert.alert(t('messages.validationError'), t('messages.postcodeRequire'));
             return false;
         }
         if (!street.trim()) {
-            Alert.alert('Validation Error', 'Street address is required');
+            Alert.alert(t('messages.validationError'), t('messages.streetAddressRequire'));
             return false;
         }
         if (!phone_number.trim()) {
-            Alert.alert('Validation Error', 'Phone number is required');
+            Alert.alert(t('messages.validationError'), t('messages.phoneNumberRequire'));
             return false;
         }
         if (!power_output.trim()) {
-            Alert.alert('Validation Error', 'Power output is required');
+            Alert.alert(t('messages.validationError'), t('messages.powerRequire'));
             return false;
         }
         if (!price_per_hour.trim()) {
-            Alert.alert('Validation Error', 'Price per hour is required');
+            Alert.alert(t('messages.validationError'), t('messages.priceRequire'));
             return false;
         }
 
         // Validate phone number format
         const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
         if (!phoneRegex.test(phone_number.replace(/\s/g, ''))) {
-            Alert.alert('Validation Error', 'Please enter a valid phone number');
+            Alert.alert(t('messages.validationError'), t('messages.validPhone'));
             return false;
         }
 
         // Validate power output is a number
         if (isNaN(parseFloat(power_output))) {
-            Alert.alert('Validation Error', 'Power output must be a valid number');
+            Alert.alert(t('messages.validationError'), t('messages.validPower'));
             return false;
         }
 
         // Validate price is a number
         if (isNaN(parseFloat(price_per_hour))) {
-            Alert.alert('Validation Error', 'Price per hour must be a valid number');
+            Alert.alert(t('messages.validationError'), t('messages.validPrice'));
             return false;
         }
 
@@ -103,14 +107,14 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="ev-station" size={50} color="#4285F4" />
                     </View>
-                    <Text style={styles.title}>Select Your Charging Station on Map</Text>
-                    <Text style={styles.subtitle}>Share your charger and start earning</Text>
+                    <Text style={styles.title}>{t('messages.selectChargingStation')}</Text>
+                    <Text style={styles.subtitle}>{t('messages.shareCharger')}</Text>
                 </View>
 
                 <View style={styles.form}>
                     <View style={styles.sectionHeader}>
                         <MaterialIcons name="business" size={20} color="#4285F4" />
-                        <Text style={styles.sectionTitle}>Station Information</Text>
+                        <Text style={styles.sectionTitle}>{t('messages.stationInfo')}</Text>
                     </View>
 
                     <View style={styles.inputContainer}>
@@ -126,7 +130,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                     <View style={styles.sectionHeader}>
                         <MaterialIcons name="place" size={20} color="#4285F4" />
-                        <Text style={styles.sectionTitle}>Location Details</Text>
+                        <Text style={styles.sectionTitle}>{t('messages.locationDetail')}</Text>
                     </View>
 
                     <View style={styles.inputRow}>
@@ -190,7 +194,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                     <View style={styles.sectionHeader}>
                         <MaterialIcons name="flash-on" size={20} color="#4285F4" />
-                        <Text style={styles.sectionTitle}>Technical & Pricing</Text>
+                        <Text style={styles.sectionTitle}>{t('messages.technical')}</Text>
                     </View>
 
                     <View style={styles.inputRow}>
@@ -223,9 +227,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <View style={styles.switchInfo}>
                             <MaterialIcons name="speed" size={24} color="#4285F4" />
                             <View style={styles.switchTextContainer}>
-                                <Text style={styles.switchLabel}>Fast Charging</Text>
+                                <Text style={styles.switchLabel}>{t('messages.fastCharging')}</Text>
                                 <Text style={styles.switchDescription}>
-                                    Enable for DC fast charging (50kW+)
+                                    {('messages.enableDc')}
                                 </Text>
                             </View>
                         </View>
@@ -241,7 +245,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <MaterialIcons name="description" size={20} color="#4285F4" style={styles.inputIcon} />
                         <TextInput
                             style={[styles.input, styles.multilineInput]}
-                            placeholder="Description (optional) - Additional details about your charging station"
+                            placeholder={t('messages.description')}
                             value={formData.description}
                             onChangeText={(value) => handleInputChange('description', value)}
                             placeholderTextColor="#999"
@@ -275,19 +279,19 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                 </View>
 
                 <View style={styles.benefitsCard}>
-                    <Text style={styles.benefitsTitle}>💡 Benefits of Sharing Your Charger</Text>
+                    <Text style={styles.benefitsTitle}>💡 {t('messages.benefits')}</Text>
                     <View style={styles.benefitsList}>
                         <View style={styles.benefitItem}>
                             <MaterialIcons name="attach-money" size={16} color="#34A853" />
-                            <Text style={styles.benefitText}>Earn passive income</Text>
+                            <Text style={styles.benefitText}>{t('messages.earnIncome')}</Text>
                         </View>
                         <View style={styles.benefitItem}>
                             <MaterialIcons name="eco" size={16} color="#34A853" />
-                            <Text style={styles.benefitText}>Support sustainable transport</Text>
+                            <Text style={styles.benefitText}>{t('messages.supportTransport')}</Text>
                         </View>
                         <View style={styles.benefitItem}>
                             <MaterialIcons name="people" size={16} color="#34A853" />
-                            <Text style={styles.benefitText}>Help your community</Text>
+                            <Text style={styles.benefitText}>{t('messages.helpCommunity')}</Text>
                         </View>
                     </View>
                 </View>
@@ -295,7 +299,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                 <View style={styles.noteContainer}>
                     <MaterialIcons name="info" size={20} color="#ff9800" />
                     <Text style={styles.noteText}>
-                        All fields marked with * are required. Please ensure all information is accurate before submitting.
+                        {t('messages.requiredField')}
                     </Text>
                 </View>
             </ScrollView>

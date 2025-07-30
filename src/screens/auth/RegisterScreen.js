@@ -111,10 +111,10 @@ export default function RegisterScreen({ navigation, setUser }) {
                     'Authorization': `Bearer ${env.apiToken}`,
                 },
                 body: JSON.stringify({
-                    name: formData.name,
+                    first_name: formData.name,
                     email: formData.email,
                     password: formData.password,
-                    phone_number: formData.phone_number,
+                    mobile_number: formData.phone_number,
                     user_type: apiUserType,
                     language: i18n.language === 'fa' ? 'Farsi' : 'English',
                 }),
@@ -142,11 +142,14 @@ export default function RegisterScreen({ navigation, setUser }) {
                 if (data.detail && data.detail.includes('userExistEmail')) {
                       Alert.alert(t('messages.error'), t('messages.userExistEmail'));
                 }
-                if (data.detail && data.detail.includes('userExistUsername')) {
+                else if (data.detail && data.detail.includes('userExistUsername')) {
                       Alert.alert(t('messages.error'), t('messages.UserExistUsername'));
                 }
-                if (data.detail && data.detail.includes('userExistMobileNumber')) {
+                else if (data.detail && data.detail.includes('userExistMobileNumber')) {
                       Alert.alert(t('messages.error'), t('messages.userExistMobileNumber'));
+                }
+                else{
+                        Alert.alert(t('messages.error'), data.message || t('messages.registerFail'));
                 }
             }
         } catch (error) {

@@ -114,7 +114,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                     name: formData.name,
                     email: formData.email,
                     password: formData.password,
-                    phone_number: formData.phone_number,
+                    mobile_number: formData.phone_number,
                     user_type: apiUserType,
                     language: i18n.language === 'fa' ? 'Farsi' : 'English',
                 }),

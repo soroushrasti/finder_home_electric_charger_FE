@@ -137,7 +137,15 @@ export default function RegisterScreen({ navigation, setUser }) {
                     ]
                 );
             } else {
-                Alert.alert(t('messages.registerFail'), data.message || t('messages.try'));
+                if (data.detail && data.detail.includes('userExistEmail')) {
+                      Alert.alert(t('messages.error'), t('messages.userExistEmail'));
+                }
+                if (data.detail && data.detail.includes('userExistUsername')) {
+                      Alert.alert(t('messages.error'), t('messages.UserExistUsername'));
+                }
+                if (data.detail && data.detail.includes('userExistMobileNumber')) {
+                      Alert.alert(t('messages.error'), t('messages.userExistMobileNumber'));
+                }
             }
         } catch (error) {
             console.error(t('messages.registerError'), error);

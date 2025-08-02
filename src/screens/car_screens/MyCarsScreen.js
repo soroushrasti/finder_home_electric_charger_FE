@@ -4,6 +4,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
+import { useTranslation } from 'react-i18next';
+
 
 export default function MyCarsScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -114,7 +116,7 @@ export default function MyCarsScreen({ navigation, route }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>{t('messages.myElCars')}</Text>
+                <FarsiText style={styles.title}>{t('messages.myElCars')}</FarsiText>
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={handleAddCar}

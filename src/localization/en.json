@@ -367,6 +367,20 @@
     "getStarted": "Get Started",
     "userExistEmail": "User with this email already exists",
     "userExistMobileNumber": "User with this phone number already exists",
-    "UserExistUsername": "User with this username already exists"
+    "UserExistUsername": "User with this username already exists",
+    "asCarOwner": "As a Car Owner",
+    "asChargerProvider": "As a Charger Provider",
+    "yourStation" : "Your Stations",
+    "bookingNumber": "Number of Bookings",
+    "loadActivity": "Loading activity...",
+    "activityOverview": "Your Activity Overview",
+    "myCar": "My Cars",
+    "spendSummary": "Spending Summary",
+    "loc": "location",
+    "s": "s",
+    "found" : "found",
+    "totalEx": "Total Expenses",
+    "totalEa": "Total Earnings"
+
   }
 }

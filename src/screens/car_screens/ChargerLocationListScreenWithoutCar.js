@@ -62,7 +62,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
         return (
             <View style={styles.searchCriteriaContainer}>
-                <Text style={styles.searchCriteriaTitle}>{t('messages.searchResult')}</Text>
+                <FarsiText style={styles.searchCriteriaTitle}>{t('messages.searchResult')}</FarsiText>
                 <View style={styles.criteriaRow}>
                     {searchCriteria.city && (
                         <Text style={styles.criteriaItem}>📍 {searchCriteria.city}</Text>
@@ -194,7 +194,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     <MaterialIcons name="ev-station" size={40} color="#fff" />
                     <Text style={styles.headerTitle}>{t('messages.availableChargingStation')}</Text>
                     <Text style={styles.headerSubtitle}>
-                        {chargingLocations.length} location{chargingLocations.length !== 1 ? 's' : ''} found
+                        {chargingLocations.length} {t('messages.loc')}{chargingLocations.length !== 1 ? t('messages.s') : ''} {t('messages.found')}
                     </Text>
                 </View>
             </LinearGradient>

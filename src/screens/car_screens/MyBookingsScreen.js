@@ -4,6 +4,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
+import { useTranslation } from 'react-i18next';
+
 
 export default function MyBookingsScreen({ navigation, route }) {
     const { t } = useTranslation();

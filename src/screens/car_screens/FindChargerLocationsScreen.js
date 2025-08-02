@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 
 
 export default function FindChargerLocationsScreen({ navigation, route }) {
@@ -111,10 +112,10 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
 
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>📍 {t('messages.locDetail')}</Text>
+                    <FarsiText style={styles.sectionTitle}>📍 {t('messages.locDetail')}</FarsiText>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.city')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.city')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="location-city" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -128,7 +129,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.street')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.street')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="road" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -142,7 +143,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.alley')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.alley')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="near-me" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -156,7 +157,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.postCode')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.postCode')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="markunread-mailbox" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
@@ -171,10 +172,10 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.phone')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.phone')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder={t('messages.enterPhoneNumber')}
                                 value={formData.home_phone_number}
@@ -185,13 +186,13 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                         </View>
                     </View>
 
-                    <Text style={styles.sectionTitle}>{t('messages.chargingPre')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.chargingPre')}</FarsiText>
 
                     <View style={styles.switchContainer}>
                         <View style={styles.switchInfo}>
                             <MaterialIcons name="flash-on" size={24} color="#FF6B35" />
                             <View style={styles.switchTextContainer}>
-                                <Text style={styles.switchLabel}>{t('messages.fastCharging')}</Text>
+                                <FarsiText style={styles.switchLabel}>{t('messages.fastCharging')}</FarsiText>
                                 <Text style={styles.switchSubtitle}>{t('messages.filterStation')}</Text>
                             </View>
                         </View>

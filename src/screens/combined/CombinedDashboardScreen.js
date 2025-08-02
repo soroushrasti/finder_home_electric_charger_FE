@@ -4,8 +4,12 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-nati
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
+import {useTranslation} from "react-i18next";
+
 
 export default function CombinedDashboardScreen({ navigation, user }) {
+    const { t } = useTranslation();
+
     const carOwnerActions = [
         {
             title: 'Find Chargers',
@@ -66,15 +70,15 @@ export default function CombinedDashboardScreen({ navigation, user }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="electric-bolt" size={40} color="#fff" />
                     </View>
-                    <Text style={styles.welcomeText}>Welcome back!</Text>
+                    <Text style={styles.welcomeText}>{t('messages.welcome')}</Text>
                     <Text style={styles.userEmail}>{user.email}</Text>
-                    <Text style={styles.userType}>Car Owner & Charger Provider</Text>
+                    <Text style={styles.userType}>{t('messages.bothProvider')}</Text>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>As a Car Owner</Text>
+                    <Text style={styles.sectionTitle}>{t('messages.asCarOwner')}</Text>
                     <View style={styles.actionsGrid}>
                         {carOwnerActions.map((action, index) => (
                             <TouchableOpacity
@@ -99,7 +103,7 @@ export default function CombinedDashboardScreen({ navigation, user }) {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>As a Charger Provider</Text>
+                    <Text style={styles.sectionTitle}>{t('messages.asChargerProvider')}</Text>
                     <View style={styles.actionsGrid}>
                         {homeOwnerActions.map((action, index) => (
                             <TouchableOpacity

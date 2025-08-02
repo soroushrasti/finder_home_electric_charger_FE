@@ -51,7 +51,7 @@ export default function ActivitySummary({
             <View style={styles.container}>
                 <View style={styles.loadingContainer}>
                     <MaterialIcons name="hourglass-empty" size={24} color="#666" />
-                    <Text style={styles.loadingText}>Loading activity...</Text>
+                    <Text style={styles.loadingText}>{t('messages.loadActivity')}</Text>
                 </View>
             </View>
         );
@@ -60,7 +60,7 @@ export default function ActivitySummary({
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.title}>Your Activity Overview</Text>
+                <Text style={styles.title}>{t('messages.activityOverview')}</Text>
                 {showRefresh && (
                     <TouchableOpacity onPress={handleRefresh} style={styles.refreshButton}>
                         <MaterialIcons name="refresh" size={20} color="#4285F4" />
@@ -103,7 +103,7 @@ export default function ActivitySummary({
                             <MaterialIcons name="ev-station" size={24} color="#FF9800" />
                         </View>
                         <Text style={styles.statValue}>{activityData.numberLocations}</Text>
-                        <Text style={styles.statLabel}>Your Stations</Text>
+                        <Text style={styles.statLabel}>{t('messages.yourStation')}</Text>
                     </View>
                 )}
             </View>

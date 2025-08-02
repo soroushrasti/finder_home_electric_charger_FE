@@ -97,7 +97,7 @@ export default function CarSelectionScreen({ navigation, route }) {
                 </TouchableOpacity>
                 <View style={styles.headerContent}>
                     <MaterialIcons name="directions-car" size={40} color="#fff" />
-                    <Text style={styles.headerTitle}>{t('messages.selectYourCar')}</Text>
+                    <FarsiText style={styles.headerTitle}>{t('messages.selectYourCar')}</FarsiText>
                     <Text style={styles.headerSubtitle}>{t('messages.chooseCar')}</Text>
                 </View>
             </LinearGradient>

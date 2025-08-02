@@ -101,7 +101,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="directions-car" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>My Cars</Text>
+                                <Text style={styles.enhancedCardTitle}>{t('messages.myCar')}</Text>
                                 <Text style={styles.enhancedCardSubtitle}>
                                     {t('messages.manageVehicle')}
                                 </Text>
@@ -112,7 +112,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                 </View>
 
                 <View style={styles.activitySection}>
-                    <Text style={styles.sectionTitle}>💰 Spending Summary</Text>
+                    <Text style={styles.sectionTitle}>💰 {t('messages.spendSummary')}</Text>
                     <ActivityDashboard
                         userId={user?.user_id}
                         userType="car_owner"

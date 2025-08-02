@@ -373,7 +373,14 @@
     "yourStation" : "Your Stations",
     "bookingNumber": "Number of Bookings",
     "loadActivity": "Loading activity...",
-    "activityOverview": "Your Activity Overview"
+    "activityOverview": "Your Activity Overview",
+    "myCar": "My Cars",
+    "spendSummary": "Spending Summary",
+    "loc": "location",
+    "s": "s",
+    "found" : "found",
+    "totalEx": "Total Expenses",
+    "totalEa": "Total Earnings"
 
   }
 }

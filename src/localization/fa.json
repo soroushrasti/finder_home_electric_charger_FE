@@ -370,7 +370,15 @@
     "yourStation": "ایستگاه های شما",
     "bookingNumber": "تعداد رزروها",
     "loadActivity": "در حال بارگیری فعالیت...",
-    "activityOverview": "نمای کلی فعالیت شما"
+    "activityOverview": "نمای کلی فعالیت شما",
+    "myCar": "ماشین های من",
+    "manageVehicle": "اطلاعات خودروی خود را مدیریت کنید",
+    "spendSummary": "خلاصه هزینه",
+    "loc": "مکان",
+    "s": " ",
+    "found": "یافت شد",
+    "totalEx": "مجموع هزینه ها",
+    "totalEa": "کل درآمد"
 
   }
 }

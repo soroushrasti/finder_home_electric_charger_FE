@@ -4,6 +4,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
+import { useTranslation } from 'react-i18next';
+import FarsiTextInput from  "../../components/FarsiTextInput";
+
 
 export default function FindChargerLocationsScreenForCar({ navigation, route }) {
     const { t } = useTranslation();
@@ -97,7 +100,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                 <View style={styles.carInfoCard}>
                     <MaterialIcons name="directions-car" size={24} color="#667eea" />
                     <View style={styles.carInfoText}>
-                        <Text style={styles.carModel}>{car?.model || t('messages.yourCar')}</Text>
+                        <FarsiText style={styles.carModel}>{car?.model || t('messages.yourCar')}</FarsiText>
                         <Text style={styles.carDetails}>
                             {car?.license_plate} • {car?.year} • {car?.color}
                         </Text>
@@ -105,7 +108,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                 </View>
 
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>{t('messages.searchLocation')}</Text>
+                    <FarsiText style={styles.sectionTitle}>{t('messages.searchLocation')}</FarsiText>
 
                     <View style={styles.inputRow}>
                         <View style={[styles.inputContainer, styles.halfInput]}>
@@ -154,7 +157,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="phone" size={20} color="#667eea" style={styles.inputIcon} />
-                        <TextInput
+                        <FarsiTextInput
                             style={styles.input}
                             placeholder={t('messages.phoneOptional')}
                             value={homePhone}
@@ -168,7 +171,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                         <View style={styles.switchContent}>
                             <MaterialIcons name="flash-on" size={24} color="#667eea" />
                             <View style={styles.switchTextContainer}>
-                                <Text style={styles.switchLabel}>{t('messages.fastCharging')}</Text>
+                                <FarsiText style={styles.switchLabel}>{t('messages.fastCharging')}</FarsiText>
                                 <Text style={styles.switchDescription}>
                                     {t('messages.showFastCharge')}
                                 </Text>
@@ -209,7 +212,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                 <View style={styles.tipsCard}>
                     <View style={styles.tipsHeader}>
                         <MaterialIcons name="lightbulb" size={24} color="#ff9800" />
-                        <Text style={styles.tipsTitle}>{t('messages.searchTip')}</Text>
+                        <FarsiText style={styles.tipsTitle}>{t('messages.searchTip')}</FarsiText>
                     </View>
                     <View style={styles.tipsList}>
                         <View style={styles.tipItem}>

@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import env from '../config/environment';
+import { useTranslation } from 'react-i18next';
+
 
 const getActivityData = async (userId, userType = 'car_owner') => {
     try {
@@ -42,6 +44,8 @@ export default function ActivityDashboard({
                                               onTotalEarningsPress,
                                               onActiveSessionsPress
                                           }) {
+    const { t } = useTranslation();
+
     const [activityData, setActivityData] = useState({
         totalPrice: 0,
         numberBooking: 0,
@@ -91,7 +95,7 @@ export default function ActivityDashboard({
                         <View style={styles.cardContent}>
                             <Text style={styles.cardValue}>€{activityData.totalPrice.toFixed(2)}</Text>
                             <Text style={styles.cardLabel}>
-                                {userType === 'car_owner' ? 'Total Expenses' : 'Total Earnings'}
+                                {userType === 'car_owner' ? t('messages.totalEx') : t('messages.totalEa')}
                             </Text>
                         </View>
                         <MaterialIcons name="arrow-forward-ios" size={16} color="#999" />

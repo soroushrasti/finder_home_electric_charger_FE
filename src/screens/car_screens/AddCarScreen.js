@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
+import parseFarsiInt from  "../../components/parseFarsiInt";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
@@ -37,13 +38,13 @@ export default function AddCarScreen({ navigation, route }) {
                     user_id: user?.user_id,
                     model,
                     color,
-                    year: parseInt(year),
-                    license_plate: licensePlate,
-                }),
+                    year: parseFarsiInt(year),
+                    license_plate: licensePlate
+                })
             });
 
             if (response.ok) {
-                Alert.alert(t('messages.success') , '🎉', t('messages.addCar'));
+                Alert.alert(t('messages.success') ,  t('messages.addCar'));
                 if (onCarAdded) {
                     onCarAdded();
                 }
@@ -52,6 +53,7 @@ export default function AddCarScreen({ navigation, route }) {
                 Alert.alert(t('messages.error'), t('messages.addCarFail'));
             }
         } catch (error) {
+            console.error('Error adding car:', error);
             Alert.alert(t('messages.Network Error'), t('messages.checkConnection'));
         } finally {
             setLoading(false);

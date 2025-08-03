@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
 
@@ -81,7 +82,7 @@ export default function AddCarScreen({ navigation, route }) {
 
                 <View style={styles.inputContainer}>
                     <MaterialIcons name="palette" size={20} color="#4285F4" style={styles.inputIcon} />
-                    <TextInput
+                    <FarsiTextInput
                         style={styles.input}
                         placeholder= {t('messages.color')}
                         value={color}
@@ -92,7 +93,7 @@ export default function AddCarScreen({ navigation, route }) {
 
                 <View style={styles.inputContainer}>
                     <MaterialIcons name="calendar-today" size={20} color="#4285F4" style={styles.inputIcon} />
-                    <TextInput
+                    <FarsiTextInput
                         style={styles.input}
                         placeholder= {t('messages.year')}
                         value={year}
@@ -104,7 +105,7 @@ export default function AddCarScreen({ navigation, route }) {
 
                 <View style={styles.inputContainer}>
                     <MaterialIcons name="confirmation-number" size={20} color="#4285F4" style={styles.inputIcon} />
-                    <TextInput
+                    <FarsiTextInput
                         style={styles.input}
                         placeholder= {t('messages.license')}
                         value={licensePlate}

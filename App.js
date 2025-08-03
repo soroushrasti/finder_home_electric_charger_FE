@@ -175,6 +175,8 @@ function Home({ navigation }) {
 
 export default function App() {
     const [user, setUser] = useState(null);
+    const { t } = useTranslation();
+
 
     const handleLogout = () => {
         setUser(null);
@@ -236,7 +238,7 @@ export default function App() {
                             component={Home}
                             options={{
                                 headerShown: true,
-                                title: 'EV Charger',
+                                title: t("messages.appTitle"),
                                 ...screenOptions
                             }}
                         />
@@ -275,21 +277,21 @@ export default function App() {
                         {user.user_type === null ? (
                             <Stack.Screen
                                 name="CombinedDashboardScreen"
-                                options={{ title: 'Dashboard' }}
+                                options={{ title: t("messages.dashboard") }}
                             >
                                 {props => <CombinedDashboardScreen {...props} user={user} />}
                             </Stack.Screen>
                         ) : user.user_type === 'Electric car owner' ? (
                             <Stack.Screen
                                 name="CarOwnerScreen"
-                                options={{ title: 'Dashboard' }}
+                                options={{ title: t("messages.dashboard") }}
                             >
                                 {props => <CarOwnerScreen {...props} user={user} />}
                             </Stack.Screen>
                         ) : (
                             <Stack.Screen
                                 name="HomeOwnerScreen"
-                                options={{ title: 'Dashboard' }}
+                                options={{ title: t("messages.dashboard") }}
                             >
                                 {props => <HomeOwnerScreen {...props} user={user} />}
                             </Stack.Screen>

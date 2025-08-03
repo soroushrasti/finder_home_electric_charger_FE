@@ -266,7 +266,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                         <FarsiText style={styles.label}>{t('messages.passwordConfirm')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
-                            <FarsiTextInput
+                            <TextInput
                                 style={styles.input}
                                 placeholder= {t('messages.confirmingPass')}
                                 value={formData.confirmPassword}

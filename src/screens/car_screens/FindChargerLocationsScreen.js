@@ -193,7 +193,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                             <MaterialIcons name="flash-on" size={24} color="#FF6B35" />
                             <View style={styles.switchTextContainer}>
                                 <FarsiText style={styles.switchLabel}>{t('messages.fastCharging')}</FarsiText>
-                                <Text style={styles.switchSubtitle}>{t('messages.filterStation')}</Text>
+                                <FarsiText style={styles.switchSubtitle}>{t('messages.filterStation')}</FarsiText>
                             </View>
                         </View>
                         <Switch
@@ -212,7 +212,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                         activeOpacity={0.8}
                     >
                         <MaterialIcons name="clear" size={20} color="#666" />
-                        <Text style={styles.clearButtonText}>{t('messages.clear')}</Text>
+                        <FarsiText style={styles.clearButtonText}>{t('messages.clear')}</FarsiText>
                     </TouchableOpacity>
 
                     <TouchableOpacity
@@ -232,9 +232,9 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                             ) : (
                                 <MaterialIcons name="search" size={24} color="#fff" />
                             )}
-                            <Text style={styles.searchButtonText}>
+                            <FarsiText style={styles.searchButtonText}>
                                 {loading ? t('messages.searching') : t('messages.searchLocation')}
-                            </Text>
+                            </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>

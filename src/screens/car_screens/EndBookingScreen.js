@@ -124,23 +124,23 @@ export default function EndBookingScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="stop-circle" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.title}>{t('messages.endSession')}</Text>
-                    <Text style={styles.subtitle}>
+                    <FarsiText style={styles.title}>{t('messages.endSession')}</FarsiText>
+                    <FarsiText style={styles.subtitle}>
                         {t('messages.completeAndShare')}
-                    </Text>
+                    </FarsiText>
                 </LinearGradient>
 
                 <View style={styles.bookingInfoCard}>
                     <View style={styles.bookingHeader}>
                         <MaterialIcons name="confirmation-number" size={24} color="#667eea" />
-                        <Text style={styles.bookingTitle}>{t('messages.sessionDetail')}</Text>
+                        <FarsiText style={styles.bookingTitle}>{t('messages.sessionDetail')}</FarsiText>
                     </View>
 
                     <View style={styles.infoGrid}>
                         <View style={styles.infoItem}>
                             <MaterialIcons name="confirmation-number" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>{t('messages.bookingId')}</Text>
+                                <FarsiText style={styles.infoLabel}>{t('messages.bookingId')}</FarsiText>
                                 <Text style={styles.infoValue}>#{booking?.booking_id || 'N/A'}</Text>
                             </View>
                         </View>
@@ -148,7 +148,7 @@ export default function EndBookingScreen({ navigation, route }) {
                         <View style={styles.infoItem}>
                             <MaterialIcons name="directions-car" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>{t('messages.carId')}</Text>
+                                <FarsiText style={styles.infoLabel}>{t('messages.carId')}</FarsiText>
                                 <Text style={styles.infoValue}>{booking?.car_id || 'N/A'}</Text>
                             </View>
                         </View>
@@ -156,7 +156,7 @@ export default function EndBookingScreen({ navigation, route }) {
                         <View style={styles.infoItem}>
                             <MaterialIcons name="location-on" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>{t('messages.locId')}</Text>
+                                <FarsiText style={styles.infoLabel}>{t('messages.locId')}</FarsiText>
                                 <Text style={styles.infoValue}>{booking?.charging_location_id || 'N/A'}</Text>
                             </View>
                         </View>
@@ -164,7 +164,7 @@ export default function EndBookingScreen({ navigation, route }) {
                         <View style={styles.infoItem}>
                             <MaterialIcons name="schedule" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <Text style={styles.infoLabel}>{t('messages.started')}</Text>
+                                <FarsiText style={styles.infoLabel}>{t('messages.started')}</FarsiText>
                                 <Text style={styles.infoValue}>
                                     {booking?.start_time ? formatDate(booking.start_time) : 'N/A'}
                                 </Text>
@@ -176,13 +176,13 @@ export default function EndBookingScreen({ navigation, route }) {
                 {renderStarRating()}
 
                 <View style={styles.reviewContainer}>
-                    <Text style={styles.reviewLabel}>{t('messages.shareExp')}</Text>
-                    <Text style={styles.reviewSubtext}>
+                    <FarsiText style={styles.reviewLabel}>{t('messages.shareExp')}</FarsiText>
+                    <FarsiText style={styles.reviewSubtext}>
                         {t('messages.tellUs')}
-                    </Text>
+                    </FarsiText>
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="comment" size={20} color="#667eea" style={styles.inputIcon} />
-                        <TextInput
+                        <FarsiTextInput
                             style={styles.messageInput}
                             placeholder={t('messages.chargingQuestion')}
                             value={reviewMessage}
@@ -212,17 +212,17 @@ export default function EndBookingScreen({ navigation, route }) {
                             size={24}
                             color="#fff"
                         />
-                        <Text style={styles.buttonText}>
+                        <FarsiText style={styles.buttonText}>
                             {loading ? t('messages.endingSession') : t('messages.endChargeSession')}
-                        </Text>
+                        </FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
 
                 <View style={styles.noteContainer}>
                     <MaterialIcons name="info" size={20} color="#ff9800" />
-                    <Text style={styles.noteText}>
+                    <FarsiText style={styles.noteText}>
                         {t('messages.finalizeBooking')}
-                    </Text>
+                    </FarsiText>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

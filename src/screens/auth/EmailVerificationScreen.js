@@ -14,6 +14,8 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
+import FarsiTextInput from  "../../components/FarsiTextInput";
+import FarsiText from  "../../components/FarsiText";
 
 
 export default function EmailVerificationScreen({ navigation, route, setUser }) {
@@ -164,10 +166,10 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                         <View style={styles.iconContainer}>
                             <MaterialIcons name="error" size={40} color="#fff" />
                         </View>
-                        <Text style={styles.headerTitle}>{t('messages.error')}</Text>
-                        <Text style={styles.headerSubtitle}>
+                        <FarsiText style={styles.headerTitle}>{t('messages.error')}</FarsiText>
+                        <FarsiText style={styles.headerSubtitle}>
                             {t('messages.registerInfo')}
-                        </Text>
+                        </FarsiText>
                     </View>
                 </LinearGradient>
             </View>
@@ -195,17 +197,17 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="mark-email-read" size={40} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>{t('messages.emailVerify')}</Text>
-                    <Text style={styles.headerSubtitle}>
+                    <FarsiText style={styles.headerTitle}>{t('messages.emailVerify')}</FarsiText>
+                    <FarsiText style={styles.headerSubtitle}>
                         {t('messages.sendingVerify')} {'\n'}
                         <Text style={styles.emailText}>{userEmail}</Text>
-                    </Text>
+                    </FarsiText>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.codeContainer}>
-                    <Text style={styles.instructionText}>{t('messages.enterVerify')}</Text>
+                    <FarsiText style={styles.instructionText}>{t('messages.enterVerify')}</FarsiText>
 
                     <View style={styles.codeInputContainer}>
                         {verificationCode.map((digit, index) => (
@@ -233,12 +235,12 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                         onPress={handleResendCode}
                         disabled={resendLoading}
                     >
-                        <Text style={styles.resendText}>
+                        <FarsiText style={styles.resendText}>
                             {t('messages.noCode')} {' '}
-                            <Text style={styles.resendLink}>
+                            <FarsiText style={styles.resendLink}>
                                 {resendLoading ? t('messages.resending') : t('messages.resend')}
-                            </Text>
-                        </Text>
+                            </FarsiText>
+                        </FarsiText>
                     </TouchableOpacity>
                 </View>
 
@@ -260,9 +262,9 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                             ) : (
                                 <MaterialIcons name="verified" size={24} color="#fff" />
                             )}
-                            <Text style={styles.verifyButtonText}>
+                            <FarsiText style={styles.verifyButtonText}>
                                 {loading ? t('messages.verify') : t('messages.emailVerifying')}
-                            </Text>
+                            </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>

@@ -25,7 +25,7 @@ export default function CarBookingsScreen({ navigation, route }) {
                     style={styles.backButton}
                     onPress={() => navigation.goBack()}
                 >
-                    <Text style={styles.backButtonText}>{t('messages.goBack')}</Text>
+                    <FarsiText style={styles.backButtonText}>{t('messages.goBack')}</FarsiText>
                 </TouchableOpacity>
             </View>
         );
@@ -130,12 +130,12 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingActions}>
                 <TouchableOpacity style={styles.viewButton}>
                     <MaterialIcons name="visibility" size={16} color="#667eea" />
-                    <Text style={styles.viewButtonText}>{t('messages.view')}</Text>
+                    <FarsiText style={styles.viewButtonText}>{t('messages.view')}</FarsiText>
                 </TouchableOpacity>
                 {item.status?.toLowerCase() === 'active' && (
                     <TouchableOpacity style={styles.endButton}>
                         <MaterialIcons name="stop" size={16} color="#ff6b6b" />
-                        <Text style={styles.endButtonText}>{t('messages.end')}</Text>
+                        <FarsiText style={styles.endButtonText}>{t('messages.end')}</FarsiText>
                     </TouchableOpacity>
                 )}
             </View>
@@ -146,7 +146,7 @@ export default function CarBookingsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="history" size={64} color="#ccc" />
-                <Text style={styles.loadingText}>{t('messages.loadingBooking')}</Text>
+                <FarsiText style={styles.loadingText}>{t('messages.loadingBooking')}</FarsiText>
             </View>
         );
     }
@@ -174,7 +174,7 @@ export default function CarBookingsScreen({ navigation, route }) {
                         end={{ x: 1, y: 0 }}
                     >
                         <MaterialIcons name="add" size={20} color="#fff" />
-                        <Text style={styles.addBookingText}>{t('messages.newBooking')}</Text>
+                        <FarsiText style={styles.addBookingText}>{t('messages.newBooking')}</FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
@@ -182,15 +182,15 @@ export default function CarBookingsScreen({ navigation, route }) {
             {bookings.length === 0 ? (
                 <View style={styles.centered}>
                     <MaterialIcons name="event_busy" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>{t('messages.noBooking')}</Text>
-                    <Text style={styles.emptySubtext}>
+                    <FarsiText style={styles.emptyText}>{t('messages.noBooking')}</FarsiText>
+                    <FarsiText style={styles.emptySubtext}>
                         {t('messages.startSession')}
-                    </Text>
+                    </FarsiText>
                     <TouchableOpacity
                         style={styles.getStartedButton}
                         onPress={() => navigation.navigate('FindChargerLocationsScreenForCar', { car, user })}
                     >
-                        <Text style={styles.getStartedText}>{t('messages.findCharger')}</Text>
+                        <FarsiText style={styles.getStartedText}>{t('messages.findCharger')}</FarsiText>
                     </TouchableOpacity>
                 </View>
             ) : (

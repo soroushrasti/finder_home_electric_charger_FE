@@ -88,32 +88,32 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="confirmation-number" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.title}>{t('messages.bookingConfirm')}</Text>
-                    <Text style={styles.subtitle}>
+                    <FarsiText style={styles.title}>{t('messages.bookingConfirm')}</FarsiText>
+                    <FarsiText style={styles.subtitle}>
                         {t('messages.review')}
-                    </Text>
+                    </FarsiText>
                 </LinearGradient>
 
                 <View style={styles.carInfoCard}>
                     <View style={styles.cardHeader}>
                         <MaterialIcons name="directions-car" size={24} color="#667eea" />
-                        <Text style={styles.cardTitle}>{t('messages.vehicle')}</Text>
+                        <FarsiText style={styles.cardTitle}>{t('messages.vehicle')}</FarsiText>
                     </View>
                     <View style={styles.infoGrid}>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>{t('messages.model')}</Text>
+                            <FarsiText style={styles.infoLabel}>{t('messages.model')}</FarsiText>
                             <Text style={styles.infoValue}>{car?.model || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>{t('messages.licensePlate')}</Text>
+                            <FarsiText style={styles.infoLabel}>{t('messages.licensePlate')}</FarsiText>
                             <Text style={styles.infoValue}>{car?.license_plate || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>{t('messages.yearCar')}</Text>
+                            <FarsiText style={styles.infoLabel}>{t('messages.yearCar')}</FarsiText>
                             <Text style={styles.infoValue}>{car?.year || 'N/A'}</Text>
                         </View>
                         <View style={styles.infoItem}>
-                            <Text style={styles.infoLabel}>{t('messages.colorCar')}</Text>
+                            <FarsiText style={styles.infoLabel}>{t('messages.colorCar')}</FarsiText>
                             <Text style={styles.infoValue}>{car?.color || 'N/A'}</Text>
                         </View>
                     </View>
@@ -122,7 +122,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                 <View style={styles.locationCard}>
                     <View style={styles.cardHeader}>
                         <MaterialIcons name="ev-station" size={24} color="#667eea" />
-                        <Text style={styles.cardTitle}>{t('messages.chargingStation')}</Text>
+                        <FarsiText style={styles.cardTitle}>{t('messages.chargingStation')}</FarsiText>
                     </View>
                     <View style={styles.locationInfo}>
                         <View style={styles.locationRow}>
@@ -140,17 +140,17 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                         <View style={styles.featureGrid}>
                             <View style={styles.featureItem}>
                                 <MaterialIcons name="electric-bolt" size={20} color="#667eea" />
-                                <Text style={styles.featureLabel}>{t('messages.power')}</Text>
+                                <FarsiText style={styles.featureLabel}>{t('messages.power')}</FarsiText>
                                 <Text style={styles.featureValue}>
                                     {chargingLocation?.power_output || 'N/A'} kW
                                 </Text>
                             </View>
                             <View style={styles.featureItem}>
                                 <MaterialIcons name="speed" size={20} color="#667eea" />
-                                <Text style={styles.featureLabel}>{t('messages.chargingType')}</Text>
-                                <Text style={styles.featureValue}>
+                                <FarsiText style={styles.featureLabel}>{t('messages.chargingType')}</FarsiText>
+                                <FarsiText style={styles.featureValue}>
                                     {chargingLocation?.fast_charging ? t('messages.fastCharging') : t('messages.standard')}
-                                </Text>
+                                </FarsiText>
                             </View>
                         </View>
                     </View>
@@ -159,20 +159,20 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                 <View style={styles.pricingCard}>
                     <View style={styles.cardHeader}>
                         <MaterialIcons name="attach-money" size={24} color="#667eea" />
-                        <Text style={styles.cardTitle}>{t('messages.pricingInfo')}</Text>
+                        <FarsiText style={styles.cardTitle}>{t('messages.pricingInfo')}</FarsiText>
                     </View>
                     <View style={styles.pricingDetails}>
                         <View style={styles.pricingRow}>
-                            <Text style={styles.pricingLabel}>{t('messages.rate')}</Text>
+                            <FarsiText style={styles.pricingLabel}>{t('messages.rate')}</FarsiText>
                             <Text style={styles.pricingValue}>
                                 {formatPrice(chargingLocation?.price_per_hour)}/hour
                             </Text>
                         </View>
                         <View style={styles.pricingNote}>
                             <MaterialIcons name="info" size={16} color="#ff9800" />
-                            <Text style={styles.noteText}>
+                            <FarsiText style={styles.noteText}>
                                 {t('messages.charged')}
-                            </Text>
+                            </FarsiText>
                         </View>
                     </View>
                 </View>
@@ -184,17 +184,17 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                             size={24}
                             color={chargingLocation?.is_available ? "#4CAF50" : "#ff6b6b"}
                         />
-                        <Text style={[
+                        <FarsiText style={[
                             styles.availabilityText,
                             { color: chargingLocation?.is_available ? "#4CAF50" : "#ff6b6b" }
                         ]}>
                             {chargingLocation?.is_available ? t('messages.available') : t('messages.occupy')}
-                        </Text>
+                        </FarsiText>
                     </View>
                     {chargingLocation?.is_available && (
-                        <Text style={styles.availabilitySubtext}>
+                        <FarsiText style={styles.availabilitySubtext}>
                             {t('messages.stationReady')}
-                        </Text>
+                        </FarsiText>
                     )}
                 </View>
 
@@ -226,19 +226,19 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                             size={24}
                             color="#fff"
                         />
-                        <Text style={styles.buttonText}>
-                            {loading ? "Creating Booking..." :
-                                !chargingLocation?.is_available ? "Station Unavailable" :
-                                    "Confirm Booking"}
-                        </Text>
+                        <FarsiText style={styles.buttonText}>
+                            {loading ? t('messages.createBooking') :
+                                !chargingLocation?.is_available ? t('messages.unavailableStation') :
+                                    t('messages.bookingConfirm')}
+                        </FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
 
                 <View style={styles.termsCard}>
                     <MaterialIcons name="assignment" size={20} color="#ff9800" />
-                    <Text style={styles.termsText}>
+                    <FarsiText style={styles.termsText}>
                         {t('messages.ourService')}
-                    </Text>
+                    </FarsiText>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

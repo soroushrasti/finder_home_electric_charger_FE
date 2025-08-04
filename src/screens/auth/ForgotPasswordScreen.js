@@ -16,7 +16,7 @@ import env from "../../config/environment";
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/LanguageContext';
 import FarsiText from  "../../components/FarsiText";
-
+import FarsiTextInput from  "../../components/FarsiTextInput";
 
 export default function ForgotPasswordScreen({ navigation }) {
     const { t, i18n } = useTranslation();
@@ -93,20 +93,20 @@ export default function ForgotPasswordScreen({ navigation }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="lock-reset" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>{t('auth.resetPassword')}</Text>
-                    <Text style={styles.headerSubtitle}>{t('messages.resetPassword')}</Text>
+                    <FarsiText style={styles.headerTitle}>{t('auth.resetPassword')}</FarsiText>
+                    <FarsiText style={styles.headerSubtitle}>{t('messages.resetPassword')}</FarsiText>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}> {t('messages.passRecover')} 🔐</Text>
+                    <FarsiText style={styles.sectionTitle}> {t('messages.passRecover')} 🔐</FarsiText>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('auth.email')}</Text>
+                        <FarsiText style={styles.label}>{t('auth.email')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder= {t('messages.enterEmail')}
                                 value={email}
@@ -118,9 +118,9 @@ export default function ForgotPasswordScreen({ navigation }) {
                         </View>
                     </View>
 
-                    <Text style={styles.infoText}>
+                    <FarsiText style={styles.infoText}>
                         {t('messages.verificationCode')}
-                    </Text>
+                    </FarsiText>
                 </View>
 
                 <View style={styles.buttonContainer}>
@@ -141,9 +141,9 @@ export default function ForgotPasswordScreen({ navigation }) {
                             ) : (
                                 <MaterialIcons name="send" size={24} color="#fff" />
                             )}
-                            <Text style={styles.resetButtonText}>
+                            <FarsiText style={styles.resetButtonText}>
                                 {loading ? t('messages.sending') : t('auth.sendResetLink')}
-                            </Text>
+                            </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
 
@@ -151,9 +151,9 @@ export default function ForgotPasswordScreen({ navigation }) {
                         style={styles.loginRedirectButton}
                         onPress={() => navigation.navigate('Login')}
                     >
-                        <Text style={styles.loginRedirectText}>
-                            {t('auth.rememberPassword')} <Text style={styles.loginRedirectLink}>{t('auth.signIn')}</Text>
-                        </Text>
+                        <FarsiText style={styles.loginRedirectText}>
+                            {t('auth.rememberPassword')} <FarsiText style={styles.loginRedirectLink}>{t('auth.signIn')}</FarsiText>
+                        </FarsiText>
                     </TouchableOpacity>
                 </View>
             </View>

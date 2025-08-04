@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView,
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
 
@@ -227,10 +228,10 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <View style={styles.switchInfo}>
                             <MaterialIcons name="speed" size={24} color="#4285F4" />
                             <View style={styles.switchTextContainer}>
-                                <Text style={styles.switchLabel}>{t('messages.fastCharging')}</Text>
-                                <Text style={styles.switchDescription}>
+                                <FarsiText style={styles.switchLabel}>{t('messages.fastCharging')}</FarsiText>
+                                <FarsiText style={styles.switchDescription}>
                                     {('messages.enableDc')}
-                                </Text>
+                                </FarsiText>
                             </View>
                         </View>
                         <Switch
@@ -243,7 +244,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="description" size={20} color="#4285F4" style={styles.inputIcon} />
-                        <TextInput
+                        <FarsiTextInput
                             style={[styles.input, styles.multilineInput]}
                             placeholder={t('messages.description')}
                             value={formData.description}
@@ -271,36 +272,36 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             ) : (
                                 <MaterialIcons name="add-location" size={24} color="#fff" />
                             )}
-                            <Text style={styles.buttonText}>
-                                {loading ? "Adding Station..." : "Add Charging Station"}
-                            </Text>
+                            <FarsiText style={styles.buttonText}>
+                                {loading ? t('messages.addStation') : t('messages.addChargingStation')}
+                            </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
 
                 <View style={styles.benefitsCard}>
-                    <Text style={styles.benefitsTitle}>💡 {t('messages.benefits')}</Text>
+                    <FarsiText style={styles.benefitsTitle}>💡 {t('messages.benefits')}</FarsiText>
                     <View style={styles.benefitsList}>
                         <View style={styles.benefitItem}>
                             <MaterialIcons name="attach-money" size={16} color="#34A853" />
-                            <Text style={styles.benefitText}>{t('messages.earnIncome')}</Text>
+                            <FarsiText style={styles.benefitText}>{t('messages.earnIncome')}</FarsiText>
                         </View>
                         <View style={styles.benefitItem}>
                             <MaterialIcons name="eco" size={16} color="#34A853" />
-                            <Text style={styles.benefitText}>{t('messages.supportTransport')}</Text>
+                            <FarsiText style={styles.benefitText}>{t('messages.supportTransport')}</FarsiText>
                         </View>
                         <View style={styles.benefitItem}>
                             <MaterialIcons name="people" size={16} color="#34A853" />
-                            <Text style={styles.benefitText}>{t('messages.helpCommunity')}</Text>
+                            <FarsiText style={styles.benefitText}>{t('messages.helpCommunity')}</FarsiText>
                         </View>
                     </View>
                 </View>
 
                 <View style={styles.noteContainer}>
                     <MaterialIcons name="info" size={20} color="#ff9800" />
-                    <Text style={styles.noteText}>
+                    <FarsiText style={styles.noteText}>
                         {t('messages.requiredField')}
-                    </Text>
+                    </FarsiText>
                 </View>
             </ScrollView>
         </KeyboardAvoidingView>

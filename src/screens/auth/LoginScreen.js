@@ -15,6 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 
 
 console.log('API URL:', env.apiUrl);
@@ -139,20 +140,20 @@ export default function LoginScreen({ navigation, setUser }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="login" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>{t('messages.welcomeBackTitle')}</Text>
-                    <Text style={styles.headerSubtitle}>{t('messages.signing')}</Text>
+                    <FarsiText style={styles.headerTitle}>{t('messages.welcomeBackTitle')}</FarsiText>
+                    <FarsiText style={styles.headerSubtitle}>{t('messages.signing')}</FarsiText>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}> {t('messages.signIn')} 👋</Text>
+                    <FarsiText style={styles.sectionTitle}> {t('messages.signIn')} 👋</FarsiText>
 
                     <View style={styles.inputGroup}>
                         <FarsiText style={styles.label}>{t('messages.email')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="email" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder={t('messages.enterEmail')}
                                 value={formData.email}
@@ -168,7 +169,7 @@ export default function LoginScreen({ navigation, setUser }) {
                         <FarsiText style={styles.label}>{t('messages.pass')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder= {t('messages.enterPassword')}
                                 value={formData.password}
@@ -193,7 +194,7 @@ export default function LoginScreen({ navigation, setUser }) {
                         style={styles.forgotPasswordButton}
                         onPress={() => navigation.navigate('ForgotPassword')}
                     >
-                        <Text style={styles.forgotPasswordText}>{t('messages.passForgot')}</Text>
+                        <FarsiText style={styles.forgotPasswordText}>{t('messages.passForgot')}</FarsiText>
                     </TouchableOpacity>
                 </View>
 
@@ -215,9 +216,9 @@ export default function LoginScreen({ navigation, setUser }) {
                             ) : (
                                 <MaterialIcons name="login" size={24} color="#fff" />
                             )}
-                            <Text style={styles.loginButtonText}>
+                            <FarsiText style={styles.loginButtonText}>
                                 {loading ? t('messages.signingIn') : t('messages.signIn')}
-                            </Text>
+                            </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
 
@@ -225,9 +226,9 @@ export default function LoginScreen({ navigation, setUser }) {
                         style={styles.registerRedirectButton}
                         onPress={() => navigation.navigate('Register')}
                     >
-                        <Text style={styles.registerRedirectText}>
-                            {t('messages.noAccount')} <Text style={styles.registerRedirectLink}>{t('messages.accountCreating')}</Text>
-                        </Text>
+                        <FarsiText style={styles.registerRedirectText}>
+                            {t('messages.noAccount')} <FarsiText style={styles.registerRedirectLink}>{t('messages.accountCreating')}</FarsiText>
+                        </FarsiText>
                     </TouchableOpacity>
                 </View>
             </View>

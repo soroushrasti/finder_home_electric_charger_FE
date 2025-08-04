@@ -77,10 +77,10 @@ export default function CarOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="list-alt" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>{t('messages.myBooking')}</Text>
-                                <Text style={styles.enhancedCardSubtitle}>
+                                <FarsiText style={styles.enhancedCardTitle}>{t('messages.myBooking')}</FarsiText>
+                                <FarsiText style={styles.enhancedCardSubtitle}>
                                     {t('messages.viewCharging')}
-                                </Text>
+                                </FarsiText>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
                         </LinearGradient>
@@ -101,10 +101,10 @@ export default function CarOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="directions-car" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>{t('messages.myCar')}</Text>
-                                <Text style={styles.enhancedCardSubtitle}>
+                                <FarsiText style={styles.enhancedCardTitle}>{t('messages.myCar')}</FarsiText>
+                                <FarsiText style={styles.enhancedCardSubtitle}>
                                     {t('messages.manageVehicle')}
-                                </Text>
+                                </FarsiText>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
                         </LinearGradient>
@@ -112,7 +112,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                 </View>
 
                 <View style={styles.activitySection}>
-                    <Text style={styles.sectionTitle}>💰 {t('messages.spendSummary')}</Text>
+                    <FarsiText style={styles.sectionTitle}>💰 {t('messages.spendSummary')}</FarsiText>
                     <ActivityDashboard
                         userId={user?.user_id}
                         userType="car_owner"

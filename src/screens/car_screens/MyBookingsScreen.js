@@ -118,26 +118,26 @@ export default function MyBookingsScreen({ navigation, route }) {
                 <View style={styles.bookingDetails}>
                     <View style={styles.detailRow}>
                         <MaterialIcons name="directions-car" size={18} color="#666" />
-                        <Text style={styles.detailLabel}>{t('messages.carLicense')} </Text>
+                        <FarsiText style={styles.detailLabel}>{t('messages.carLicense')} </FarsiText>
                         <Text style={styles.detailValue}>{item.car.license_plate}</Text>
                     </View>
 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="location-on" size={18} color="#666" />
-                        <Text style={styles.detailLabel}>{t('messages.locAddress')}  </Text>
+                        <FarsiText style={styles.detailLabel}>{t('messages.locAddress')}  </FarsiText>
                         <Text style={styles.detailValue}>{item.charging_location.street}, {item.charging_location.alley}</Text>
                     </View>
 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="schedule" size={18} color="#666" />
-                        <Text style={styles.detailLabel}>{t('messages.started')} , ':'</Text>
+                        <FarsiText style={styles.detailLabel}>{t('messages.started')} , ':'</FarsiText>
                         <Text style={styles.detailValue}>{formatDate(item.start_time)}</Text>
                     </View>
 
                     {item.end_time && (
                         <View style={styles.detailRow}>
                             <MaterialIcons name="event-available" size={18} color="#666" />
-                            <Text style={styles.detailLabel}>{t('messages.ended')}</Text>
+                            <FarsiText style={styles.detailLabel}>{t('messages.ended')}</FarsiText>
                             <Text style={styles.detailValue}>{formatDate(item.end_time)}</Text>
                         </View>
                     )}
@@ -145,7 +145,7 @@ export default function MyBookingsScreen({ navigation, route }) {
                     {item.review_rate && (
                         <View style={styles.detailRow}>
                             <MaterialIcons name="star" size={18} color="#FFD700" />
-                            <Text style={styles.detailLabel}>{t('messages.rating')}</Text>
+                            <FarsiText style={styles.detailLabel}>{t('messages.rating')}</FarsiText>
                             <View style={styles.ratingContainer}>
                                 {[...Array(5)].map((_, index) => (
                                     <MaterialIcons
@@ -195,7 +195,7 @@ export default function MyBookingsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="history" size={64} color="#ccc" />
-                <Text style={styles.loadingText}>{t('messages.loadBooking')}</Text>
+                <FarsiText style={styles.loadingText}>{t('messages.loadBooking')}</FarsiText>
             </View>
         );
     }
@@ -211,10 +211,10 @@ export default function MyBookingsScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="history" size={60} color="#fff" />
                 </View>
-                <Text style={styles.title}>{t('messages.myBooking')}</Text>
-                <Text style={styles.subtitle}>
+                <FarsiText style={styles.title}>{t('messages.myBooking')}</FarsiText>
+                <FarsiText style={styles.subtitle}>
                     {t('messages.track')}
-                </Text>
+                </FarsiText>
             </LinearGradient>
 
             {bookings.length === 0 ? (
@@ -225,10 +225,10 @@ export default function MyBookingsScreen({ navigation, route }) {
                     }
                 >
                     <MaterialIcons name="event-busy" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>{t('messages.noBooking')}</Text>
-                    <Text style={styles.emptySubtext}>
+                    <FarsiText style={styles.emptyText}>{t('messages.noBooking')}</FarsiText>
+                    <FarsiText style={styles.emptySubtext}>
                         {t('messages.startCharge')}
-                    </Text>
+                    </FarsiText>
                     <TouchableOpacity
                         style={styles.findChargersButton}
                         onPress={() => navigation.navigate('FindChargerLocationsScreenForCar', { user })}
@@ -241,7 +241,7 @@ export default function MyBookingsScreen({ navigation, route }) {
                             end={{ x: 1, y: 0 }}
                         >
                             <MaterialIcons name="search" size={20} color="#fff" />
-                            <Text style={styles.findChargersText}>{t('messages.chargerFinding')}</Text>
+                            <FarsiText style={styles.findChargersText}>{t('messages.chargerFinding')}</FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
                 </ScrollView>

@@ -172,9 +172,9 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                             <MaterialIcons name="flash-on" size={24} color="#667eea" />
                             <View style={styles.switchTextContainer}>
                                 <FarsiText style={styles.switchLabel}>{t('messages.fastCharging')}</FarsiText>
-                                <Text style={styles.switchDescription}>
+                                <FarsiText style={styles.switchDescription}>
                                     {t('messages.showFastCharge')}
-                                </Text>
+                                </FarsiText>
                             </View>
                         </View>
                         <Switch
@@ -202,9 +202,9 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                                 size={24}
                                 color="#fff"
                             />
-                            <Text style={styles.buttonText}>
+                            <FarsiText style={styles.buttonText}>
                                 {loading ? t('messages.searching') : t('messages.findChargingLoc')}
-                            </Text>
+                            </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
                 </View>
@@ -217,15 +217,15 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     <View style={styles.tipsList}>
                         <View style={styles.tipItem}>
                             <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>{t('messages.specificPostCode')}</Text>
+                            <FarsiText style={styles.tipText}>{t('messages.specificPostCode')}</FarsiText>
                         </View>
                         <View style={styles.tipItem}>
                             <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>{t('messages.enableFastCharge')}</Text>
+                            <FarsiText style={styles.tipText}>{t('messages.enableFastCharge')}</FarsiText>
                         </View>
                         <View style={styles.tipItem}>
                             <MaterialIcons name="check" size={16} color="#4CAF50" />
-                            <Text style={styles.tipText}>{t('messages.requiredFields')}</Text>
+                            <FarsiText style={styles.tipText}>{t('messages.requiredFields')}</FarsiText>
                         </View>
                     </View>
                 </View>

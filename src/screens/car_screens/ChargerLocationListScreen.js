@@ -44,33 +44,33 @@ export default function ChargerLocationListScreen({ navigation, route }) {
                         size={16}
                         color="#fff"
                     />
-                    <Text style={styles.statusText}>{item.is_available ? t('messages.avail') : t('messages.occupied')}</Text>
+                    <FarsiText style={styles.statusText}>{item.is_available ? t('messages.avail') : t('messages.occupied')}</FarsiText>
                 </View>
             </View>
 
             <View style={styles.locationDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="electric-bolt" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>{t('messages.pw')}</Text>
-                    <Text style={styles.detailValue}>{item.power_output || 'N/A'} {t('messages.kw')}</Text>
+                    <FarsiText style={styles.detailLabel}>{t('messages.pw')}</FarsiText>
+                    <FarsiText style={styles.detailValue}>{item.power_output || 'N/A'} {t('messages.kw')}</FarsiText>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="attach-money" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>{t('messages.rat')}</Text>
+                    <FarsiText style={styles.detailLabel}>{t('messages.rat')}</FarsiText>
                     <Text style={styles.detailValue}>{formatPrice(item.price_per_hour)}/hour</Text>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="speed" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>{t('messages.type')}</Text>
-                    <Text style={styles.detailValue}>
+                    <FarsiText style={styles.detailLabel}>{t('messages.type')}</FarsiText>
+                    <FarsiText style={styles.detailValue}>
                         {item.fast_charging ? t('messages.fastCharging') : t('messages.standard')}
-                    </Text>
+                    </FarsiText>
                 </View>
             </View>
 
             <View style={styles.selectButton}>
                 <MaterialIcons name="arrow-forward" size={20} color="#667eea" />
-                <Text style={styles.selectText}>{t('messages.selectStation')}</Text>
+                <FarsiText style={styles.selectText}>{t('messages.selectStation')}</FarsiText>
             </View>
         </TouchableOpacity>
     );
@@ -86,7 +86,7 @@ export default function ChargerLocationListScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="list" size={60} color="#fff" />
                 </View>
-                <Text style={styles.title}>{t('messages.availableStation')}</Text>
+                <FarsiText style={styles.title}>{t('messages.availableStation')}</FarsiText>
                 <Text style={styles.subtitle}>
                     {chargingLocations.length} charging station{chargingLocations.length !== 1 ? 's' : ''} found
                 </Text>
@@ -103,17 +103,17 @@ export default function ChargerLocationListScreen({ navigation, route }) {
             {chargingLocations.length === 0 ? (
                 <ScrollView contentContainerStyle={styles.emptyContainer}>
                     <MaterialIcons name="ev-station" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>{t('messages.noStation')}</Text>
-                    <Text style={styles.emptySubtext}>
+                    <FarsiText style={styles.emptyText}>{t('messages.noStation')}</FarsiText>
+                    <FarsiText style={styles.emptySubtext}>
                         {t('messages.searchDifferent')}
-                    </Text>
+                    </FarsiText>
                     <TouchableOpacity
                         style={styles.backButton}
                         onPress={() => navigation.goBack()}
                         activeOpacity={0.8}
                     >
                         <MaterialIcons name="arrow-back" size={20} color="#667eea" />
-                        <Text style={styles.backText}>{t('messages.searchBack')}</Text>
+                        <FarsiText style={styles.backText}>{t('messages.searchBack')}</FarsiText>
                     </TouchableOpacity>
                 </ScrollView>
             ) : (

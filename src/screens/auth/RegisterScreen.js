@@ -8,7 +8,6 @@ import {
     Alert,
     ScrollView,
     ActivityIndicator,
-    KeyboardAvoidingView,
     Platform
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -17,6 +16,8 @@ import {useTranslation} from "react-i18next";
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import { Dimensions } from 'react-native';
 
 export default function RegisterScreen({ navigation, setUser }) {
     const { t, i18n } = useTranslation();
@@ -161,12 +162,8 @@ export default function RegisterScreen({ navigation, setUser }) {
     };
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
-        >
-            <LinearGradient
+        <View style={styles.container}>
+        <LinearGradient
                 colors={['#667eea', '#764ba2']}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
@@ -187,12 +184,15 @@ export default function RegisterScreen({ navigation, setUser }) {
                 </View>
             </LinearGradient>
 
-            <ScrollView
+            <KeyboardAwareScrollView
                 style={styles.content}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
                 contentContainerStyle={styles.scrollContent}
-
+                showsVerticalScrollIndicator={true}
+                keyboardShouldPersistTaps="handled"
+                enableOnAndroid={true}
+                extraScrollHeight={150} // Increased to push content higher
+                enableResetScrollToCoords={false} // Prevent auto-reset
+                scrollToOverflowEnabled={true}
             >
                 <View style={styles.formContainer}>
                     <FarsiText style={styles.sectionTitle}>{t('messages.personalInfo')}</FarsiText>
@@ -372,8 +372,8 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </ScrollView>
-        </KeyboardAvoidingView>
+            </KeyboardAwareScrollView>
+        </View>
     );
 }
 
@@ -423,11 +423,10 @@ const styles = StyleSheet.create({
     },
     scrollContent: {
         flexGrow: 1,
-        paddingBottom: 50, // Extra padding for keyboard
+        paddingBottom: 120, // Increased padding for button clearance
     },
     content: {
         flex: 1,
-        backgroundColor: '#f8f9fa', // Match container background
     },
     formContainer: {
         padding: 20,
@@ -525,8 +524,9 @@ const styles = StyleSheet.create({
         opacity: 0.9,
     },
     buttonContainer: {
-        paddingTop: 20,
-        paddingBottom: 40,
+        paddingTop: 30,
+        paddingBottom: 150, // Increased to prevent overlap
+        marginTop: 20
     },
     registerButton: {
         borderRadius: 12,

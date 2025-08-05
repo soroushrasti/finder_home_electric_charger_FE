@@ -379,6 +379,20 @@
     "found": "یافت شد",
     "totalEx": "مجموع هزینه ها",
     "totalEa": "کل درآمد",
-    "dashboard": "داشبورد"
+    "dashboard": "داشبورد",
+    "addVehicle": "وسیله نقلیه را اضافه کنید",
+    "myVehicle": "وسیله نقلیه من",
+    "findCharger": "شارژرهای ماشین را پیدا کنید",
+    "listCharger": "لیست شارژرهای بدون ماشین",
+    "carSelection": "انتخاب ماشین بعد از مکان",
+    "endCharging": "پایان شارژ",
+    "confirmBooking": "تایید رزرو",
+    "locChargerList": "لیست شارژر مکان",
+    "addStation": "اضافه کردن ایستگاه",
+    "createBooking": "ایجاد رزرو...",
+    "unavailableStation": "ایستگاه در دسترس نیست",
+    "bookingConfirm": "رزرو را تایید کنید",
+    "addStation": "افزودن ایستگاه...",
+    "addChargingStation": "اضافه کردن ایستگاه شارژ"
   }
 }

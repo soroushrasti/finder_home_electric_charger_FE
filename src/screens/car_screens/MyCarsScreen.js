@@ -75,14 +75,14 @@ export default function MyCarsScreen({ navigation, route }) {
                 </View>
                 <View style={styles.statusContainer}>
                     <View style={[styles.statusDot, { backgroundColor: '#4CAF50' }]} />
-                    <Text style={styles.statusText}>{t('messages.active')}</Text>
+                    <FarsiText style={styles.statusText}>{t('messages.active')}</FarsiText>
                 </View>
             </View>
 
             <View style={styles.carActions}>
                 <TouchableOpacity style={styles.actionButton}>
                     <MaterialIcons name="edit" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>{t('messages.edit')}</Text>
+                    <FarsiText style={styles.actionText}>{t('messages.edit')}</FarsiText>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.actionButton}
@@ -98,7 +98,7 @@ export default function MyCarsScreen({ navigation, route }) {
                     })}
                 >
                     <MaterialIcons name="history" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>{t('messages.history')}</Text>
+                    <FarsiText style={styles.actionText}>{t('messages.history')}</FarsiText>
                 </TouchableOpacity>
             </View>
         </View>
@@ -108,7 +108,7 @@ export default function MyCarsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="directions-car" size={64} color="#ccc" />
-                <Text style={styles.loadingText}>{t('messages.loadCars')}</Text>
+                <FarsiText style={styles.loadingText}>{t('messages.loadCars')}</FarsiText>
             </View>
         );
     }
@@ -129,7 +129,7 @@ export default function MyCarsScreen({ navigation, route }) {
                         end={{ x: 1, y: 0 }}
                     >
                         <MaterialIcons name="add" size={20} color="#fff" />
-                        <Text style={styles.addButtonText}>{t('messages.adCar')}</Text>
+                        <FarsiText style={styles.addButtonText}>{t('messages.adCar')}</FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
             </View>
@@ -137,15 +137,15 @@ export default function MyCarsScreen({ navigation, route }) {
             {cars.length === 0 ? (
                 <View style={styles.centered}>
                     <MaterialIcons name="directions-car" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>{t('messages.noCarRegister')}</Text>
-                    <Text style={styles.emptySubtext}>
+                    <FarsiText style={styles.emptyText}>{t('messages.noCarRegister')}</FarsiText>
+                    <FarsiText style={styles.emptySubtext}>
                         {t('messages.addFirstCar')}
-                    </Text>
+                    </FarsiText>
                     <TouchableOpacity
                         style={styles.getStartedButton}
                         onPress={handleAddCar}
                     >
-                        <Text style={styles.getStartedText}>{t('messages.addFirst')}</Text>
+                        <FarsiText style={styles.getStartedText}>{t('messages.addFirst')}</FarsiText>
                     </TouchableOpacity>
                 </View>
             ) : (

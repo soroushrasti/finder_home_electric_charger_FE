@@ -71,7 +71,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         <Text style={styles.criteriaItem}>🛣️ {searchCriteria.street}</Text>
                     )}
                     {searchCriteria.fast_charging && (
-                        <Text style={styles.criteriaItem}>⚡ {t('messages.fastCharging')}</Text>
+                        <FarsiText style={styles.criteriaItem}>⚡ {t('messages.fastCharging')}</FarsiText>
                     )}
                 </View>
             </View>
@@ -95,12 +95,12 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             >
                 <View style={styles.cardHeader}>
                     <View style={styles.locationInfo}>
-                        <Text style={styles.locationTitle}>
+                        <FarsiText style={styles.locationTitle}>
                             {location.street_address || t('messages.chargingStation')}
-                        </Text>
-                        <Text style={styles.locationAddress}>
+                        </FarsiText>
+                        <FarsiText style={styles.locationAddress}>
                             {location.city}, {location.state || t('messages.unknown')}
-                        </Text>
+                        </FarsiText>
                         {location.postcode && (
                             <Text style={styles.locationPostcode}>
                                 Postcode: {location.postcode}
@@ -111,18 +111,18 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         styles.statusBadge,
                         { backgroundColor: isAvailable ? '#4CAF50' : '#f44336' }
                     ]}>
-                        <Text style={styles.statusText}>
+                        <FarsiText style={styles.statusText}>
                             {isAvailable ? t('messages.avail') : t('messages.occupied')}
-                        </Text>
+                        </FarsiText>
                     </View>
                 </View>
 
                 <View style={styles.cardDetails}>
                     <View style={styles.detailRow}>
                         <MaterialIcons name="flash-on" size={20} color="#FF6B35" />
-                        <Text style={styles.detailText}>
+                        <FarsiText style={styles.detailText}>
                             {location.fast_charging ? t('messages.fastCharging') : t('messages.standardCharge')}
-                        </Text>
+                        </FarsiText>
                     </View>
 
                     <View style={styles.detailRow}>
@@ -152,14 +152,14 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
                 {isAvailable && (
                     <View style={styles.cardFooter}>
-                        <Text style={styles.selectText}>{t('messages.selectLoc')}</Text>
+                        <FarsiText style={styles.selectText}>{t('messages.selectLoc')}</FarsiText>
                         <MaterialIcons name="arrow-forward" size={20} color="#4CAF50" />
                     </View>
                 )}
 
                 {!isAvailable && (
                     <View style={styles.cardFooter}>
-                        <Text style={styles.unavailableText}>{t('messages.unavailable')}</Text>
+                        <FarsiText style={styles.unavailableText}>{t('messages.unavailable')}</FarsiText>
                         <MaterialIcons name="block" size={20} color="#f44336" />
                     </View>
                 )}
@@ -171,7 +171,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
         return (
             <View style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#4CAF50" />
-                <Text style={styles.loadingText}>{t('messages.loadingLocation')}</Text>
+                <FarsiText style={styles.loadingText}>{t('messages.loadingLocation')}</FarsiText>
             </View>
         );
     }
@@ -192,10 +192,10 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                 </TouchableOpacity>
                 <View style={styles.headerContent}>
                     <MaterialIcons name="ev-station" size={40} color="#fff" />
-                    <Text style={styles.headerTitle}>{t('messages.availableChargingStation')}</Text>
-                    <Text style={styles.headerSubtitle}>
+                    <FarsiText style={styles.headerTitle}>{t('messages.availableChargingStation')}</FarsiText>
+                    <FarsiText style={styles.headerSubtitle}>
                         {chargingLocations.length} {t('messages.loc')}{chargingLocations.length !== 1 ? t('messages.s') : ''} {t('messages.found')}
-                    </Text>
+                    </FarsiText>
                 </View>
             </LinearGradient>
 
@@ -206,15 +206,15 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     {chargingLocations.length === 0 ? (
                         <View style={styles.noResultsContainer}>
                             <MaterialIcons name="search-off" size={80} color="#ccc" />
-                            <Text style={styles.noResultsText}>{t('messages.noChargingLoc')}</Text>
-                            <Text style={styles.noResultsSubtext}>
+                            <FarsiText style={styles.noResultsText}>{t('messages.noChargingLoc')}</FarsiText>
+                            <FarsiText style={styles.noResultsSubtext}>
                                 {t('messages.tryAdjust')}
-                            </Text>
+                            </FarsiText>
                             <TouchableOpacity
                                 style={styles.searchAgainButton}
                                 onPress={() => navigation.goBack()}
                             >
-                                <Text style={styles.searchAgainButtonText}>{t('messages.searchAgain')}</Text>
+                                <FarsiText style={styles.searchAgainButtonText}>{t('messages.searchAgain')}</FarsiText>
                             </TouchableOpacity>
                         </View>
                     ) : (

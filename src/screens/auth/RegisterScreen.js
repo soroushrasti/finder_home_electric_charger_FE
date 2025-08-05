@@ -273,7 +273,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                         <FarsiText style={styles.label}>{t('messages.passwordConfirm')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="lock" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder= {t('messages.confirmingPass')}
                                 value={formData.confirmPassword}
@@ -367,7 +367,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                             onPress={() => navigation.navigate('Login')}
                         >
                             <FarsiText style={styles.loginRedirectText}>
-                                {t('messages.haveAccount')} <Text style={styles.loginRedirectLink}>{t('messages.signIn')}</Text>
+                                {t('messages.haveAccount')} <FarsiText style={styles.loginRedirectLink}>{t('messages.signIn')}</FarsiText>
                             </FarsiText>
                         </TouchableOpacity>
                     </View>

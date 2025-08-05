@@ -15,7 +15,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
-
+import FarsiTextInput from  "../../components/FarsiTextInput";
 
 export default function NewPasswordScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -90,20 +90,20 @@ export default function NewPasswordScreen({ navigation, route }) {
                     <View style={styles.iconContainer}>
                         <MaterialIcons name="lock-outline" size={60} color="#fff" />
                     </View>
-                    <Text style={styles.headerTitle}>{t('messages.newPass')}</Text>
-                    <Text style={styles.headerSubtitle}>{t('messages.setPass')}</Text>
+                    <FarsiText style={styles.headerTitle}>{t('messages.newPass')}</FarsiText>
+                    <FarsiText style={styles.headerSubtitle}>{t('messages.setPass')}</FarsiText>
                 </View>
             </LinearGradient>
 
             <View style={styles.content}>
                 <View style={styles.formContainer}>
-                    <Text style={styles.sectionTitle}>🔒 {t('messages.createPass')}</Text>
+                    <FarsiText style={styles.sectionTitle}>🔒 {t('messages.createPass')}</FarsiText>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.newPass')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.newPass')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder= {t('messages.enterPassword')}
                                 secureTextEntry
@@ -115,10 +115,10 @@ export default function NewPasswordScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputGroup}>
-                        <Text style={styles.label}>{t('messages.confirmPass')}</Text>
+                        <FarsiText style={styles.label}>{t('messages.confirmPass')}</FarsiText>
                         <View style={styles.inputContainer}>
                             <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
                                 placeholder= {t('messages.confirm')}
                                 secureTextEntry
@@ -148,18 +148,18 @@ export default function NewPasswordScreen({ navigation, route }) {
                             ) : (
                                 <MaterialIcons name="send" size={24} color="#fff" />
                             )}
-                            <Text style={styles.resetButtonText}>
+                            <FarsiText style={styles.resetButtonText}>
                                 {loading ? t('messages.update'): t('messages.updatePass')}
-                            </Text>
+                            </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.loginRedirectButton}
                         onPress={() => navigation.navigate('Login')}
                     >
-                        <Text style={styles.loginRedirectText}>
-                            {t('messages.back')} <Text style={styles.loginRedirectLink}>{t('messages.signIn')}</Text>
-                        </Text>
+                        <FarsiText style={styles.loginRedirectText}>
+                            {t('messages.back')} <FarsiText style={styles.loginRedirectLink}>{t('messages.signIn')}</FarsiText>
+                        </FarsiText>
                     </TouchableOpacity>
                 </View>
             </View>

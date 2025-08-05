@@ -5,6 +5,7 @@ import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
 
@@ -173,7 +174,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
         return (
             <View style={styles.centered}>
                 <ActivityIndicator size="large" color="#4285F4" />
-                <Text style={styles.loadingText}>{t('messages.findingLoc')}</Text>
+                <FarsiText style={styles.loadingText}>{t('messages.findingLoc')}</FarsiText>
             </View>
         );
     }
@@ -181,8 +182,8 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
-                <Text style={styles.headerText}>{t('messages.selectExactLocation')}</Text>
-                <Text style={styles.subHeaderText}>{t('messages.tapPosition')}</Text>
+                <FarsiText style={styles.headerText}>{t('messages.selectExactLocation')}</FarsiText>
+                <FarsiText style={styles.subHeaderText}>{t('messages.tapPosition')}</FarsiText>
             </View>
 
             <MapView
@@ -214,7 +215,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>
                     <MaterialIcons name="check" size={24} color="#fff" />
-                    <Text style={styles.confirmButtonText}>{t('messages.confirmLoc')}</Text>
+                    <FarsiText style={styles.confirmButtonText}>{t('messages.confirmLoc')}</FarsiText>
                 </TouchableOpacity>
             </View>
         </View>

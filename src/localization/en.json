@@ -381,6 +381,20 @@
     "found" : "found",
     "totalEx": "Total Expenses",
     "totalEa": "Total Earnings",
-    "dashboard": "Dashboard"
+    "dashboard": "Dashboard",
+    "addVehicle": "Add Vehicle",
+    "myVehicle": "My Vehicles",
+    "findCharger": "Find Chargers for car",
+    "listCharger": "List Chargers without car",
+    "carSelection": "Car selection after location",
+    "endCharging": "End Charging",
+    "confirmBooking": "Booking confirmation",
+    "locChargerList": "Location charger list",
+    "addStation": "Add Station",
+    "createBooking": "Creating Booking...",
+    "unavailableStation": "Station Unavailable",
+    "bookingConfirm": "Confirm Booking",
+    "addStation": "Adding Station...",
+    "addChargingStation": "Add Charging Station"
   }
 }

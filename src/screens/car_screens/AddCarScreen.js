@@ -73,7 +73,7 @@ export default function AddCarScreen({ navigation, route }) {
             <View style={styles.form}>
                 <View style={styles.inputContainer}>
                     <MaterialIcons name="directions-car" size={20} color="#4285F4" style={styles.inputIcon} />
-                    <TextInput
+                    <FarsiTextInput
                         style={styles.input}
                         placeholder= {t('messages.carModel')}
                         value={model}

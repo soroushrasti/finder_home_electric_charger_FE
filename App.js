@@ -300,17 +300,17 @@ export default function App() {
                         {/* Car Owner Features - Show if user can use car features */}
                         {userCapabilities.canUseCarFeatures && (
                             <>
-                                <Stack.Screen name="AddCar" component={AddCarScreen} options={{ title: 'Add Vehicle' }} />
-                                <Stack.Screen name="CarBookings" component={CarBookingsScreen} options={{ title: 'My Vehicles' }} />
-                                <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: 'Find Chargers for car' }} />
-                                <Stack.Screen name="FindChargerLocationsScreen" component={FindChargerLocationsScreen} options={{ title: 'Find Chargers' }} />
-                                <Stack.Screen name="ChargerLocationListScreenWithoutCar" component={ChargerLocationListScreenWithoutCar} options={{ title: 'List Chargers without car' }} />
-                                <Stack.Screen name="CarSelectionScreen" component={CarSelectionScreen} options={{ title: 'Car selection after location' }} />
-                                <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: 'End Charging' }} />
-                                <Stack.Screen name="MyCars" component={MyCarsScreen} options={{ title: 'My Cars' }} />
-                                <Stack.Screen name="BookingConfirmationScreen" component={BookingConfirmationScreen} options={{ title: 'Booking confirmation' }} />
-                                <Stack.Screen name="ChargerLocationListScreen" component={ChargerLocationListScreen} options={{ title: 'Location charger list' }} />
-                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: 'My Bookings' }} />
+                                <Stack.Screen name="AddCar" component={AddCarScreen} options={{ title: t('messages.addVehicle') }} />
+                                <Stack.Screen name="CarBookings" component={CarBookingsScreen} options={{ title: t('messages.myVehicle') }} />
+                                <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: t('messages.findCharger') }} />
+                                <Stack.Screen name="FindChargerLocationsScreen" component={FindChargerLocationsScreen} options={{ title: t('messages.chargerFinding') }} />
+                                <Stack.Screen name="ChargerLocationListScreenWithoutCar" component={ChargerLocationListScreenWithoutCar} options={{ title: t('messages.listCharger') }} />
+                                <Stack.Screen name="CarSelectionScreen" component={CarSelectionScreen} options={{ title: t('messages.carSelection') }} />
+                                <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: t('messages.endCharging') }} />
+                                <Stack.Screen name="MyCars" component={MyCarsScreen} options={{ title: t('messages.myCar') }} />
+                                <Stack.Screen name="BookingConfirmationScreen" component={BookingConfirmationScreen} options={{ title: t('messages.confirmBooking') }} />
+                                <Stack.Screen name="ChargerLocationListScreen" component={ChargerLocationListScreen} options={{ title: t('messages.locChargerList') }} />
+                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />
 
                             </>
                         )}
@@ -318,10 +318,10 @@ export default function App() {
                         {/* Charger Provider Features - Show if user can use charger features */}
                         {userCapabilities.canUseChargerFeatures && (
                             <>
-                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: 'My Bookings' }} />
-                                <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: 'My Stations' }} />
-                                <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: 'Add Station' }} />
-                                <Stack.Screen name="FinalizeLocationOnMapScreen" component={FinalizeLocationOnMapScreen} options={{ title: 'Add Station' }} />
+                                <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />
+                                <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: t('messages.myStation') }} />
+                                <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: t('messages.addStation') }} />
+                                <Stack.Screen name="FinalizeLocationOnMapScreen" component={FinalizeLocationOnMapScreen} options={{ title: t('messages.addStation')}} />
                             </>
                         )}
                     </>

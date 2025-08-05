@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
 
@@ -73,34 +74,34 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                         size={16}
                         color="#fff"
                     />
-                    <Text style={styles.statusText}>{item.is_available ? t('messages.avail') : t('messages.occupied')}</Text>
+                    <FarsiText style={styles.statusText}>{item.is_available ? t('messages.avail') : t('messages.occupied')}</FarsiText>
                 </View>
             </View>
 
             <View style={styles.locationDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="electric-bolt" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>{t('messages.power')}:</Text>
-                    <Text style={styles.detailValue}>{item.power_output || 'N/A'} {t('messages.kw')}</Text>
+                    <FarsiText style={styles.detailLabel}>{t('messages.power')}:</FarsiText>
+                    <FarsiText style={styles.detailValue}>{item.power_output || 'N/A'} {t('messages.kw')}</FarsiText>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="attach-money" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>{t('messages.rat')}</Text>
-                    <Text style={styles.detailValue}>€{item.price_per_hour || 0}{t('messages.hour')}</Text>
+                    <FarsiText style={styles.detailLabel}>{t('messages.rat')}</FarsiText>
+                    <FarsiText style={styles.detailValue}>€{item.price_per_hour || 0}{t('messages.hour')}</FarsiText>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="speed" size={18} color="#667eea" />
-                    <Text style={styles.detailLabel}>{t('messages.type')}</Text>
-                    <Text style={styles.detailValue}>
+                    <FarsiText style={styles.detailLabel}>{t('messages.type')}</FarsiText>
+                    <FarsiText style={styles.detailValue}>
                         {item.fast_charging ? t('messages.fastCharging') : t('messages.standardCharge')}
-                    </Text>
+                    </FarsiText>
                 </View>
             </View>
 
             <View style={styles.locationActions}>
                 <TouchableOpacity style={styles.actionButton}>
                     <MaterialIcons name="edit" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>{t('messages.edit')}</Text>
+                    <FarsiText style={styles.actionText}>{t('messages.edit')}</FarsiText>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.actionButton}
@@ -110,7 +111,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                     })}
                 >
                     <MaterialIcons name="history" size={18} color="#667eea" />
-                    <Text style={styles.actionText}>{t('messages.booking')}</Text>
+                    <FarsiText style={styles.actionText}>{t('messages.booking')}</FarsiText>
                 </TouchableOpacity>
             </View>
         </View>
@@ -120,7 +121,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
         return (
             <View style={styles.centered}>
                 <MaterialIcons name="ev-station" size={64} color="#ccc" />
-                <Text style={styles.loadingText}>{t('messages.loadingLoc')}</Text>
+                <FarsiText style={styles.loadingText}>{t('messages.loadingLoc')}</FarsiText>
             </View>
         );
     }
@@ -136,10 +137,10 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="ev-station" size={60} color="#fff" />
                 </View>
-                <Text style={styles.title}>{t('messages.myChargingStation')}</Text>
-                <Text style={styles.subtitle}>
+                <FarsiText style={styles.title}>{t('messages.myChargingStation')}</FarsiText>
+                <FarsiText style={styles.subtitle}>
                     {t('messages.manageLocationPerformance')}
-                </Text>
+                </FarsiText>
                 <TouchableOpacity
                     style={styles.addButton}
                     onPress={() => navigation.navigate('ChargerLocationFormScreen', {
@@ -155,7 +156,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                         end={{ x: 1, y: 0 }}
                     >
                         <MaterialIcons name="add" size={20} color="#fff" />
-                        <Text style={styles.addButtonText}>{t('messages.addLocation')}</Text>
+                        <FarsiText style={styles.addButtonText}>{t('messages.addLocation')}</FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
             </LinearGradient>
@@ -168,10 +169,10 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                     }
                 >
                     <MaterialIcons name="ev-station" size={80} color="#ccc" />
-                    <Text style={styles.emptyText}>{t('messages.noStationYet')}</Text>
-                    <Text style={styles.emptySubtext}>
+                    <FarsiText style={styles.emptyText}>{t('messages.noStationYet')}</FarsiText>
+                    <FarsiText style={styles.emptySubtext}>
                         {t('messages.addStation')}
-                    </Text>
+                    </FarsiText>
                     <TouchableOpacity
                         style={styles.getStartedButton}
                         onPress={() => navigation.navigate('ChargerLocationFormScreen', {
@@ -187,7 +188,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                             end={{ x: 1, y: 0 }}
                         >
                             <MaterialIcons name="add-business" size={20} color="#fff" />
-                            <Text style={styles.getStartedText}>{t('messages.getStarted')}</Text>
+                            <FarsiText style={styles.getStartedText}>{t('messages.getStarted')}</FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>
                 </ScrollView>

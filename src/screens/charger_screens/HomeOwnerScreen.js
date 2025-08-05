@@ -4,6 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
 
@@ -30,9 +31,9 @@ export default function HomeOwnerScreen({ navigation, user }) {
                     <MaterialIcons name="home" size={60} color="#fff" />
                 </View>
                 <Text style={styles.title}>Welcome, {user?.first_name || 'Home Owner'}!</Text>
-                <Text style={styles.subtitle}>
+                <FarsiText style={styles.subtitle}>
                     {t('messages.manageLoc')}
-                </Text>
+                </FarsiText>
             </LinearGradient>
 
             <ScrollView
@@ -56,10 +57,10 @@ export default function HomeOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="add-location" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>{t('messages.addLoc')}</Text>
-                                <Text style={styles.enhancedCardSubtitle}>
+                                <FarsiText style={styles.enhancedCardTitle}>{t('messages.addLoc')}</FarsiText>
+                                <FarsiText style={styles.enhancedCardSubtitle}>
                                     {t('messages.registerStation')}
-                                </Text>
+                                </FarsiText>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
                         </LinearGradient>
@@ -80,10 +81,10 @@ export default function HomeOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="assignment" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>{t('messages.locBooking')}</Text>
-                                <Text style={styles.enhancedCardSubtitle}>
+                                <FarsiText style={styles.enhancedCardTitle}>{t('messages.locBooking')}</FarsiText>
+                                <FarsiText style={styles.enhancedCardSubtitle}>
                                     {t('messages.viewBooking')}
-                                </Text>
+                                </FarsiText>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
                         </LinearGradient>
@@ -104,10 +105,10 @@ export default function HomeOwnerScreen({ navigation, user }) {
                                 <View style={styles.enhancedIconContainer}>
                                     <MaterialIcons name="ev-station" size={48} color="#fff" />
                                 </View>
-                                <Text style={styles.enhancedCardTitle}>{t('messages.myStation')}</Text>
-                                <Text style={styles.enhancedCardSubtitle}>
+                                <FarsiText style={styles.enhancedCardTitle}>{t('messages.myStation')}</FarsiText>
+                                <FarsiText style={styles.enhancedCardSubtitle}>
                                     {t('messages.manageLocation')}
-                                </Text>
+                                </FarsiText>
                                 <MaterialIcons name="arrow-forward" size={28} color="#fff" style={styles.cardArrow} />
                             </View>
                         </LinearGradient>
@@ -116,7 +117,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
 
                 {/* Activity Dashboard moved to bottom with better title */}
                 <View style={styles.activitySection}>
-                    <Text style={styles.sectionTitle}>📊 {t('messages.performanceOverview')}</Text>
+                    <FarsiText style={styles.sectionTitle}>📊 {t('messages.performanceOverview')}</FarsiText>
                     <ActivityDashboard
                         userId={user?.user_id}
                         userType="location_owner"

@@ -164,6 +164,7 @@ export default function RegisterScreen({ navigation, setUser }) {
         <KeyboardAvoidingView
             style={styles.container}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 0 : 20}
         >
             <LinearGradient
                 colors={['#667eea', '#764ba2']}
@@ -186,7 +187,13 @@ export default function RegisterScreen({ navigation, setUser }) {
                 </View>
             </LinearGradient>
 
-            <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
+            <ScrollView
+                style={styles.content}
+                showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                contentContainerStyle={styles.scrollContent}
+
+            >
                 <View style={styles.formContainer}>
                     <FarsiText style={styles.sectionTitle}>{t('messages.personalInfo')}</FarsiText>
 
@@ -414,8 +421,13 @@ const styles = StyleSheet.create({
         opacity: 0.9,
         textAlign: 'center',
     },
+    scrollContent: {
+        flexGrow: 1,
+        paddingBottom: 50, // Extra padding for keyboard
+    },
     content: {
         flex: 1,
+        backgroundColor: '#f8f9fa', // Match container background
     },
     formContainer: {
         padding: 20,

@@ -9,51 +9,49 @@ import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
 
-export default function AddCarScreen({ navigation, route }) {
+export default function EditCarScreen({ navigation, route }) {
     const { t } = useTranslation();
-    const [model, setModel] = useState('');
-    const [color, setColor] = useState('');
-    const [year, setYear] = useState('');
-    const [licensePlate, setLicensePlate] = useState('');
+    const car = route.params;
+
+    const [model, setModel] = useState('car.model');
+    const [color, setColor] = useState('car.color');
+    const [year, setYear] = useState('car.year');
+    const [licensePlate, setLicensePlate] = useState('car.licensePlate');
     const [loading, setLoading] = useState(false);
 
     const user = route.params?.user;
-    const onCarAdded = route.params?.onCarAdded;
+    const onCarUpdated = route.params?.onCarUpdated;
 
-    const handleAddCar = async () => {
-        if (!model || !color || !year || !licensePlate) {
-            Alert.alert(t('messages.infoMissing'), t('messages.fillToContinue'));
-            return;
-        }
+    const handleUpdateCar = async () => {
 
         setLoading(true);
         try {
-            const response = await fetch(`${env.apiUrl}/add-car`, {
+            const response = await fetch(`${env.apiUrl}/update-car`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${env.apiToken} `,
                 },
                 body: JSON.stringify({
-                    user_id: user?.user_id,
+                    car_id: car?.car_id,
                     model,
                     color,
-                    year: parseFarsiInt(year),
-                    license_plate: licensePlate
+                    year,
+                    licensePlate
                 })
             });
 
             if (response.ok) {
-                Alert.alert(t('messages.success') ,  t('messages.addCar'));
-                if (onCarAdded) {
-                    onCarAdded();
+                Alert.alert(t('messages.success') ,  t('messages.updateCar'));
+                if (onCarUpdated) {
+                    onCarUpdated();
                 }
                 navigation.goBack();
             } else {
-                Alert.alert(t('messages.error'), t('messages.addCarFail'));
+                Alert.alert(t('messages.error'), t('messages.updateCarFail'));
             }
         } catch (error) {
-            console.error(t('messages.errorAddCar'), error);
+            console.error(t('messages.errorEditCar'), error);
             Alert.alert(t('messages.Network Error'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
@@ -66,8 +64,8 @@ export default function AddCarScreen({ navigation, route }) {
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="directions-car" size={50} color="#4285F4" />
                 </View>
-                <FarsiText style={styles.title}>{t('messages.addElCar')}</FarsiText>
-                <FarsiText style={styles.subtitle}>{t('messages.getVehicle')}</FarsiText>
+                <FarsiText style={styles.title}>{t('messages.editElCar')}</FarsiText>
+                <FarsiText style={styles.subtitle}>{t('messages.getEditVehicle')}</FarsiText>
             </View>
 
             <View style={styles.form}>
@@ -75,7 +73,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="directions-car" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder= {t('messages.carModel')}
+                        placeholder={car.model}
                         value={model}
                         onChangeText={setModel}
                         placeholderTextColor="#999"
@@ -86,7 +84,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="palette" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder= {t('messages.color')}
+                        placeholder= {car.color}
                         value={color}
                         onChangeText={setColor}
                         placeholderTextColor="#999"
@@ -97,7 +95,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="calendar-today" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder= {t('messages.year')}
+                        placeholder= {car.year}
                         value={year}
                         onChangeText={setYear}
                         keyboardType="numeric"
@@ -109,7 +107,7 @@ export default function AddCarScreen({ navigation, route }) {
                     <MaterialIcons name="confirmation-number" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder= {t('messages.license')}
+                        placeholder= {car.licensePlate}
                         value={licensePlate}
                         onChangeText={setLicensePlate}
                         autoCapitalize="characters"
@@ -119,7 +117,7 @@ export default function AddCarScreen({ navigation, route }) {
 
                 <TouchableOpacity
                     style={styles.addButton}
-                    onPress={handleAddCar}
+                    onPress={handleUpdateCar}
                     disabled={loading}
                     activeOpacity={0.8}
                 >
@@ -139,16 +137,6 @@ export default function AddCarScreen({ navigation, route }) {
                         </FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>
-            </View>
-
-            <View style={styles.infoCard}>
-                <MaterialIcons name="info" size={24} color="#4285F4" />
-                <View style={styles.infoText}>
-                    <FarsiText style={styles.infoTitle}>{t('messages.whyInfo')}</FarsiText>
-                    <FarsiText style={styles.infoDescription}>
-                        {t('messages.matchCarWithStation')}
-                    </FarsiText>
-                </View>
             </View>
         </ScrollView>
     );

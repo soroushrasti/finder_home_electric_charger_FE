@@ -11,22 +11,21 @@ import {useTranslation} from "react-i18next";
 
 export default function EditCarScreen({ navigation, route }) {
     const { t } = useTranslation();
-    const car = route.params;
+    const car = route.params.car;
+    const user = route.params.user;
+    const [model, setModel] = useState(car?.model || '');
+    const [color, setColor] = useState(car?.color || '');
+    const [year, setYear] = useState(car?.year?.toString() || '');
+    const [licensePlate, setLicensePlate] = useState(car?.licensePlate || '');
 
-    const [model, setModel] = useState('car.model');
-    const [color, setColor] = useState('car.color');
-    const [year, setYear] = useState('car.year');
-    const [licensePlate, setLicensePlate] = useState('car.licensePlate');
     const [loading, setLoading] = useState(false);
 
-    const user = route.params?.user;
-    const onCarUpdated = route.params?.onCarUpdated;
 
     const handleUpdateCar = async () => {
 
         setLoading(true);
         try {
-            const response = await fetch(`${env.apiUrl}/update-car`, {
+            const response = await fetch(`${env.apiUrl}/update-car/${car.car_id}`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -36,17 +35,16 @@ export default function EditCarScreen({ navigation, route }) {
                     car_id: car?.car_id,
                     model,
                     color,
-                    year,
-                    licensePlate
+                    year: parseInt(year) || car?.year, // Convert back to number for API
+                    license_plate: licensePlate
                 })
             });
 
             if (response.ok) {
                 Alert.alert(t('messages.success') ,  t('messages.updateCar'));
-                if (onCarUpdated) {
-                    onCarUpdated();
-                }
-                navigation.goBack();
+                navigation.navigate('MyCarsScreen', {
+                    user: user,
+                });
             } else {
                 Alert.alert(t('messages.error'), t('messages.updateCarFail'));
             }
@@ -73,7 +71,7 @@ export default function EditCarScreen({ navigation, route }) {
                     <MaterialIcons name="directions-car" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder={car.model}
+                        placeholder={model}
                         value={model}
                         onChangeText={setModel}
                         placeholderTextColor="#999"
@@ -84,7 +82,7 @@ export default function EditCarScreen({ navigation, route }) {
                     <MaterialIcons name="palette" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder= {car.color}
+                        placeholder= {color}
                         value={color}
                         onChangeText={setColor}
                         placeholderTextColor="#999"
@@ -95,7 +93,7 @@ export default function EditCarScreen({ navigation, route }) {
                     <MaterialIcons name="calendar-today" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder= {car.year}
+                        placeholder= {year}
                         value={year}
                         onChangeText={setYear}
                         keyboardType="numeric"
@@ -107,7 +105,7 @@ export default function EditCarScreen({ navigation, route }) {
                     <MaterialIcons name="confirmation-number" size={20} color="#4285F4" style={styles.inputIcon} />
                     <FarsiTextInput
                         style={styles.input}
-                        placeholder= {car.licensePlate}
+                        placeholder= {licensePlate}
                         value={licensePlate}
                         onChangeText={setLicensePlate}
                         autoCapitalize="characters"
@@ -133,7 +131,7 @@ export default function EditCarScreen({ navigation, route }) {
                             <MaterialIcons name="add" size={24} color="#fff" />
                         )}
                         <FarsiText style={styles.buttonText}>
-                            {loading ? t('messages.addingCar') : t('messages.addedCar')}
+                            {loading ? t('messages.updatingCar') : t('messages.carUpdate')}
                         </FarsiText>
                     </LinearGradient>
                 </TouchableOpacity>

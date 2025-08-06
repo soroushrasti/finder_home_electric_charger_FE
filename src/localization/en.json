@@ -402,6 +402,8 @@
     "errorEditCar": "Error adding car:",
     "editVehicle": "Edit Vehicle",
     "editElCar": "Add Your Electric Car",
-    "getEditVehicle": "Let's get your vehicle edited for charging"
+    "getEditVehicle": "Let's get your vehicle edited for charging",
+    "updatingCar": "Updating Car...",
+    "carUpdate": "Update the car"
   }
 }

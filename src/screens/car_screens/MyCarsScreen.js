@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
 import { useTranslation } from 'react-i18next';
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function MyCarsScreen({ navigation, route }) {
@@ -13,10 +14,14 @@ export default function MyCarsScreen({ navigation, route }) {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
-    const [selectedCar, setSelectedCar] = useState(null);
 
     const user = route.params?.user;
 
+    useFocusEffect(
+        React.useCallback(() => {
+            fetchCars(); // Your function to reload car data
+        }, [])
+    );
     useEffect(() => {
         if (user) {
             fetchCars();
@@ -83,7 +88,15 @@ export default function MyCarsScreen({ navigation, route }) {
             <View style={styles.carActions}>
                 <TouchableOpacity
                     style={styles.actionButton}
-                       onPress={() => navigation.navigate('EditCar', { selectedCar })}
+                    onPress={() => navigation.navigate('EditCarScreen', {
+                        car: {
+                            car_id: item.car_id,
+                            model: item.model,
+                            color: item.color,
+                            year: item.year,
+                            licensePlate: item.license_plate
+                        }, user: user
+                    })}
                 >
                     <MaterialIcons name="edit" size={18} color="#667eea" />
                     <FarsiText style={styles.actionText}>{t('messages.edit')}</FarsiText>

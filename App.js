@@ -303,13 +303,13 @@ export default function App() {
                             <>
                                 <Stack.Screen name="AddCar" component={AddCarScreen} options={{ title: t('messages.addVehicle') }} />
                                 <Stack.Screen name="CarBookings" component={CarBookingsScreen} options={{ title: t('messages.myVehicle') }} />
-                                <Stack.Screen name="EditCar" component={EditCarScreen} options={{ title: t('messages.editVehicle') }} />
+                                <Stack.Screen name="EditCarScreen" component={EditCarScreen} options={{ title: t('messages.editVehicle') }} />
                                 <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: t('messages.findCharger') }} />
                                 <Stack.Screen name="FindChargerLocationsScreen" component={FindChargerLocationsScreen} options={{ title: t('messages.chargerFinding') }} />
                                 <Stack.Screen name="ChargerLocationListScreenWithoutCar" component={ChargerLocationListScreenWithoutCar} options={{ title: t('messages.listCharger') }} />
                                 <Stack.Screen name="CarSelectionScreen" component={CarSelectionScreen} options={{ title: t('messages.carSelection') }} />
                                 <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: t('messages.endCharging') }} />
-                                <Stack.Screen name="MyCars" component={MyCarsScreen} options={{ title: t('messages.myCar') }} />
+                                <Stack.Screen name="MyCarsScreen" component={MyCarsScreen} options={{ title: t('messages.myCar') }} />
                                 <Stack.Screen name="BookingConfirmationScreen" component={BookingConfirmationScreen} options={{ title: t('messages.confirmBooking') }} />
                                 <Stack.Screen name="ChargerLocationListScreen" component={ChargerLocationListScreen} options={{ title: t('messages.locChargerList') }} />
                                 <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />

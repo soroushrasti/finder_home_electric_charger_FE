@@ -88,7 +88,7 @@ export default function CarOwnerScreen({ navigation, user }) {
 
                     <TouchableOpacity
                         style={styles.menuCard}
-                        onPress={() => navigation.navigate('MyCars', { user })}
+                        onPress={() => navigation.navigate('MyCarsScreen', { user })}
                         activeOpacity={0.8}
                     >
                         <LinearGradient

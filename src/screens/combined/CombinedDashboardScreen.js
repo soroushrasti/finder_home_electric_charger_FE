@@ -24,7 +24,7 @@ export default function CombinedDashboardScreen({ navigation, user }) {
             title: 'My Cars',
             subtitle: 'Manage your vehicles',
             icon: 'directions-car',
-            onPress: () => navigation.navigate('MyCars', { user }),
+            onPress: () => navigation.navigate('MyCarsScreen', { user }),
             colors: ['#4facfe', '#00f2fe']
         },
         {

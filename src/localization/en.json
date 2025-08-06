@@ -395,6 +395,13 @@
     "unavailableStation": "Station Unavailable",
     "bookingConfirm": "Confirm Booking",
     "addStation": "Adding Station...",
-    "addChargingStation": "Add Charging Station"
+    "addChargingStation": "Add Charging Station",
+    "updateCar": "Your car has been updated successfully",
+    "updateCarFail": "Failed to edit car. Please try again.",
+    "errorAddCar": "Error adding car:",
+    "errorEditCar": "Error adding car:",
+    "editVehicle": "Edit Vehicle",
+    "editElCar": "Add Your Electric Car",
+    "getEditVehicle": "Let's get your vehicle edited for charging"
   }
 }

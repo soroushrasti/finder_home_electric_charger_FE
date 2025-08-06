@@ -10,6 +10,7 @@ import CarOwnerScreen from './src/screens/car_screens/CarOwnerScreen';
 import HomeOwnerScreen from './src/screens/charger_screens/HomeOwnerScreen';
 import React, { useState, useEffect } from 'react';
 import AddCarScreen from './src/screens/car_screens/AddCarScreen';
+import EditCarScreen from './src/screens/car_screens/EditCarScreen';
 import CarBookingsScreen from './src/screens/car_screens/CarBookingsScreen';
 import FindChargerLocationsScreenForCar from './src/screens/car_screens/FindChargerLocationsScreenForCar';
 import EndBookingScreen from "./src/screens/car_screens/EndBookingScreen";
@@ -302,6 +303,7 @@ export default function App() {
                             <>
                                 <Stack.Screen name="AddCar" component={AddCarScreen} options={{ title: t('messages.addVehicle') }} />
                                 <Stack.Screen name="CarBookings" component={CarBookingsScreen} options={{ title: t('messages.myVehicle') }} />
+                                <Stack.Screen name="EditCar" component={EditCarScreen} options={{ title: t('messages.editVehicle') }} />
                                 <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: t('messages.findCharger') }} />
                                 <Stack.Screen name="FindChargerLocationsScreen" component={FindChargerLocationsScreen} options={{ title: t('messages.chargerFinding') }} />
                                 <Stack.Screen name="ChargerLocationListScreenWithoutCar" component={ChargerLocationListScreenWithoutCar} options={{ title: t('messages.listCharger') }} />

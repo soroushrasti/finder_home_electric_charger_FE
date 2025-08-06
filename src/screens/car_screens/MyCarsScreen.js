@@ -13,6 +13,7 @@ export default function MyCarsScreen({ navigation, route }) {
     const [cars, setCars] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [selectedCar, setSelectedCar] = useState(null);
 
     const user = route.params?.user;
 
@@ -80,7 +81,10 @@ export default function MyCarsScreen({ navigation, route }) {
             </View>
 
             <View style={styles.carActions}>
-                <TouchableOpacity style={styles.actionButton}>
+                <TouchableOpacity
+                    style={styles.actionButton}
+                       onPress={() => navigation.navigate('EditCar', { selectedCar })}
+                >
                     <MaterialIcons name="edit" size={18} color="#667eea" />
                     <FarsiText style={styles.actionText}>{t('messages.edit')}</FarsiText>
                 </TouchableOpacity>

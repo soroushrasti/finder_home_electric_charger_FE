@@ -11,7 +11,7 @@ export const getActivityData = async (userId, userType = 'car_owner') => {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${env.apiToken} `,
+                'X-API-Token': `${env.apiToken} `,
             },
             body: JSON.stringify(payload),
         });

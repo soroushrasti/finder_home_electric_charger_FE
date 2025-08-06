@@ -32,7 +32,7 @@ export default function CarSelectionScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken} `,
+                    'X-API-Token': `${env.apiToken} `,
                 },
                 body: JSON.stringify({
                     "car_owner_user_id": user.user_id

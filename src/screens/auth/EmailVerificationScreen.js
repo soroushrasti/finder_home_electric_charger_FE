@@ -68,7 +68,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken}`,
+                    'X-API-Token': `${env.apiToken}`,
                 },
                 body: JSON.stringify({
                     user_id: userId,
@@ -121,7 +121,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken}`,
+                    'X-API-Token': `${env.apiToken}`,
                 },
                 body: JSON.stringify({
                     user_id: userId,

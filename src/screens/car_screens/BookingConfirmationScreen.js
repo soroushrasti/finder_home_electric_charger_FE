@@ -26,7 +26,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken} `,
+                    'X-API-Token': `${env.apiToken} `,
                 },
                 body: JSON.stringify({
                     car_id: car.car_id,

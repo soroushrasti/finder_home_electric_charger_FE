@@ -124,7 +124,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 headers: {
                     'Content-Type': 'application/json',
                     'Accept': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken}`,
+                    'X-API-Token': `${env.apiToken}`,
                 },
                 body: JSON.stringify(requestBody),
                 timeout: 10000, // 10 second timeout

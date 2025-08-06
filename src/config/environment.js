@@ -3,11 +3,11 @@ import tokens from './env';
 
 const ENV = {
     dev: {
-        apiUrl: 'http://10.0.2.2:8080',
+        apiUrl: 'https://finderhomeelectriccharger-production.up.railway.app',
         apiToken: tokens.dev.apiToken
     },
     prod: {
-        apiUrl: 'http://123.345:8080',
+        apiUrl: 'https://finderhomeelectriccharger-production.up.railway.app',
         apiToken: tokens.prod.apiToken
     }
 };

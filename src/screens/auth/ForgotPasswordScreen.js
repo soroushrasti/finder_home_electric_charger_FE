@@ -36,7 +36,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken}`,
+                    'X-API-Token': `${env.apiToken}`,
                 },
                 body: JSON.stringify({ email,
                     language: i18n.language === 'fa' ? 'Farsi' : 'English',
@@ -149,7 +149,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 
                     <TouchableOpacity
                         style={styles.loginRedirectButton}
-                        onPress={() => navigation.navigate('Login')}
+                        onPress={() => navigation.navigate('LoginScreen')}
                     >
                         <FarsiText style={styles.loginRedirectText}>
                             {t('auth.rememberPassword')} <FarsiText style={styles.loginRedirectLink}>{t('auth.signIn')}</FarsiText>

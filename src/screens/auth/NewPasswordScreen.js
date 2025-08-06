@@ -39,7 +39,7 @@ export default function NewPasswordScreen({ navigation, route }) {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken}`,
+                    'X-API-Token': `${env.apiToken}`,
                 },
                 body: JSON.stringify({
                     password: password
@@ -54,7 +54,7 @@ export default function NewPasswordScreen({ navigation, route }) {
                     [
                         {
                             text: t('messages.logIn'),
-                            onPress: () => navigation.navigate('Login')
+                            onPress: () => navigation.navigate('LoginScreen')
                         }
                     ]
                 );
@@ -155,7 +155,7 @@ export default function NewPasswordScreen({ navigation, route }) {
                     </TouchableOpacity>
                     <TouchableOpacity
                         style={styles.loginRedirectButton}
-                        onPress={() => navigation.navigate('Login')}
+                        onPress={() => navigation.navigate('LoginScreen')}
                     >
                         <FarsiText style={styles.loginRedirectText}>
                             {t('messages.back')} <FarsiText style={styles.loginRedirectLink}>{t('messages.signIn')}</FarsiText>

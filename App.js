@@ -80,7 +80,7 @@ function Home({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.secondaryActionButton}
-                    onPress={() => navigation.navigate('Login')}
+                    onPress={() => navigation.navigate('LoginScreen')}
                     activeOpacity={0.8}
                 >
                     <LinearGradient
@@ -266,7 +266,7 @@ export default function App() {
                             options={{ headerShown: false }}
                         />
                         <Stack.Screen
-                            name="Login"
+                            name="LoginScreen"
                             options={{ title: 'Sign In', headerShown: false }}
                         >
                             {props => <LoginScreen {...props} setUser={setUser} />}

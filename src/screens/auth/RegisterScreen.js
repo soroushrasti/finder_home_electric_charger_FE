@@ -104,12 +104,28 @@ export default function RegisterScreen({ navigation, setUser }) {
             } else {
                 apiUserType = null; // Both types
             }
-
+            console.log('Registering user with type with POST:', apiUserType);
+            console.log('POST URL:', `${env.apiUrl}/register`);
+            console.log('POST Headers:', {
+                'Content-Type': 'application/json',
+                'X-API-Token': `${env.apiToken}`,
+            });
+            console.log('POST Body:', JSON.stringify({
+                first_name: formData.name,
+                email: formData.email,
+                password: formData.password,
+                mobile_number: formData.phone_number,
+                user_type: apiUserType,
+                language: i18n.language === 'fa' ? 'Farsi' : 'English',
+            }));
             const response = await fetch(`${env.apiUrl}/register`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${env.apiToken}`,
+                    'X-API-Token': `${env.apiToken}`,
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache',
+                    'Expires': '0'
                 },
                 body: JSON.stringify({
                     first_name: formData.name,
@@ -120,9 +136,9 @@ export default function RegisterScreen({ navigation, setUser }) {
                     language: i18n.language === 'fa' ? 'Farsi' : 'English',
                 }),
             });
-
+            console.log('Response status:', response.status);
             const data = await response.json();
-
+            console.log('Response data:', data);
             if (response.ok) {
                 Alert.alert(
                     t('messages.successRegister'),
@@ -364,7 +380,7 @@ export default function RegisterScreen({ navigation, setUser }) {
 
                         <TouchableOpacity
                             style={styles.loginRedirectButton}
-                            onPress={() => navigation.navigate('Login')}
+                            onPress={() => navigation.navigate('LoginScreen')}
                         >
                             <FarsiText style={styles.loginRedirectText}>
                                 {t('messages.haveAccount')} <FarsiText style={styles.loginRedirectLink}>{t('messages.signIn')}</FarsiText>

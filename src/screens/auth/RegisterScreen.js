@@ -10,6 +10,7 @@ import {
     ActivityIndicator,
     Platform
 } from 'react-native';
+import {Picker} from '@react-native-picker/picker';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
@@ -20,6 +21,13 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 import { Dimensions } from 'react-native';
 
 export default function RegisterScreen({ navigation, setUser }) {
+    const countryCodes = [
+        { label: '98+ ایران', value: '+98' },
+        { label: '1+ آمریکا', value: '+1' },
+        { label: '44+ انگلستان', value: '+44' },
+       ];
+    const [countryCode, setCountryCode] = useState('+98');
+
     const { t, i18n } = useTranslation();
     const [formData, setFormData] = useState({
         name: '',
@@ -246,6 +254,15 @@ export default function RegisterScreen({ navigation, setUser }) {
                     <View style={styles.inputGroup}>
                         <FarsiText style={styles.label}>{t('messages.phone')}</FarsiText>
                         <View style={styles.inputContainer}>
+                          <Picker
+                                selectedValue={countryCode}
+                                style={{ height: 60, width: 130 }}
+                                onValueChange={(itemValue) => setCountryCode(itemValue)}
+                              >
+                                {countryCodes.map(item => (
+                                  <Picker.Item key={item.value} label={item.label} value={item.value} />
+                                ))}
+                              </Picker>
                             <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}

@@ -24,6 +24,8 @@ import FindChargerLocationsScreen from './src/screens/car_screens/FindChargerLoc
 import ChargerLocationListScreenWithoutCar from './src/screens/car_screens/ChargerLocationListScreenWithoutCar';
 import CarSelectionScreen from './src/screens/car_screens/CarSelectionScreen';
 import EmailVerificationScreen from './src/screens/auth/EmailVerificationScreen';
+import { createStackNavigator } from '@react-navigation/stack';
+import SettingsScreen from './src/screens/SettingsScreen';
 const Stack = createStackNavigator();
 import CombinedDashboardScreen from './src/screens/combined/CombinedDashboardScreen';
 import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen';
@@ -328,6 +330,11 @@ export default function App() {
                         )}
                     </>
                 )}
+                <Stack.Screen
+                    name="Settings"
+                    component={SettingsScreen}
+                    options={{ title: 'Settings' }}
+                />
             </Stack.Navigator>
         </NavigationContainer>
         </LanguageProvider>

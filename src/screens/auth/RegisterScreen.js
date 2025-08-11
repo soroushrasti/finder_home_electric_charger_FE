@@ -19,14 +19,16 @@ import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import { Dimensions } from 'react-native';
+import faCountries from '../../localization/faCountryCodes.json';
+import enCountries from '../../localization/enCountryCodes.json';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function RegisterScreen({ navigation, setUser }) {
-    const countryCodes = [
-        { label: '98+ ایران', value: '+98' },
-        { label: '1+ آمریکا', value: '+1' },
-        { label: '44+ انگلستان', value: '+44' },
-       ];
+
+
     const [countryCode, setCountryCode] = useState('+98');
+    const { language, changeLanguage } = useLanguage();
+    const countries = language === 'fa' ? faCountries : enCountries;
 
     const { t, i18n } = useTranslation();
     const [formData, setFormData] = useState({
@@ -122,7 +124,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                 first_name: formData.name,
                 email: formData.email,
                 password: formData.password,
-                mobile_number: formData.phone_number,
+                mobile_number: countryCode + formData.phone_number,
                 user_type: apiUserType,
                 language: i18n.language === 'fa' ? 'Farsi' : 'English',
             }));
@@ -139,7 +141,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                     first_name: formData.name,
                     email: formData.email,
                     password: formData.password,
-                    mobile_number: formData.phone_number,
+                    mobile_number: countryCode + formData.phone_number,
                     user_type: apiUserType,
                     language: i18n.language === 'fa' ? 'Farsi' : 'English',
                 }),
@@ -254,15 +256,16 @@ export default function RegisterScreen({ navigation, setUser }) {
                     <View style={styles.inputGroup}>
                         <FarsiText style={styles.label}>{t('messages.phone')}</FarsiText>
                         <View style={styles.inputContainer}>
-                          <Picker
-                                selectedValue={countryCode}
-                                style={{ height: 60, width: 130 }}
-                                onValueChange={(itemValue) => setCountryCode(itemValue)}
-                              >
-                                {countryCodes.map(item => (
-                                  <Picker.Item key={item.value} label={item.label} value={item.value} />
-                                ))}
-                              </Picker>
+
+                           <Picker
+                                    selectedValue={countryCode}
+                                    style={{ height: 60, width: 130 }}
+                                    onValueChange={setCountryCode}
+                                  >
+                                    {countries.map(item => (
+                                      <Picker.Item key={item.value} label={item.label} value={item.value} />
+                                    ))}
+                                  </Picker>
                             <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}

@@ -110,7 +110,7 @@ export default function RegisterScreen({ navigation, setUser }) {
             if (formData.user_type === 'car_owner') {
                 apiUserType = 'Electric car owner';
             } else if (formData.user_type === 'home_owner') {
-                apiUserType = 'Charging station owner';
+                apiUserType = 'Home owner';
             } else {
                 apiUserType = null; // Both types
             }

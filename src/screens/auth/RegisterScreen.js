@@ -114,20 +114,6 @@ export default function RegisterScreen({ navigation, setUser }) {
             } else {
                 apiUserType = null; // Both types
             }
-            console.log('Registering user with type with POST:', apiUserType);
-            console.log('POST URL:', `${env.apiUrl}/register`);
-            console.log('POST Headers:', {
-                'Content-Type': 'application/json',
-                'X-API-Token': `${env.apiToken}`,
-            });
-            console.log('POST Body:', JSON.stringify({
-                first_name: formData.name,
-                email: formData.email,
-                password: formData.password,
-                mobile_number: countryCode + formData.phone_number,
-                user_type: apiUserType,
-                language: i18n.language === 'fa' ? 'Farsi' : 'English',
-            }));
             const response = await fetch(`${env.apiUrl}/register`, {
                 method: 'POST',
                 headers: {

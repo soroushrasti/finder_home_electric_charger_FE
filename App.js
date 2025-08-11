@@ -1,6 +1,5 @@
 // App.js
 import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -24,9 +23,7 @@ import FindChargerLocationsScreen from './src/screens/car_screens/FindChargerLoc
 import ChargerLocationListScreenWithoutCar from './src/screens/car_screens/ChargerLocationListScreenWithoutCar';
 import CarSelectionScreen from './src/screens/car_screens/CarSelectionScreen';
 import EmailVerificationScreen from './src/screens/auth/EmailVerificationScreen';
-import { createStackNavigator } from '@react-navigation/stack';
 import SettingsScreen from './src/screens/SettingsScreen';
-const Stack = createStackNavigator();
 import CombinedDashboardScreen from './src/screens/combined/CombinedDashboardScreen';
 import ForgotPasswordScreen from './src/screens/auth/ForgotPasswordScreen';
 import NewPasswordScreen from './src/screens/auth/NewPasswordScreen';
@@ -36,6 +33,8 @@ import LanguageSwitcher from './src/components/LanguageSwitcher';
 import {useTranslation} from "react-i18next";
 import FinalizeLocationOnMapScreen from './src/screens/charger_screens/FinalizeLocationOnMapScreen';
 import FarsiText from './src/components/FarsiText';
+import { createStackNavigator } from '@react-navigation/stack';
+const Stack = createStackNavigator();
 
 function Home({ navigation }) {
     const { t } = useTranslation();

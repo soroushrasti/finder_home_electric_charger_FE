@@ -120,9 +120,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="location-on" size={20} color="#4285F4" style={styles.inputIcon} />
-                        <TextInput
+                        <FarsiTextInput
                             style={styles.input}
-                            placeholder="Station Name (e.g., Home Charger) *"
+                            placeholder= {t('messages.stationName')}
                             value={formData.name}
                             onChangeText={(value) => handleInputChange('name', value)}
                             placeholderTextColor="#999"
@@ -137,9 +137,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                     <View style={styles.inputRow}>
                         <View style={[styles.inputContainer, styles.flexInput]}>
                             <MaterialIcons name="location-city" size={20} color="#4285F4" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
-                                placeholder="City *"
+                                placeholder= {t('messages.city')}
                                 value={formData.city}
                                 onChangeText={(value) => handleInputChange('city', value)}
                                 placeholderTextColor="#999"
@@ -148,9 +148,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                         <View style={[styles.inputContainer, styles.smallInput]}>
                             <MaterialIcons name="markunread-mailbox" size={20} color="#4285F4" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
-                                placeholder="Postcode *"
+                                placeholder= {t('messages.postcode')}
                                 value={formData.postcode}
                                 onChangeText={(value) => handleInputChange('postcode', value)}
                                 keyboardType="numeric"
@@ -161,9 +161,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="home" size={20} color="#4285F4" style={styles.inputIcon} />
-                        <TextInput
+                        <FarsiTextInput
                             style={styles.input}
-                            placeholder="Street Address *"
+                            placeholder={t('messages.streetAdd')}
                             value={formData.street}
                             onChangeText={(value) => handleInputChange('street', value)}
                             placeholderTextColor="#999"
@@ -174,7 +174,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <MaterialIcons name="place" size={20} color="#4285F4" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
-                            placeholder="Alley/Lane (Optional)"
+                            placeholder={t('messages.alley')}
                             value={formData.alley}
                             onChangeText={(value) => handleInputChange('alley', value)}
                             placeholderTextColor="#999"
@@ -183,9 +183,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="phone" size={20} color="#4285F4" style={styles.inputIcon} />
-                        <TextInput
+                        <FarsiTextInput
                             style={styles.input}
-                            placeholder="Phone Number *"
+                            placeholder={t('messages.phoneNum')}
                             value={formData.phone_number}
                             onChangeText={(value) => handleInputChange('phone_number', value)}
                             keyboardType="phone-pad"
@@ -201,9 +201,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                     <View style={styles.inputRow}>
                         <View style={[styles.inputContainer, styles.halfInput]}>
                             <MaterialIcons name="flash-on" size={20} color="#4285F4" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
-                                placeholder="Power (kW) *"
+                                placeholder={t('messages.power')}
                                 value={formData.power_output}
                                 onChangeText={(value) => handleInputChange('power_output', value)}
                                 keyboardType="decimal-pad"
@@ -213,9 +213,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                         <View style={[styles.inputContainer, styles.halfInput]}>
                             <MaterialIcons name="attach-money" size={20} color="#4285F4" style={styles.inputIcon} />
-                            <TextInput
+                            <FarsiTextInput
                                 style={styles.input}
-                                placeholder="€/hour *"
+                                placeholder={t('messages.hour')}
                                 value={formData.price_per_hour}
                                 onChangeText={(value) => handleInputChange('price_per_hour', value)}
                                 keyboardType="decimal-pad"

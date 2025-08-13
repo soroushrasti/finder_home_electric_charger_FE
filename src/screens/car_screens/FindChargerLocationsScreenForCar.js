@@ -6,10 +6,16 @@ import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
 import { useTranslation } from 'react-i18next';
 import FarsiTextInput from  "../../components/FarsiTextInput";
-
+import faCountries from '../../localization/faCountryCodes.json';
+import enCountries from '../../localization/enCountryCodes.json';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function FindChargerLocationsScreenForCar({ navigation, route }) {
     const { t } = useTranslation();
+
+    const [countryCode, setCountryCode] = useState('+98');
+    const { language, changeLanguage } = useLanguage();
+    const countries = language === 'fa' ? faCountries : enCountries;
 
     const [postCode, setPostCode] = useState(null);
     const [alley, setAlley] = useState(null);
@@ -39,7 +45,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     post_code: postCode,
                     alley,
                     street,
-                    home_phone_number: homePhone,
+                    home_phone_number: countryCode + homePhone,
                     city,
                     fast_charging: fastCharging,
                 }),
@@ -156,6 +162,15 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     </View>
 
                     <View style={styles.inputContainer}>
+                      <Picker
+                            selectedValue={countryCode}
+                            style={{ height: 60, width: 130 }}
+                            onValueChange={setCountryCode}
+                                  >
+                                    {countries.map(item => (
+                                    <Picker.Item key={item.value} label={item.label} value={item.value} />
+                                  ))}
+                            </Picker>
                         <MaterialIcons name="phone" size={20} color="#667eea" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}

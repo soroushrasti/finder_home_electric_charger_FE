@@ -5,10 +5,18 @@ import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
+import {Picker} from '@react-native-picker/picker';
+import faCountries from '../../localization/faCountryCodes.json';
+import enCountries from '../../localization/enCountryCodes.json';
+import { useLanguage } from '../../context/LanguageContext';
 
 
 export default function ChargerLocationFormScreen({ navigation, route }) {
     const { t } = useTranslation();
+
+    const [countryCode, setCountryCode] = useState('+98');
+    const { language, changeLanguage } = useLanguage();
+    const countries = language === 'fa' ? faCountries : enCountries;
 
     const user = route.params?.user;
     const [formData, setFormData] = useState({
@@ -75,20 +83,23 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
         }
 
         // Validate phone number format
-        const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;
+      /*  const phoneRegex = /^[\+]?[1-9][\d]{0,15}$/;*/
+        const phoneRegex = /^[+]?[1-9۱-۹][d۰-۹]{0,15}$/;
         if (!phoneRegex.test(phone_number.replace(/\s/g, ''))) {
             Alert.alert(t('messages.validationError'), t('messages.validPhone'));
             return false;
         }
 
         // Validate power output is a number
-        if (isNaN(parseFloat(power_output))) {
+        const englishPowerOutput = power_output.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
+        if (isNaN(parseFloat(englishPowerOutput))) {
             Alert.alert(t('messages.validationError'), t('messages.validPower'));
             return false;
         }
 
         // Validate price is a number
-        if (isNaN(parseFloat(price_per_hour))) {
+        const englishPrice = price_per_hour.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
+        if (isNaN(parseFloat(englishPrice))) {
             Alert.alert(t('messages.validationError'), t('messages.validPrice'));
             return false;
         }
@@ -182,6 +193,15 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                     </View>
 
                     <View style={styles.inputContainer}>
+                      <Picker
+                           selectedValue={countryCode}
+                           style={{ height: 60, width: 130 }}
+                           onValueChange={setCountryCode}
+                                 >
+                                    {countries.map(item => (
+                                    <Picker.Item key={item.value} label={item.label} value={item.value} />
+                                 ))}
+                                </Picker>
                         <MaterialIcons name="phone" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}

@@ -62,7 +62,7 @@ function Home({ navigation }) {
 
                 <TouchableOpacity
                     style={styles.primaryActionButton}
-                    onPress={() => navigation.navigate('Register')}
+                    onPress={() => navigation.navigate('RegisterScreen')}
                     activeOpacity={0.8}
                 >
                     <LinearGradient

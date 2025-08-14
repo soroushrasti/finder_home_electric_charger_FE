@@ -29,37 +29,37 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 if (status !== 'granted') {
                     Alert.alert(t('messages.permissionDeny'), t('messages.locPermission'));
 
-                    // Use country and city as fallback when location permission is denied
                     let fallbackLocation = null;
 
-                    // Try to geocode country + city combination first
-                    if (formData.country && formData.city) {
+                    // Try to geocode street + city + country first
+                    if (formData.street && formData.city && formData.country) {
+                        try {
+                            const address = `${formData.street}, ${formData.city}, ${formData.country}`;
+                            const geocode = await Location.geocodeAsync(address);
+                            if (geocode.length > 0) {
+                                fallbackLocation = geocode[0];
+                                console.log('Using street + city + country fallback:', address);
+                            }
+                        } catch (error) {
+                            console.log('Street + city + country geocoding failed:', error);
+                        }
+                    }
+
+                    // If street+city+country failed, try city + country
+                    if (!fallbackLocation && formData.city && formData.country) {
                         try {
                             const address = `${formData.city}, ${formData.country}`;
                             const geocode = await Location.geocodeAsync(address);
                             if (geocode.length > 0) {
                                 fallbackLocation = geocode[0];
-                                console.log('Using country + city fallback:', address);
+                                console.log('Using city + country fallback:', address);
                             }
                         } catch (error) {
-                            console.log('Country + city geocoding failed:', error);
+                            console.log('City + country geocoding failed:', error);
                         }
                     }
 
-                    // If country + city failed, try city only
-                    if (!fallbackLocation && formData.city) {
-                        try {
-                            const geocode = await Location.geocodeAsync(formData.city);
-                            if (geocode.length > 0) {
-                                fallbackLocation = geocode[0];
-                                console.log('Using city fallback:', formData.city);
-                            }
-                        } catch (error) {
-                            console.log('City geocoding failed:', error);
-                        }
-                    }
-
-                    // If city failed, try country only
+                    // If city+country failed, try country only
                     if (!fallbackLocation && formData.country) {
                         try {
                             const geocode = await Location.geocodeAsync(formData.country);
@@ -77,7 +77,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                         const fallbackRegion = {
                             latitude: fallbackLocation.latitude,
                             longitude: fallbackLocation.longitude,
-                            latitudeDelta: 0.05, // Slightly wider view for city/country level
+                            latitudeDelta: 0.05,
                             longitudeDelta: 0.05,
                         };
                         setRegion(fallbackRegion);

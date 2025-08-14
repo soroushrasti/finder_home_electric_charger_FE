@@ -18,7 +18,6 @@ import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 
 
-console.log('API URL:', env.apiUrl);
 export default function LoginScreen({ navigation, setUser }) {
     const { t } = useTranslation();
     const [formData, setFormData] = useState({

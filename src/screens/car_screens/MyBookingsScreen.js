@@ -231,7 +231,7 @@ export default function MyBookingsScreen({ navigation, route }) {
                     </FarsiText>
                     <TouchableOpacity
                         style={styles.findChargersButton}
-                        onPress={() => navigation.navigate('FindChargerLocationsScreenForCar', { user })}
+                        onPress={() => navigation.navigate('FindChargerLocationsScreenForCar', { car, user })}
                         activeOpacity={0.8}
                     >
                         <LinearGradient

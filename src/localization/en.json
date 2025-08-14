@@ -254,7 +254,7 @@
     "streetName": "Enter street name",
     "alley": "Alley",
     "enterAlley": "Enter alley (optional)",
-    "postCode": "Post Code *",
+    "postCode": "Post Code",
     "enterCode": "Enter post code",
     "enterPhoneNumber": "Enter phone number",
     "chargingPre": "⚡ Charging Preferences",

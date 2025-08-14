@@ -116,9 +116,6 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 longitude: location.longitude,
             };
 
-            console.log('API URL:', `${env.apiUrl}/add-charging-location`);
-            console.log('Request body:', requestBody);
-
             const response = await fetch(`${env.apiUrl}/add-charging-location`, {
                 method: 'POST',
                 headers: {

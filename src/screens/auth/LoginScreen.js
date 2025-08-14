@@ -345,6 +345,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         paddingBottom: 20,
+        marginTop: 30, // Add margin to separate from form fields
     },
     loginButton: {
         borderRadius: 12,
@@ -364,13 +365,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         paddingVertical: 18,
+        paddingHorizontal: 20, // Add horizontal padding
         borderRadius: 12,
-        gap: 10,
+        minHeight: 56, // Ensure minimum height
     },
     loginButtonText: {
         fontSize: 18,
         fontWeight: 'bold',
         color: '#fff',
+        marginLeft: 10, // Add specific margin instead of gap
     },
     registerRedirectButton: {
         alignItems: 'center',

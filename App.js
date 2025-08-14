@@ -228,11 +228,18 @@ export default function App() {
     };
 
     const userCapabilities = getUserCapabilities(user);
-
+    const getInitialRouteName = () => {
+        if (!user) return "LoginScreen";
+        if (user && !userCapabilities.canUseCarFeatures) return "RegisterScreen";
+        return "CombinedDashboardScreen"; // Default for authenticated users
+    };
     return (
         <LanguageProvider>
         <NavigationContainer>
-            <Stack.Navigator initialRouteName="Home" screenOptions={screenOptions}>
+            <Stack.Navigator
+                initialRouteName={getInitialRouteName()}
+                screenOptions={screenOptions}
+            >
                 {!user ? (
                     <>
                         <Stack.Screen
@@ -321,6 +328,7 @@ export default function App() {
                         {/* Charger Provider Features - Show if user can use charger features */}
                         {userCapabilities.canUseChargerFeatures && (
                             <>
+                                <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: t('messages.findCharger') }} />
                                 <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />
                                 <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: t('messages.myStation') }} />
                                 <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: t('messages.addStation') }} />

@@ -229,21 +229,23 @@ export default function MyBookingsScreen({ navigation, route }) {
                     <FarsiText style={styles.emptySubtext}>
                         {t('messages.startCharge')}
                     </FarsiText>
-                    <TouchableOpacity
-                        style={styles.findChargersButton}
-                        onPress={() => navigation.navigate('FindChargerLocationsScreenForCar', { car, user })}
-                        activeOpacity={0.8}
-                    >
-                        <LinearGradient
-                            colors={['#43e97b', '#38f9d7']}
-                            style={styles.findChargersGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 0 }}
+                    {car_owner && (
+                        <TouchableOpacity
+                            style={styles.findChargersButton}
+                            onPress={() => navigation.navigate('ChargerLocationListScreenWithoutCar', {  user })}
+                            activeOpacity={0.8}
                         >
-                            <MaterialIcons name="search" size={20} color="#fff" />
-                            <FarsiText style={styles.findChargersText}>{t('messages.chargerFinding')}</FarsiText>
-                        </LinearGradient>
-                    </TouchableOpacity>
+                            <LinearGradient
+                                colors={['#43e97b', '#38f9d7']}
+                                style={styles.findChargersGradient}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 1, y: 0 }}
+                            >
+                                <MaterialIcons name="search" size={20} color="#fff" />
+                                <FarsiText style={styles.findChargersText}>{t('messages.chargerFinding')}</FarsiText>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    )}
                 </ScrollView>
             ) : (
                 <FlatList

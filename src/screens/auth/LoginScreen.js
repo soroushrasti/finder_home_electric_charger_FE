@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         paddingTop: 40,
-        paddingBottom: 20, // Reduce bottom padding
+        paddingBottom: 10, // Further reduce bottom padding to 10
     },
     sectionTitle: {
         fontSize: 18,

@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         paddingTop: 40,
-        paddingBottom: 10, // Further reduce bottom padding to 10
+        paddingBottom: 0, // Remove bottom padding completely
     },
     sectionTitle: {
         fontSize: 18,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         paddingBottom: 20,
-        marginTop: 15, // Reduce margin from 30 to 15
+        marginTop: 10, // Reduce margin from 15 to 10
     },
     loginButton: {
         borderRadius: 12,

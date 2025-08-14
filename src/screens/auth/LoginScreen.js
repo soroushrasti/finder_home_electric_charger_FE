@@ -287,12 +287,11 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        justifyContent: 'space-between',
         padding: 20,
     },
     formContainer: {
-        flex: 1,
         paddingTop: 40,
+        paddingBottom: 40, // Add bottom padding to ensure separation
     },
     sectionTitle: {
         fontSize: 18,

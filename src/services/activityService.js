@@ -32,7 +32,7 @@ export const getActivityData = async (userId, userType = 'car_owner') => {
 
             // Handle different possible response structures
             const activityData = {
-                totalPrice: data.Total_price || data.total_price || data.totalPrice || 0,
+                totalPrice: Math.abs(data.total_price) || 0,
                 numberBooking: data.Number_booking || data.number_booking || data.numberBooking || data.number_bookings || 0,
                 numberLocations: data.Number_locations || data.number_locations || data.numberLocations || 0
             };

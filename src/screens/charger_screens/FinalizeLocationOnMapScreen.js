@@ -1,21 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import { MaterialIcons } from '@expo/vector-icons';
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
-import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
 
 
 export default function FinalizeLocationOnMapScreen({ route, navigation }) {
     const { t } = useTranslation();
 
-    const [region, setRegion] = useState(null);
+    const [region, setRegion] = useState({
+        latitude: 37.78825,
+        longitude: -122.4324,
+        latitudeDelta: 0.0922,
+        longitudeDelta: 0.0421,
+    });
     const [marker, setMarker] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [selectedLocation, setSelectedLocation] = useState(null);
     const formData = route.params?.formData || {};
 
     useEffect(() => {
@@ -25,47 +28,167 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 const { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
                     Alert.alert(t('messages.permissionDeny'), t('messages.locPermission'));
-                    setDefaultLocation();
+
+                    // Use country and city as fallback when location permission is denied
+                    let fallbackLocation = null;
+
+                    // Try to geocode country + city combination first
+                    if (formData.country && formData.city) {
+                        try {
+                            const address = `${formData.city}, ${formData.country}`;
+                            const geocode = await Location.geocodeAsync(address);
+                            if (geocode.length > 0) {
+                                fallbackLocation = geocode[0];
+                                console.log('Using country + city fallback:', address);
+                            }
+                        } catch (error) {
+                            console.log('Country + city geocoding failed:', error);
+                        }
+                    }
+
+                    // If country + city failed, try city only
+                    if (!fallbackLocation && formData.city) {
+                        try {
+                            const geocode = await Location.geocodeAsync(formData.city);
+                            if (geocode.length > 0) {
+                                fallbackLocation = geocode[0];
+                                console.log('Using city fallback:', formData.city);
+                            }
+                        } catch (error) {
+                            console.log('City geocoding failed:', error);
+                        }
+                    }
+
+                    // If city failed, try country only
+                    if (!fallbackLocation && formData.country) {
+                        try {
+                            const geocode = await Location.geocodeAsync(formData.country);
+                            if (geocode.length > 0) {
+                                fallbackLocation = geocode[0];
+                                console.log('Using country fallback:', formData.country);
+                            }
+                        } catch (error) {
+                            console.log('Country geocoding failed:', error);
+                        }
+                    }
+
+                    // Set region based on fallback location or default
+                    if (fallbackLocation) {
+                        const fallbackRegion = {
+                            latitude: fallbackLocation.latitude,
+                            longitude: fallbackLocation.longitude,
+                            latitudeDelta: 0.05, // Slightly wider view for city/country level
+                            longitudeDelta: 0.05,
+                        };
+                        setRegion(fallbackRegion);
+                    } else {
+                        // Use default coordinates as final fallback
+                        setRegion({
+                            latitude: 37.78825,
+                            longitude: -122.4324,
+                            latitudeDelta: 0.0922,
+                            longitudeDelta: 0.0421,
+                        });
+                    }
+
+                    setLoading(false);
                     return;
                 }
 
-                // Try to geocode the address from form data
-                const address = `${formData.street}, ${formData.city}, ${formData.postcode}`;
-                const geocode = await Location.geocodeAsync(address);
+                // Get current location as fallback
+                let currentLocation;
+                try {
+                    currentLocation = await Location.getCurrentPositionAsync({
+                        accuracy: Location.Accuracy.High,
+                    });
+                } catch (locationError) {
+                    console.log('Could not get current location:', locationError);
+                }
 
-                if (geocode.length > 0) {
-                    const { latitude, longitude } = geocode[0];
-                    const initialRegion = {
+                // Initialize default region
+                let defaultRegion = {
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                };
+
+                if (currentLocation) {
+                    defaultRegion = {
+                        latitude: currentLocation.coords.latitude,
+                        longitude: currentLocation.coords.longitude,
+                        latitudeDelta: 0.01,
+                        longitudeDelta: 0.01,
+                    };
+                }
+
+                // Try geocoding with fallback logic
+                let geocodeResult = null;
+
+                // 1. First try: country + city
+                if (formData.country && formData.city) {
+                    const fullAddress = `${formData.city}, ${formData.country}`;
+                    try {
+                        const geocode = await Location.geocodeAsync(fullAddress);
+                        if (geocode.length > 0) {
+                            geocodeResult = geocode[0];
+                            console.log('Geocoded full address:', fullAddress);
+                        }
+                    } catch (error) {
+                        console.log('Full address geocoding failed:', error);
+                    }
+                }
+
+                // 2. Second try: city only
+                if (!geocodeResult && formData.city) {
+                    try {
+                        const geocode = await Location.geocodeAsync(formData.city);
+                        if (geocode.length > 0) {
+                            geocodeResult = geocode[0];
+                            console.log('Geocoded city only:', formData.city);
+                        }
+                    } catch (error) {
+                        console.log('City geocoding failed:', error);
+                    }
+                }
+
+                // 3. Third try: country (if available in formData)
+                if (!geocodeResult && formData.country) {
+                    try {
+                        const geocode = await Location.geocodeAsync(formData.country);
+                        if (geocode.length > 0) {
+                            geocodeResult = geocode[0];
+                            console.log('Geocoded country:', formData.country);
+                        }
+                    } catch (error) {
+                        console.log('Country geocoding failed:', error);
+                    }
+                }
+
+                // Set the region based on geocoding result or default
+                if (geocodeResult) {
+                    const { latitude, longitude } = geocodeResult;
+                    const geocodedRegion = {
                         latitude,
                         longitude,
                         latitudeDelta: 0.01,
                         longitudeDelta: 0.01,
                     };
-                    setRegion(initialRegion);
+                    setRegion(geocodedRegion);
                     setMarker({ latitude, longitude });
                 } else {
-                    // Fallback: try just city and postcode
-                    const cityAddress = `${formData.city}, ${formData.postcode}`;
-                    const cityGeocode = await Location.geocodeAsync(cityAddress);
-
-                    if (cityGeocode.length > 0) {
-                        const { latitude, longitude } = cityGeocode[0];
-                        const initialRegion = {
-                            latitude,
-                            longitude,
-                            latitudeDelta: 0.05,
-                            longitudeDelta: 0.05,
-                        };
-                        setRegion(initialRegion);
-                        Alert.alert(t('messages.noAddress'), t('messages.addressNotFind'));
-                    } else {
-                        setDefaultLocation();
-                    }
+                    setRegion(defaultRegion);
                 }
+
             } catch (error) {
-                console.error(t('messages.geoError'), error);
-                Alert.alert(t('messages.error'), t('messages.locNotFind'));
-                setDefaultLocation();
+                console.error('Map initialization error:', error);
+                // Use default location
+                setRegion({
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                });
             } finally {
                 setLoading(false);
             }
@@ -73,17 +196,6 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
 
         initializeMap();
     }, [formData]);
-
-    const setDefaultLocation = () => {
-        // Default to a central location if geocoding fails
-        setRegion({
-            latitude: 37.78825,
-            longitude: -122.4324,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-        });
-        Alert.alert(t('messages.noLoc'), t('messages.noAddressFound'));
-    };
 
     const handleMapPress = (event) => {
         setMarker(event.nativeEvent.coordinate);
@@ -183,31 +295,33 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 <FarsiText style={styles.subHeaderText}>{t('messages.tapPosition')}</FarsiText>
             </View>
 
-            <MapView
-                style={styles.map}
-                region={region}
-                onPress={handleMapPress}
-                showsUserLocation={true}
-                showsMyLocationButton={true}
-                showsCompass={true}
-                showsScale={true}
-                zoomEnabled={true}
-                scrollEnabled={true}
-                pitchEnabled={true}
-                rotateEnabled={true}
-                zoomControlEnabled={true} // This enables zoom controls on Android
-                mapType="standard"
-                toolbarEnabled={false} // Disable Google Maps toolbar on Android
-            >
-                {marker && (
-                    <Marker
-                        coordinate={marker}
-                        title="Charging Station"
-                        description={formData.name}
-                        pinColor="red"
-                    />
-                )}
-            </MapView>
+            {region && (
+                <MapView
+                    style={styles.map}
+                    region={region}
+                    onPress={handleMapPress}
+                    showsUserLocation={true}
+                    showsMyLocationButton={true}
+                    showsCompass={true}
+                    showsScale={true}
+                    zoomEnabled={true}
+                    scrollEnabled={true}
+                    pitchEnabled={true}
+                    rotateEnabled={true}
+                    zoomControlEnabled={true}
+                    mapType="standard"
+                    toolbarEnabled={false}
+                >
+                    {marker && (
+                        <Marker
+                            coordinate={marker}
+                            title="Charging Station"
+                            description={formData.name}
+                            pinColor="red"
+                        />
+                    )}
+                </MapView>
+            )}
 
             <View style={styles.footer}>
                 <TouchableOpacity style={styles.confirmButton} onPress={handleConfirm}>

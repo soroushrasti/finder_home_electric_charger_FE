@@ -27,8 +27,8 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
         post_code: '',
         alley: '',
         street: '',
-        home_phone_number: '',
         city: '',
+        country: 'Iran', // Default country
         fast_charging: false
     });
 
@@ -83,8 +83,8 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
             post_code: '',
             alley: '',
             street: '',
-            home_phone_number: '',
             city: '',
+            country: '', // Default country
             fast_charging: false
         });
     };
@@ -113,7 +113,19 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
             <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
                 <View style={styles.formContainer}>
                     <FarsiText style={styles.sectionTitle}>📍 {t('messages.locDetail')}</FarsiText>
-
+                    <View style={styles.inputGroup}>
+                        <FarsiText style={styles.label}>{t('messages.country')}</FarsiText>
+                        <View style={styles.inputContainer}>
+                            <MaterialIcons name="public" size={20} color="#666" style={styles.inputIcon} />
+                            <TextInput
+                                style={styles.input}
+                                placeholder={t('messages.enterCountry')}
+                                value={formData.country}
+                                onChangeText={(value) => handleInputChange('country', value)}
+                                placeholderTextColor="#999"
+                            />
+                        </View>
+                    </View>
                     <View style={styles.inputGroup}>
                         <FarsiText style={styles.label}>{t('messages.city')}</FarsiText>
                         <View style={styles.inputContainer}>
@@ -131,7 +143,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     <View style={styles.inputGroup}>
                         <FarsiText style={styles.label}>{t('messages.street')}</FarsiText>
                         <View style={styles.inputContainer}>
-                            <MaterialIcons name="road" size={20} color="#666" style={styles.inputIcon} />
+                            <MaterialIcons name="directions" size={20} color="#666" style={styles.inputIcon} />
                             <TextInput
                                 style={styles.input}
                                 placeholder={t('messages.streetName')}
@@ -171,20 +183,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                         </View>
                     </View>
 
-                    <View style={styles.inputGroup}>
-                        <FarsiText style={styles.label}>{t('messages.phone')}</FarsiText>
-                        <View style={styles.inputContainer}>
-                            <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
-                            <FarsiTextInput
-                                style={styles.input}
-                                placeholder={t('messages.enterPhoneNumber')}
-                                value={formData.home_phone_number}
-                                onChangeText={(value) => handleInputChange('home_phone_number', value)}
-                                keyboardType="phone-pad"
-                                placeholderTextColor="#999"
-                            />
-                        </View>
-                    </View>
+
 
                     <FarsiText style={styles.sectionTitle}>{t('messages.chargingPre')}</FarsiText>
 

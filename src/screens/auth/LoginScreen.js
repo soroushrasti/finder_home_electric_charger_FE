@@ -16,6 +16,7 @@ import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 export default function LoginScreen({ navigation, setUser }) {
@@ -74,6 +75,8 @@ export default function LoginScreen({ navigation, setUser }) {
 
             if (response.ok && data.is_validated_email) {
                 setUser(data);
+                // Save user data to AsyncStorage for persistent login
+                await AsyncStorage.setItem('user', JSON.stringify(data));
                 Alert.alert(
                     t('messages.welcome'),
                     t('messages.login'),

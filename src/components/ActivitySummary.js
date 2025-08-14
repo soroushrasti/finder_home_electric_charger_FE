@@ -30,12 +30,17 @@ export default function ActivitySummary({
         else setLoading(true);
 
         try {
+            console.log('ActivitySummary: Fetching activity for userId:', userId, 'userType:', userType);
             const result = await getActivityData(userId, userType);
+            console.log('ActivitySummary: Got result:', result);
+
             if (result.success) {
                 setActivityData(result.data);
+            } else {
+                console.error('ActivitySummary: Failed to fetch activity data:', result.error);
             }
         } catch (error) {
-            console.error('Error fetching activity:', error);
+            console.error('ActivitySummary: Error fetching activity:', error);
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -77,7 +82,7 @@ export default function ActivitySummary({
                     <View style={[styles.iconContainer, { backgroundColor: '#e8f5e8' }]}>
                         <MaterialIcons name="attach-money" size={24} color="#4CAF50" />
                     </View>
-                    <Text style={styles.statValue}>€{activityData.totalPrice.toFixed(2)}</Text>
+                    <Text style={styles.statValue}>{activityData.totalPrice.toFixed(2)}</Text>
                     <Text style={styles.statLabel}>Total Earnings</Text>
                     <MaterialIcons name="arrow-forward" size={16} color="#999" style={styles.arrowIcon} />
                 </TouchableOpacity>

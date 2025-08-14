@@ -55,7 +55,7 @@ export default function CombinedDashboardScreen({ navigation, user }) {
             title: 'Location Bookings',
             subtitle: 'Track your earnings',
             icon: 'monetization-on',
-            onPress: () => navigation.navigate('MyLocationBookings',{ user }),
+            onPress: () => navigation.navigate('MyBookingsScreen',{ user }),
             colors: ['#ffecd2', '#fcb69f']
         }
     ];

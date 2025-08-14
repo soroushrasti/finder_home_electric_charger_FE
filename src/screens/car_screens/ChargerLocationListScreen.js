@@ -12,7 +12,7 @@ export default function ChargerLocationListScreen({ navigation, route }) {
     const { car, user, chargingLocations, searchCriteria } = route.params;
 
     const formatPrice = (price) => {
-        return price ? `€${parseFloat(price).toFixed(2)}` : 'N/A';
+        return price ? `${parseFloat(price).toFixed(2)}` : 'N/A';
     };
 
     const handleLocationSelect = (selectedLocation) => {

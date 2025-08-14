@@ -12,11 +12,11 @@ export default function HomeOwnerScreen({ navigation, user }) {
     const { t } = useTranslation();
 
     const handleTotalEarningsPress = () => {
-        navigation.navigate('MyLocationBookingScreen', { user });
+        console.log('to be implemented')
     };
 
     const handleActiveSessionsPress = () => {
-        navigation.navigate('MyLocationBookingScreen', { user });
+        console.log('to be implemented')
     };
 
     return (

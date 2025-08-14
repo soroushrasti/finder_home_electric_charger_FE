@@ -14,6 +14,7 @@
     "backTo": "Back to"
   },
   "messages": {
+    "country": "Country",
     "emailRequired": "Please enter your email address",
     "passwordRequired": "Please fill in both fields",
     "passwordMismatch": "Passwords do not match",
@@ -146,7 +147,7 @@
     "matchCarWithStation": "This helps us match your car with compatible charging stations and provide personalized recommendations.",
     "carModel" : "Car Model (e.g., Tesla Model 3)",
     "color" : "Color (e.g., White, Black, Red)",
-    "year" : "Year (e.g., 2023)",
+    "year" : "Year",
     "license" : "License Plate (e.g., ABC-123)",
     "missingInfo": "Missing required information. Please try again.",
     "confirmBooking": "Booking Confirmed! ⚡",
@@ -309,7 +310,7 @@
     "validPhone": "Please enter a valid phone number",
     "validPower": "Power output must be a valid number",
     "validPrice": "Price per hour must be a valid number",
-    "selectChargingStation": "select Your Charging Station on Map",
+    "selectChargingStation": "Select Your Charging Station on Map",
     "shareCharger": "Share your charger and start earning",
     "stationInfo": "Station Information",
     "locationDetail": "Location Details",
@@ -412,6 +413,6 @@
     "alley": "Alley/Lane (Optional)",
     "phoneNum": "Phone Number *",
     "power": "Power (kW) *",
-    "hour": "€/hour *"
+    "hour": " Euro/hour *"
   }
 }

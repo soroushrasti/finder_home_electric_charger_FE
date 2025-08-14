@@ -34,6 +34,7 @@ import {useTranslation} from "react-i18next";
 import FinalizeLocationOnMapScreen from './src/screens/charger_screens/FinalizeLocationOnMapScreen';
 import FarsiText from './src/components/FarsiText';
 import { createStackNavigator } from '@react-navigation/stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Stack = createStackNavigator();
 
 function Home({ navigation }) {
@@ -177,6 +178,19 @@ function Home({ navigation }) {
 
 export default function App() {
     const [user, setUser] = useState(null);
+    useEffect(() => {
+        const loadUserFromCache = async () => {
+            try {
+                const cachedUser = await AsyncStorage.getItem('user');
+                if (cachedUser) {
+                    setUser(JSON.parse(cachedUser));
+                }
+            } catch (e) {
+                // Handle error if needed
+            }
+        };
+        loadUserFromCache();
+    }, []);
     const { t } = useTranslation();
 
 
@@ -229,9 +243,16 @@ export default function App() {
 
     const userCapabilities = getUserCapabilities(user);
     const getInitialRouteName = () => {
-        if (!user) return "LoginScreen";
-        if (user && !userCapabilities.canUseCarFeatures) return "RegisterScreen";
-        return "CombinedDashboardScreen"; // Default for authenticated users
+        if (!user) return "Home";
+
+        // Determine the appropriate initial route based on user type
+        if (user.user_type === null) {
+            return "CombinedDashboardScreen"; // User can be both car owner and charger provider
+        } else if (user.user_type === 'Electric car owner') {
+            return "CarOwnerScreen"; // Electric car owner
+        } else {
+            return "HomeOwnerScreen"; // Charger provider
+        }
     };
     return (
         <LanguageProvider>
@@ -245,18 +266,15 @@ export default function App() {
                         <Stack.Screen
                             name="Home"
                             component={Home}
-                            options={{
-                                headerShown: true,
-                                title: t("messages.appTitle"),
-                                ...screenOptions
-                            }}
                         />
                         <Stack.Screen
-                            name="Register"
-                            options={{ title: 'Create Account', headerShown: false }}
-                        >
-                            {props => <RegisterScreen {...props} setUser={setUser} />}
-                        </Stack.Screen>
+                            name="LoginScreen"
+                            children={props => <LoginScreen {...props} setUser={setUser} />}
+                        />
+                        <Stack.Screen
+                            name="RegisterScreen"
+                            children={props => <RegisterScreen {...props} setUser={setUser} />}
+                        />
                         <Stack.Screen
                             name="EmailVerificationScreen"
                             options={{ headerShown: false }}
@@ -273,12 +291,6 @@ export default function App() {
                             component={NewPasswordScreen}
                             options={{ headerShown: false }}
                         />
-                        <Stack.Screen
-                            name="LoginScreen"
-                            options={{ title: 'Sign In', headerShown: false }}
-                        >
-                            {props => <LoginScreen {...props} setUser={setUser} />}
-                        </Stack.Screen>
                     </>
                 ) : (
                     <>
@@ -333,6 +345,8 @@ export default function App() {
                                 <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: t('messages.myStation') }} />
                                 <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: t('messages.addStation') }} />
                                 <Stack.Screen name="FinalizeLocationOnMapScreen" component={FinalizeLocationOnMapScreen} options={{ title: t('messages.addStation')}} />
+                                <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: t('messages.endCharging') }} />
+
                             </>
                         )}
                     </>

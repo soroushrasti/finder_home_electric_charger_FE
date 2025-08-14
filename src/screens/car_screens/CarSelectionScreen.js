@@ -35,7 +35,7 @@ export default function CarSelectionScreen({ navigation, route }) {
                     'X-API-Token': `${env.apiToken} `,
                 },
                 body: JSON.stringify({
-                    "car_owner_user_id": user.user_id
+                    "user_id": user.user_id
                 })
             });
 
@@ -63,11 +63,11 @@ export default function CarSelectionScreen({ navigation, route }) {
             Alert.alert(t('messages.error'), t('messages.selectCar'));
             return;
         }
-
+        console.log('Selected Car:', selectedCar);
         // Navigate to BookingConfirmationScreen with selected car and charging location
         navigation.navigate('BookingConfirmationScreen', {
+            car: selectedCar, // Fixed: use 'car' key instead of 'selectedCar'
             user,
-            selectedCar,
             chargingLocation
         });
     };

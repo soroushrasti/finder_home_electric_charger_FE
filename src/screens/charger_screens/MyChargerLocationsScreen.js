@@ -87,7 +87,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                 <View style={styles.detailRow}>
                     <MaterialIcons name="attach-money" size={18} color="#667eea" />
                     <FarsiText style={styles.detailLabel}>{t('messages.rat')}</FarsiText>
-                    <FarsiText style={styles.detailValue}>€{item.price_per_hour || 0}{t('messages.hour')}</FarsiText>
+                    <FarsiText style={styles.detailValue}>{item.price_per_hour || 0}{t('messages.hour')}</FarsiText>
                 </View>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="speed" size={18} color="#667eea" />

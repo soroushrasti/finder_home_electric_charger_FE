@@ -14,12 +14,13 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const [formData, setFormData] = useState({
         name: '',
         city: '',
+        country: 'Iran', // Default country
         postcode: '',
         street: '',
         alley: '',
         phone_number: '',
-        power_output: '',
-        price_per_hour: '',
+        power_output: '7.4', // Default 7.4 kW (typical home charger)
+        price_per_hour: '50000', // Default price in Iranian Rials
         description: '',
         fast_charging: false,
         user_id: user?.user_id || null
@@ -36,10 +37,23 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const onLocationAdded = route.params?.onLocationAdded;
 
     const handleInputChange = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
+        setFormData(prev => {
+            const updated = {
+                ...prev,
+                [field]: value
+            };
+
+            // Automatically update price when country changes
+            if (field === 'country') {
+                if (value.toLowerCase() === 'iran') {
+                    updated.price_per_hour = '50000'; // Iranian Rials
+                } else {
+                    updated.price_per_hour = '5'; // Euros
+                }
+            }
+
+            return updated;
+        });
     };
 
     const validateForm = () => {
@@ -134,6 +148,17 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <Text style={styles.sectionTitle}>{t('messages.locationDetail')}</Text>
                     </View>
 
+                    <View style={styles.inputContainer}>
+                        <MaterialIcons name="public" size={20} color="#4285F4" style={styles.inputIcon} />
+                        <FarsiTextInput
+                            style={styles.input}
+                            placeholder={t('messages.country') || 'Country'}
+                            value={formData.country}
+                            onChangeText={(value) => handleInputChange('country', value)}
+                            placeholderTextColor="#999"
+                        />
+                    </View>
+
                     <View style={styles.inputRow}>
                         <View style={[styles.inputContainer, styles.flexInput]}>
                             <MaterialIcons name="location-city" size={20} color="#4285F4" style={styles.inputIcon} />
@@ -158,6 +183,8 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             />
                         </View>
                     </View>
+
+
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="home" size={20} color="#4285F4" style={styles.inputIcon} />

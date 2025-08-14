@@ -1,42 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
-import env from '../config/environment';
 import { useTranslation } from 'react-i18next';
+import { getActivityData } from '../services/activityService';
 
-
-const getActivityData = async (userId, userType = 'car_owner') => {
-    try {
-        const payload = userType === 'car_owner'
-            ? { car_charger_owner_user_id: userId }
-            : { charger_location_user_id: userId };
-
-        const response = await fetch(`${env.apiUrl}/get-activity`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-API-Token': `${env.apiToken} `,
-            },
-            body: JSON.stringify(payload),
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            return {
-                success: true,
-                data: {
-                    totalPrice: data.Total_price || 0,
-                    numberBooking: data.Number_booking || 0,
-                    numberLocations: data.Number_locations || 0
-                }
-            };
-        } else {
-            return { success: false, error: 'Failed to fetch activity data' };
-        }
-    } catch (error) {
-        return { success: false, error: error.message };
-    }
-};
 
 export default function ActivityDashboard({
                                               userId,
@@ -64,6 +31,8 @@ export default function ActivityDashboard({
             const result = await getActivityData(userId, userType);
             if (result.success) {
                 setActivityData(result.data);
+            } else {
+                console.error('Failed to fetch activity data:', result.error);
             }
         } catch (error) {
             console.error('Error fetching activity:', error);
@@ -93,7 +62,7 @@ export default function ActivityDashboard({
                             <MaterialIcons name="attach-money" size={28} color="#4CAF50" />
                         </View>
                         <View style={styles.cardContent}>
-                            <Text style={styles.cardValue}>€{activityData.totalPrice.toFixed(2)}</Text>
+                            <Text style={styles.cardValue}>{activityData.totalPrice.toFixed(2)}</Text>
                             <Text style={styles.cardLabel}>
                                 {userType === 'car_owner' ? t('messages.totalEx') : t('messages.totalEa')}
                             </Text>

@@ -13,7 +13,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
 
     const { car, user, chargingLocation } = route.params;
-
+    console.log('Selected Car in confirmation:', car);
     const handleCreateBooking = async () => {
         if (!car?.car_id || !chargingLocation?.charging_location_id) {
             Alert.alert(t('messages.error'), t('messages.missingInfo'));
@@ -41,17 +41,11 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                     t('messages.stationBooked'),
                     [
                         {
-                            text: t('messages.bookingView'),
-                            onPress: () => {
-                                navigation.navigate('MyBookingsScreen', {
-                                    user,
-                                    refreshBookings: true
-                                });
-                            }
-                        },
-                        {
                             text: t('messages.ok'),
-                            onPress: () => navigation.goBack()
+                            onPress: () => {
+                                // Navigate to CarOwnerScreen after successful booking
+                                navigation.navigate('CarOwnerScreen', { user });
+                            }
                         }
                     ]
                 );
@@ -67,7 +61,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
     };
 
     const formatPrice = (price) => {
-        return price ? `€${parseFloat(price).toFixed(2)}` : 'N/A';
+        return price ? `${parseFloat(price).toFixed(2)}` : 'N/A';
     };
 
     return (

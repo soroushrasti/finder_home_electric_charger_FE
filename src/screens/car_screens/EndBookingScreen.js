@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
+import FarsiTextInput from  "../../components/FarsiTextInput";
 
 
 export default function EndBookingScreen({ navigation, route }) {
@@ -73,6 +74,39 @@ export default function EndBookingScreen({ navigation, route }) {
         });
     };
 
+    const calculateDuration = (startTime) => {
+        if (!startTime) return 'N/A';
+
+        const start = new Date(startTime);
+        const now = new Date();
+
+        console.log('Calculating duration from:', startTime, 'to', now.toISOString());
+
+        const durationMinutes = Math.floor((now - start) / 1000 / 60);
+        console.log('Duration in minutes:', durationMinutes);
+
+        // Handle negative duration (likely timezone issues)
+        if (durationMinutes < 0) {
+            console.log('Negative duration detected, using absolute value');
+            const absoluteDuration = Math.abs(durationMinutes);
+            if (absoluteDuration < 60) {
+                return `${absoluteDuration} ${t('messages.minutes') || 'minutes'}`;
+            } else {
+                const hours = Math.floor(absoluteDuration / 60);
+                const minutes = absoluteDuration % 60;
+                return `${hours}h ${minutes}m`;
+            }
+        }
+
+        if (durationMinutes < 60) {
+            return `${durationMinutes} ${t('messages.minutes') || 'minutes'}`;
+        } else {
+            const hours = Math.floor(durationMinutes / 60);
+            const minutes = durationMinutes % 60;
+            return `${hours}h ${minutes}m`;
+        }
+    };
+
     const renderStarRating = () => {
         return (
             <View style={styles.ratingContainer}>
@@ -138,26 +172,42 @@ export default function EndBookingScreen({ navigation, route }) {
 
                     <View style={styles.infoGrid}>
                         <View style={styles.infoItem}>
-                            <MaterialIcons name="confirmation-number" size={20} color="#666" />
-                            <View style={styles.infoContent}>
-                                <FarsiText style={styles.infoLabel}>{t('messages.bookingId')}</FarsiText>
-                                <Text style={styles.infoValue}>#{booking?.booking_id || 'N/A'}</Text>
-                            </View>
-                        </View>
-
-                        <View style={styles.infoItem}>
                             <MaterialIcons name="directions-car" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <FarsiText style={styles.infoLabel}>{t('messages.carId')}</FarsiText>
-                                <Text style={styles.infoValue}>{booking?.car_id || 'N/A'}</Text>
+                                <FarsiText style={styles.infoLabel}>{t('messages.vehicle')}</FarsiText>
+                                <Text style={styles.infoValue}>
+                                    {booking?.car?.model || booking?.car?.make || 'N/A'}
+                                    {booking?.car?.year ? ` (${booking.car.year})` : ''}
+                                </Text>
+                                {booking?.car?.license_plate && (
+                                    <Text style={styles.infoSubValue}>{booking.car.license_plate}</Text>
+                                )}
                             </View>
                         </View>
 
                         <View style={styles.infoItem}>
                             <MaterialIcons name="location-on" size={20} color="#666" />
                             <View style={styles.infoContent}>
-                                <FarsiText style={styles.infoLabel}>{t('messages.locId')}</FarsiText>
-                                <Text style={styles.infoValue}>{booking?.charging_location_id || 'N/A'}</Text>
+                                <FarsiText style={styles.infoLabel}>{t('messages.location')}</FarsiText>
+                                <Text style={styles.infoValue}>
+                                    {booking?.charging_location?.street || 'N/A'}
+                                </Text>
+                                {booking?.charging_location?.city && (
+                                    <Text style={styles.infoSubValue}>
+                                        {booking.charging_location.city}
+                                        {booking?.charging_location?.post_code ? `, ${booking.charging_location.post_code}` : ''}
+                                    </Text>
+                                )}
+                            </View>
+                        </View>
+
+                        <View style={styles.infoItem}>
+                            <MaterialIcons name="timer" size={20} color="#666" />
+                            <View style={styles.infoContent}>
+                                <FarsiText style={styles.infoLabel}>{t('messages.duration')}</FarsiText>
+                                <Text style={styles.infoValue}>
+                                    {calculateDuration(booking?.start_time)}
+                                </Text>
                             </View>
                         </View>
 
@@ -311,6 +361,11 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: '600',
         color: '#333',
+    },
+    infoSubValue: {
+        fontSize: 14,
+        color: '#999',
+        marginTop: 2,
     },
     ratingContainer: {
         backgroundColor: '#fff',

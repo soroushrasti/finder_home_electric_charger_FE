@@ -13,7 +13,10 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "config": {
+        "googleMapsApiKey": "AIzaSyB9DI9YLDhlvlv4afuelxWKgGoIIhrWCVA"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -21,13 +24,19 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.soroushrasti.finder_home_electric_charger"
+      "package": "com.soroushrasti.finder_home_electric_charger",
+      "config": {
+        "googleMaps": {
+          "apiKey": "AIzaSyB9DI9YLDhlvlv4afuelxWKgGoIIhrWCVA"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-localization"
+      "expo-localization",
+      "expo-location"
     ],
     "extra": {
       "eas": {

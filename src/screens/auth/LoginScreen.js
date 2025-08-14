@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     },
     formContainer: {
         paddingTop: 40,
-        paddingBottom: 40, // Add bottom padding to ensure separation
+        paddingBottom: 20, // Reduce bottom padding
     },
     sectionTitle: {
         fontSize: 18,
@@ -344,7 +344,7 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         paddingBottom: 20,
-        marginTop: 30, // Add margin to separate from form fields
+        marginTop: 15, // Reduce margin from 30 to 15
     },
     loginButton: {
         borderRadius: 12,

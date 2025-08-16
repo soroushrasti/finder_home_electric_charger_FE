@@ -68,15 +68,53 @@ export default function RegisterScreen({ navigation, setUser }) {
     ];
 
     const handleInputChange = (field, value) => {
-        setFormData(prev => ({
-            ...prev,
-            [field]: value
-        }));
+        // Special handling for phone number - allow Farsi/English digits, +, and starting with zero
+        if (field === 'phone_number') {
+            // Convert Farsi digits to English and keep only digits and +
+            const normalizedValue = value
+                .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+                .replace(/[^0-9+]/g, '');
+
+            // Only allow + at the beginning
+            let cleanValue = normalizedValue;
+            if (cleanValue.includes('+')) {
+                const firstPlus = cleanValue.indexOf('+');
+                if (firstPlus === 0) {
+                    cleanValue = '+' + cleanValue.substring(1).replace(/\+/g, '');
+                } else {
+                    cleanValue = cleanValue.replace(/\+/g, '');
+                }
+            }
+
+            setFormData(prev => ({
+                ...prev,
+                [field]: cleanValue
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [field]: value
+            }));
+        }
     };
 
     const validateForm = () => {
         if (!formData.name || !formData.email || !formData.password || !formData.phone_number) {
             Alert.alert(t('messages.error'), t('messages.fillAll'));
+            return false;
+        }
+
+        // Validate phone number format - should be digits only, can start with + or 0
+        const phoneRegex = /^(\+?[0-9]+|[0-9]+)$/;
+        if (!phoneRegex.test(formData.phone_number)) {
+            Alert.alert(t('messages.error'), t('messages.validPhone') || 'Please enter a valid phone number (digits only, can start with + or 0)');
+            return false;
+        }
+
+        // Check minimum phone number length (at least 8 digits)
+        const digitsOnly = formData.phone_number.replace(/\+/g, '');
+        if (digitsOnly.length < 8) {
+            Alert.alert(t('messages.error'), t('messages.phoneMinLength') || 'Phone number must be at least 8 digits');
             return false;
         }
 

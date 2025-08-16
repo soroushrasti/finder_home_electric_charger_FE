@@ -100,18 +100,18 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingHeader}>
                 <View style={styles.locationContainer}>
                     <MaterialIcons name="location-on" size={20} color="#667eea" />
-                    <Text style={styles.locationText}>{item.street + item.city || 'Unknown Location'}</Text>
+                    <Text style={styles.locationText}>{item.street + item.city || t('messages.unknownLoc')}</Text>
                 </View>
                 <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
                     <MaterialIcons name={getStatusIcon(item.status)} size={16} color="#fff" />
-                    <Text style={styles.statusText}>{item.status || 'Success'}</Text>
+                    <Text style={styles.statusText}>{item.status || t('messages.success')}</Text>
                 </View>
             </View>
 
             <View style={styles.bookingDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="schedule" size={16} color="#666" />
-                    <Text style={styles.detailText}>{item.date || 'Date not specified'}</Text>
+                    <Text style={styles.detailText}>{item.date || t('messages.noDate')}</Text>
                 </View>
                 {item.duration && (
                     <View style={styles.detailRow}>

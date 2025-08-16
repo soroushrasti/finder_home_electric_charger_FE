@@ -413,6 +413,24 @@
     "alley": "Alley/Lane (Optional)",
     "phoneNum": "Phone Number *",
     "power": "Power (kW) *",
-    "hour": " Euro/hour *"
+    "hour": " Euro/hour *",
+    "addStation": "Charging station added successfully!",
+    "errorMapInit": "Map initialization error:",
+    "geoFail": "Country geocoding failed:",
+    "geoCountry": "Geocoded country:",
+    "cityGeoFail": "City geocoding failed:",
+    "geoCity": "Geocoded city only:",
+    "addressGeoFail": "Full address geocoding failed:",
+    "geoAdd": "Geocoded full address:",
+    "noCurrentLoc": "Could not get current location:",
+    "countryFallback": "Using country fallback:",
+    "CCFail": "City + country geocoding failed:",
+    "CCFallback": "Using city + country fallback:",
+    "SCCFail": "Street + city + country geocoding failed:",
+    "SCCFallback": "Using street + city + country fallback:",
+    "responseStat": "Response status:",
+    "responseHeader": "Response headers:",
+    "responseSuccess": "Success response:",
+    "apiError": "API Error:"
   }
 }

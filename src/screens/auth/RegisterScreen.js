@@ -245,7 +245,7 @@ export default function RegisterScreen({ navigation, setUser }) {
 
                            <Picker
                                     selectedValue={countryCode}
-                                    style={{ height: 60, width: 130 }}
+                                    style={{ height: 60, width: 133 }}
                                     onValueChange={setCountryCode}
                                   >
                                     {countries.map(item => (

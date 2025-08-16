@@ -38,10 +38,10 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                             const geocode = await Location.geocodeAsync(address);
                             if (geocode.length > 0) {
                                 fallbackLocation = geocode[0];
-                                console.log('Using street + city + country fallback:', address);
+                                console.log(t('messages.SCCFallback'), address);
                             }
                         } catch (error) {
-                            console.log('Street + city + country geocoding failed:', error);
+                            console.log(t('messages.SCCFail'), error);
                         }
                     }
 
@@ -52,10 +52,10 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                             const geocode = await Location.geocodeAsync(address);
                             if (geocode.length > 0) {
                                 fallbackLocation = geocode[0];
-                                console.log('Using city + country fallback:', address);
+                                console.log(t('messages.CCFallback'), address);
                             }
                         } catch (error) {
-                            console.log('City + country geocoding failed:', error);
+                            console.log(t('messages.CCFail'), error);
                         }
                     }
 
@@ -65,10 +65,10 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                             const geocode = await Location.geocodeAsync(formData.country);
                             if (geocode.length > 0) {
                                 fallbackLocation = geocode[0];
-                                console.log('Using country fallback:', formData.country);
+                                console.log(t('messages.countryFallback'), formData.country);
                             }
                         } catch (error) {
-                            console.log('Country geocoding failed:', error);
+                            console.log(t('messages.geoFail'), error);
                         }
                     }
 
@@ -102,7 +102,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                         accuracy: Location.Accuracy.High,
                     });
                 } catch (locationError) {
-                    console.log('Could not get current location:', locationError);
+                    console.log(t('messages.noCurrentLoc'), locationError);
                 }
 
                 // Initialize default region
@@ -132,10 +132,10 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                         const geocode = await Location.geocodeAsync(fullAddress);
                         if (geocode.length > 0) {
                             geocodeResult = geocode[0];
-                            console.log('Geocoded full address:', fullAddress);
+                            console.log(t('messages.geoAdd'), fullAddress);
                         }
                     } catch (error) {
-                        console.log('Full address geocoding failed:', error);
+                        console.log(t('messages.addressGeoFail'), error);
                     }
                 }
 
@@ -145,10 +145,10 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                         const geocode = await Location.geocodeAsync(formData.city);
                         if (geocode.length > 0) {
                             geocodeResult = geocode[0];
-                            console.log('Geocoded city only:', formData.city);
+                            console.log(t('messages.geoCity'), formData.city);
                         }
                     } catch (error) {
-                        console.log('City geocoding failed:', error);
+                        console.log(t('messages.cityGeoFail'), error);
                     }
                 }
 
@@ -158,10 +158,10 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                         const geocode = await Location.geocodeAsync(formData.country);
                         if (geocode.length > 0) {
                             geocodeResult = geocode[0];
-                            console.log('Geocoded country:', formData.country);
+                            console.log(t('messages.geoCountry'), formData.country);
                         }
                     } catch (error) {
-                        console.log('Country geocoding failed:', error);
+                        console.log(t('messages.geoFail'), error);
                     }
                 }
 
@@ -181,7 +181,7 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 }
 
             } catch (error) {
-                console.error('Map initialization error:', error);
+                console.error(t('messages.errorMapInit'), error);
                 // Use default location
                 setRegion({
                     latitude: 37.78825,
@@ -239,14 +239,14 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 timeout: 10000, // 10 second timeout
             });
 
-            console.log('Response status:', response.status);
-            console.log('Response headers:', response.headers);
+            console.log(t('messages.responseStat'), response.status);
+            console.log(t('messages.responseHeader'), response.headers);
 
             if (response.ok) {
                 const responseData = await response.json();
-                console.log('Success response:', responseData);
+                console.log(t('messages.responseSuccess'), responseData);
 
-                Alert.alert('Success', 'Charging station added successfully!', [
+                Alert.alert(t('messages.success'), t('messages.addStation'), [
                     { text: 'OK', onPress: () => {
                             if (route.params?.onLocationAdded) {
                                 route.params.onLocationAdded();
@@ -256,8 +256,8 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                 ]);
             } else {
                 const errorText = await response.text();
-                console.error('API Error:', response.status, errorText);
-                Alert.alert('Error', `Failed to add charging station: ${response.status} ${errorText}`);
+                console.error(t('messages.apiError'), response.status, errorText);
+                Alert.alert(t('messages.error'), `Failed to add charging station: ${response.status} ${errorText}`);
             }
         } catch (error) {
             console.error(t('messages.netError'), error);

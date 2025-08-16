@@ -280,22 +280,19 @@ export default function App() {
                         />
                         <Stack.Screen
                             name="EmailVerificationScreen"
-                            options={{ title: t("messages.emailScreen") }}
-                            options={{ headerShown: false }}
+                            options={{ title: t("messages.emailScreen"),headerShown: false  }}
                         >
                             {props => <EmailVerificationScreen {...props} setUser={setUser} />}
                         </Stack.Screen>
                         <Stack.Screen
                             name="ForgotPassword"
-                            options={{ title: t("messages.forgotPass") }}
+                            options={{ title: t("messages.forgotPass"),headerShown: false }}
                             component={ForgotPasswordScreen}
-                            options={{ headerShown: false }}
                         />
                         <Stack.Screen
                             name="NewPassword"
-                            options={{ title: t("messages.newPass") }}
+                            options={{ title: t("messages.newPass"),headerShown: false  }}
                             component={NewPasswordScreen}
-                            options={{ headerShown: false }}
                         />
                     </>
                 ) : (
@@ -328,7 +325,7 @@ export default function App() {
                         {userCapabilities.canUseCarFeatures && (
                             <>
                                 <Stack.Screen name="AddCar" component={AddCarScreen} options={{ title: t('messages.addVehicle') }} />
-                                <Stack.Screen name="CarBookings" component={CarBookingsScreen} options={{ title: t('messages.myVehicle') }} />
+                                <Stack.Screen name="CarBookingsScreen" component={CarBookingsScreen} options={{ title: t('messages.myVehicle') }} />
                                 <Stack.Screen name="EditCarScreen" component={EditCarScreen} options={{ title: t('messages.editVehicle') }} />
                                 <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: t('messages.findCharger') }} />
                                 <Stack.Screen name="FindChargerLocationsScreen" component={FindChargerLocationsScreen} options={{ title: t('messages.chargerFinding') }} />

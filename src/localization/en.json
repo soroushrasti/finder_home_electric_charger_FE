@@ -439,6 +439,7 @@
     "emailScreen": "EmailVerificationScreen",
     "forgotPass": "ForgotPassword",
     "newPass": "NewPassword",
-    "home" : "Home"
+    "home" : "Home",
+    "reviewMessage": "Review Message"
   }
 }

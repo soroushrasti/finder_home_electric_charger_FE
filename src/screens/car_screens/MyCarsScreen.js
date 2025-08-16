@@ -103,7 +103,7 @@ export default function MyCarsScreen({ navigation, route }) {
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={styles.actionButton}
-                    onPress={() => navigation.navigate('CarBookings', {
+                    onPress={() => navigation.navigate('CarBookingsScreen', {
                         car: {
                             car_id: item.car_id,
                             model: item.model,

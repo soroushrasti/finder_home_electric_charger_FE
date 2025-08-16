@@ -50,7 +50,59 @@ export default function CarBookingsScreen({ navigation, route }) {
 
             if (response.ok) {
                 const data = await response.json();
-                setBookings(Array.isArray(data) ? data : []);
+                console.log('CarBookingsScreen: Fetched bookings:', data);
+
+                // Calculate duration and format times for each booking
+                const bookingsWithDuration = Array.isArray(data) ? data.map(booking => {
+                    if (booking.start_time && booking.end_time) {
+                        const startTime = new Date(booking.start_time);
+                        const endTime = new Date(booking.end_time);
+                        const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
+
+                        // Format start and end times for better display
+                        booking.formatted_start_time = startTime.toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+
+                        booking.formatted_end_time = endTime.toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+
+                        // Format duration as hours and minutes
+                        const hours = Math.floor(durationInMinutes / 60);
+                        const minutes = durationInMinutes % 60;
+
+                        if (hours > 0) {
+                            booking.duration = `${hours}h ${minutes}m`;
+                        } else {
+                            booking.duration = `${minutes}m`;
+                        }
+                    } else if (booking.start_time) {
+                        // Format start time even if no end time
+                        const startTime = new Date(booking.start_time);
+                        booking.formatted_start_time = startTime.toLocaleString('en-US', {
+                            year: 'numeric',
+                            month: 'short',
+                            day: 'numeric',
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            hour12: true
+                        });
+                    }
+                    return booking;
+                }) : [];
+
+                setBookings(bookingsWithDuration);
             } else {
                 Alert.alert(t('messages.error'), t('messages.failFetchBooking'));
             }
@@ -100,7 +152,7 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingHeader}>
                 <View style={styles.locationContainer}>
                     <MaterialIcons name="location-on" size={20} color="#667eea" />
-                    <Text style={styles.locationText}>{item.street + item.city || t('messages.unknownLoc')}</Text>
+                    <Text style={styles.locationText}>{item.charging_location.street + ', ' + item.charging_location.city || t('messages.unknownLoc')}</Text>
                 </View>
                 <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
                     <MaterialIcons name={getStatusIcon(item.status)} size={16} color="#fff" />
@@ -111,34 +163,67 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="schedule" size={16} color="#666" />
-                    <Text style={styles.detailText}>{item.date || t('messages.noDate')}</Text>
+                    <Text style={styles.detailText}>{t('messages.startTime')}: {item.formatted_start_time || t('messages.noDate')}</Text>
                 </View>
+                {item.end_time && (
+                    <View style={styles.detailRow}>
+                        <MaterialIcons name="schedule" size={16} color="#666" />
+                        <Text style={styles.detailText}>{t('messages.endTime')}: {item.formatted_end_time}</Text>
+                    </View>
+                )}
                 {item.duration && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="timer" size={16} color="#666" />
-                        <Text style={styles.detailText}>{item.duration}</Text>
+                        <Text style={styles.detailText}>{t('messages.duration')}: {item.duration}</Text>
                     </View>
                 )}
                 {item.price && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="attach-money" size={16} color="#666" />
-                        <Text style={styles.detailText}>${item.price}</Text>
+                        <Text style={styles.detailText}>{t('messages.totalCost')}: {item.price}</Text>
+                    </View>
+                )}
+                {item.booking_id && (
+                    <View style={styles.detailRow}>
+                        <MaterialIcons name="confirmation-number" size={16} color="#666" />
+                        <Text style={styles.detailText}>{t('messages.reviewMessage')}: {item.review_message}</Text>
+                    </View>
+                )}
+                {item.charger_location_id && (
+                    <View style={styles.detailRow}>
+                        <MaterialIcons name="ev-station" size={16} color="#666" />
+                        <Text style={styles.detailText}>{t('messages.stationId')}: {item.charger_location_id}</Text>
+                    </View>
+                )}
+                {item.power_output && (
+                    <View style={styles.detailRow}>
+                        <MaterialIcons name="flash-on" size={16} color="#666" />
+                        <Text style={styles.detailText}>{t('messages.power')}: {item.power_output} kW</Text>
+                    </View>
+                )}
+                {item.phone_number && (
+                    <View style={styles.detailRow}>
+                        <MaterialIcons name="phone" size={16} color="#666" />
+                        <Text style={styles.detailText}>{t('messages.contact')}: {item.phone_number}</Text>
                     </View>
                 )}
             </View>
 
-            <View style={styles.bookingActions}>
-                <TouchableOpacity style={styles.viewButton}>
-                    <MaterialIcons name="visibility" size={16} color="#667eea" />
-                    <FarsiText style={styles.viewButtonText}>{t('messages.view')}</FarsiText>
-                </TouchableOpacity>
-                {item.status?.toLowerCase() === 'active' && (
-                    <TouchableOpacity style={styles.endButton}>
+            {item.status?.toLowerCase() === 'active' && (
+                <View style={styles.bookingActions}>
+                    <TouchableOpacity
+                        style={styles.endButton}
+                        onPress={() => navigation.navigate('EndBookingScreen', {
+                            booking: item,
+                            car: car,
+                            user: user
+                        })}
+                    >
                         <MaterialIcons name="stop" size={16} color="#ff6b6b" />
-                        <FarsiText style={styles.endButtonText}>{t('messages.end')}</FarsiText>
+                        <FarsiText style={styles.endButtonText}>{t('messages.endBooking')}</FarsiText>
                     </TouchableOpacity>
-                )}
-            </View>
+                </View>
+            )}
         </View>
     );
 

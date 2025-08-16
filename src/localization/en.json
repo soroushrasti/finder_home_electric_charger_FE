@@ -431,6 +431,14 @@
     "responseStat": "Response status:",
     "responseHeader": "Response headers:",
     "responseSuccess": "Success response:",
-    "apiError": "API Error:"
+    "apiError": "API Error:",
+    "unknownLoc": "Unknown Location",
+    "noDate": "Date not specified",
+    "logScreen": "LoginScreen",
+    "regScreen": "RegisterScreen",
+    "emailScreen": "EmailVerificationScreen",
+    "forgotPass": "ForgotPassword",
+    "newPass": "NewPassword",
+    "home" : "Home"
   }
 }

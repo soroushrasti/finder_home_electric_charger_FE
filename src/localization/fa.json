@@ -429,6 +429,14 @@
     "responseStat": "وضعیت پاسخگویی:",
     "responseHeader": "سرصفحه های پاسخ:",
     "responseSuccess": "پاسخ موفقیت آمیز:",
-    "apiError": "خطای API:"
+    "apiError": "خطای API:",
+    "unknownLoc": "مکان نامشخص",
+    "noDate": "تاریخ مشخص نشده است",
+    "logScreen": "صفحه ورود به سیستم",
+    "regScreen": "صفحه ثبت نام",
+    "emailScreen": "صفحه تأیید ایمیل",
+    "forgotPass": "فراموشی رمز عبور",
+    "newPass": "رمز عبور جدید",
+    "home": "خانه"
   }
 }

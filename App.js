@@ -265,29 +265,35 @@ export default function App() {
                     <>
                         <Stack.Screen
                             name="Home"
+                            options={{ title: t("messages.home") }}
                             component={Home}
                         />
                         <Stack.Screen
                             name="LoginScreen"
+                            options={{ title: t("messages.logScreen") }}
                             children={props => <LoginScreen {...props} setUser={setUser} />}
                         />
                         <Stack.Screen
                             name="RegisterScreen"
+                            options={{ title: t("messages.regScreen") }}
                             children={props => <RegisterScreen {...props} setUser={setUser} />}
                         />
                         <Stack.Screen
                             name="EmailVerificationScreen"
+                            options={{ title: t("messages.emailScreen") }}
                             options={{ headerShown: false }}
                         >
                             {props => <EmailVerificationScreen {...props} setUser={setUser} />}
                         </Stack.Screen>
                         <Stack.Screen
                             name="ForgotPassword"
+                            options={{ title: t("messages.forgotPass") }}
                             component={ForgotPasswordScreen}
                             options={{ headerShown: false }}
                         />
                         <Stack.Screen
                             name="NewPassword"
+                            options={{ title: t("messages.newPass") }}
                             component={NewPasswordScreen}
                             options={{ headerShown: false }}
                         />

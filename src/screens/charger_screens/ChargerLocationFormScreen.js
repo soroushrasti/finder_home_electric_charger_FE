@@ -276,7 +276,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             <View style={styles.switchTextContainer}>
                                 <FarsiText style={styles.switchLabel}>{t('messages.fastCharging')}</FarsiText>
                                 <FarsiText style={styles.switchDescription}>
-                                    {('messages.enableDc')}
+                                    {t('messages.enableDc')}
                                 </FarsiText>
                             </View>
                         </View>

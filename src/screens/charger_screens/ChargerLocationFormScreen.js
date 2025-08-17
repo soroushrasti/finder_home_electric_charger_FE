@@ -45,10 +45,31 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
     const handleInputChange = (field, value) => {
         setFormData(prev => {
-            const updated = {
+            let updated = {
                 ...prev,
                 [field]: value
             };
+
+            // Special handling for phone number - allow Farsi/English digits, +, and starting with zero
+            if (field === 'phone_number') {
+                // Convert Farsi digits to English and keep only digits and +
+                const normalizedValue = value
+                    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+                    .replace(/[^0-9+]/g, '');
+
+                // Only allow + at the beginning
+                let cleanValue = normalizedValue;
+                if (cleanValue.includes('+')) {
+                    const firstPlus = cleanValue.indexOf('+');
+                    if (firstPlus === 0) {
+                        cleanValue = '+' + cleanValue.substring(1).replace(/\+/g, '');
+                    } else {
+                        cleanValue = cleanValue.replace(/\+/g, '');
+                    }
+                }
+
+                updated[field] = cleanValue;
+            }
 
             // Automatically update price when country changes
             if (field === 'country') {
@@ -95,10 +116,17 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
             return false;
         }
 
-        // Validate phone number format
-        const phoneRegex = /^[+]?[1-9۱-۹][d۰-۹]{0,15}$/;
+        // Validate phone number format - should be digits only, can start with + or 0
+        const phoneRegex = /^(\+?[0-9]+|[0-9]+)$/;
         if (!phoneRegex.test(phone_number.replace(/\s/g, ''))) {
-            Alert.alert(t('messages.validationError'), t('messages.validPhone'));
+            Alert.alert(t('messages.validationError'), t('messages.validPhone') || 'Please enter a valid phone number (digits only, can start with + or 0)');
+            return false;
+        }
+
+        // Check minimum phone number length (at least 8 digits)
+        const digitsOnly = phone_number.replace(/\+/g, '');
+        if (digitsOnly.length < 8) {
+            Alert.alert(t('messages.validationError'), t('messages.phoneMinLength') || 'Phone number must be at least 8 digits');
             return false;
         }
 

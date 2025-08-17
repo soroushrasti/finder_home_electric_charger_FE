@@ -439,6 +439,10 @@
     "forgotPass": "ForgotPassword",
     "newPass": "NewPassword",
     "home" : "Home",
-    "editStation": "editStation"
+    "editStation": "editStation",
+    "reviewMessage": "Review Message",
+    "startTime": "startTime",
+    "endTime": "endTime",
+    "duration": "duration"
   }
 }

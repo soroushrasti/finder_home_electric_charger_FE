@@ -438,6 +438,10 @@
     "forgotPass": "فراموشی رمز عبور",
     "newPass": "رمز عبور جدید",
     "home": "خانه",
-    "editStation": "ویرایش ایستگاه"
+    "editStation": "ویرایش ایستگاه",
+    "reviewMessage": " تجربه شما",
+    "startTime" : "زمان شروع",
+    "endTime": "زمان پایان",
+    "duration": "مدت"
   }
 }

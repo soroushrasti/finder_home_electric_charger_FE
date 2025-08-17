@@ -24,170 +24,150 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
     useEffect(() => {
         const initializeMap = async () => {
             try {
+                // Define fallback coordinates for common locations
+                const getLocationFallback = (country, city) => {
+                    const fallbackCoordinates = {
+                        'iran': {
+                            default: { latitude: 35.6892, longitude: 51.3890 }, // Tehran
+                            'tehran': { latitude: 35.6892, longitude: 51.3890 },
+                            'isfahan': { latitude: 32.6546, longitude: 51.6680 },
+                            'shiraz': { latitude: 29.5918, longitude: 52.5837 },
+                            'mashhad': { latitude: 36.2974, longitude: 59.6067 },
+                            'tabriz': { latitude: 38.0962, longitude: 46.2738 }
+                        },
+                        'usa': {
+                            default: { latitude: 39.8283, longitude: -98.5795 }, // Center of USA
+                            'new york': { latitude: 40.7128, longitude: -74.0060 },
+                            'los angeles': { latitude: 34.0522, longitude: -118.2437 },
+                            'chicago': { latitude: 41.8781, longitude: -87.6298 }
+                        },
+                        'uk': {
+                            default: { latitude: 55.3781, longitude: -3.4360 }, // Center of UK
+                            'london': { latitude: 51.5074, longitude: -0.1278 }
+                        }
+                    };
+
+                    const countryKey = country?.toLowerCase();
+                    const cityKey = city?.toLowerCase();
+
+                    if (fallbackCoordinates[countryKey]) {
+                        if (cityKey && fallbackCoordinates[countryKey][cityKey]) {
+                            return fallbackCoordinates[countryKey][cityKey];
+                        }
+                        return fallbackCoordinates[countryKey].default;
+                    }
+
+                    // Global fallback
+                    return { latitude: 35.6892, longitude: 51.3890 }; // Tehran as default
+                };
+
                 // Request location permissions
                 const { status } = await Location.requestForegroundPermissionsAsync();
                 if (status !== 'granted') {
-                    Alert.alert(t('messages.permissionDeny'), t('messages.locPermission'));
+                    console.log('Location permission denied, using fallback coordinates');
 
-                    let fallbackLocation = null;
+                    // Use predefined coordinates instead of geocoding
+                    const fallbackCoords = getLocationFallback(formData.country, formData.city);
 
-                    // Try to geocode street + city + country first
-                    if (formData.street && formData.city && formData.country) {
-                        try {
-                            const address = `${formData.street}, ${formData.city}, ${formData.country}`;
-                            const geocode = await Location.geocodeAsync(address);
-                            if (geocode.length > 0) {
-                                fallbackLocation = geocode[0];
-                                console.log(t('messages.SCCFallback'), address);
-                            }
-                        } catch (error) {
-                            console.log(t('messages.SCCFail'), error);
-                        }
-                    }
+                    const fallbackRegion = {
+                        latitude: fallbackCoords.latitude,
+                        longitude: fallbackCoords.longitude,
+                        latitudeDelta: 0.05,
+                        longitudeDelta: 0.05,
+                    };
 
-                    // If street+city+country failed, try city + country
-                    if (!fallbackLocation && formData.city && formData.country) {
-                        try {
-                            const address = `${formData.city}, ${formData.country}`;
-                            const geocode = await Location.geocodeAsync(address);
-                            if (geocode.length > 0) {
-                                fallbackLocation = geocode[0];
-                                console.log(t('messages.CCFallback'), address);
-                            }
-                        } catch (error) {
-                            console.log(t('messages.CCFail'), error);
-                        }
-                    }
-
-                    // If city+country failed, try country only
-                    if (!fallbackLocation && formData.country) {
-                        try {
-                            const geocode = await Location.geocodeAsync(formData.country);
-                            if (geocode.length > 0) {
-                                fallbackLocation = geocode[0];
-                                console.log(t('messages.countryFallback'), formData.country);
-                            }
-                        } catch (error) {
-                            console.log(t('messages.geoFail'), error);
-                        }
-                    }
-
-                    // Set region based on fallback location or default
-                    if (fallbackLocation) {
-                        const fallbackRegion = {
-                            latitude: fallbackLocation.latitude,
-                            longitude: fallbackLocation.longitude,
-                            latitudeDelta: 0.05,
-                            longitudeDelta: 0.05,
-                        };
-                        setRegion(fallbackRegion);
-                    } else {
-                        // Use default coordinates as final fallback
-                        setRegion({
-                            latitude: 37.78825,
-                            longitude: -122.4324,
-                            latitudeDelta: 0.0922,
-                            longitudeDelta: 0.0421,
-                        });
-                    }
-
+                    setRegion(fallbackRegion);
+                    setMarker({ latitude: fallbackCoords.latitude, longitude: fallbackCoords.longitude });
                     setLoading(false);
                     return;
                 }
 
-                // Get current location as fallback
+                // If permission granted, try to get current location first
                 let currentLocation;
                 try {
                     currentLocation = await Location.getCurrentPositionAsync({
                         accuracy: Location.Accuracy.High,
+                        timeout: 10000,
                     });
                 } catch (locationError) {
-                    console.log(t('messages.noCurrentLoc'), locationError);
+                    console.log('Could not get current location:', locationError);
                 }
 
-                // Initialize default region
-                let defaultRegion = {
-                    latitude: 37.78825,
-                    longitude: -122.4324,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
-                };
-
-                if (currentLocation) {
-                    defaultRegion = {
-                        latitude: currentLocation.coords.latitude,
-                        longitude: currentLocation.coords.longitude,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01,
-                    };
-                }
-
-                // Try geocoding with fallback logic
+                // Try geocoding with the granted permissions
                 let geocodeResult = null;
 
-                // 1. First try: country + city
-                if (formData.country && formData.city) {
-                    const fullAddress = `${formData.city}, ${formData.country}`;
+                // 1. First try: street + city + country
+                if (formData.street && formData.city && formData.country) {
                     try {
+                        const fullAddress = `${formData.street}, ${formData.city}, ${formData.country}`;
                         const geocode = await Location.geocodeAsync(fullAddress);
                         if (geocode.length > 0) {
                             geocodeResult = geocode[0];
-                            console.log(t('messages.geoAdd'), fullAddress);
+                            console.log('Geocoded full address:', fullAddress);
                         }
                     } catch (error) {
-                        console.log(t('messages.addressGeoFail'), error);
+                        console.log('Full address geocoding failed:', error);
                     }
                 }
 
-                // 2. Second try: city only
-                if (!geocodeResult && formData.city) {
+                // 2. Second try: city + country
+                if (!geocodeResult && formData.city && formData.country) {
                     try {
-                        const geocode = await Location.geocodeAsync(formData.city);
+                        const address = `${formData.city}, ${formData.country}`;
+                        const geocode = await Location.geocodeAsync(address);
                         if (geocode.length > 0) {
                             geocodeResult = geocode[0];
-                            console.log(t('messages.geoCity'), formData.city);
+                            console.log('Geocoded city + country:', address);
                         }
                     } catch (error) {
-                        console.log(t('messages.cityGeoFail'), error);
+                        console.log('City + country geocoding failed:', error);
                     }
                 }
 
-                // 3. Third try: country (if available in formData)
-                if (!geocodeResult && formData.country) {
-                    try {
-                        const geocode = await Location.geocodeAsync(formData.country);
-                        if (geocode.length > 0) {
-                            geocodeResult = geocode[0];
-                            console.log(t('messages.geoCountry'), formData.country);
-                        }
-                    } catch (error) {
-                        console.log(t('messages.geoFail'), error);
-                    }
+                // 3. If geocoding failed, use fallback coordinates
+                if (!geocodeResult) {
+                    console.log('Geocoding failed, using predefined coordinates');
+                    const fallbackCoords = getLocationFallback(formData.country, formData.city);
+                    geocodeResult = fallbackCoords;
                 }
 
-                // Set the region based on geocoding result or default
+                // Set the region and marker
+                let finalRegion;
                 if (geocodeResult) {
-                    const { latitude, longitude } = geocodeResult;
-                    const geocodedRegion = {
-                        latitude,
-                        longitude,
-                        latitudeDelta: 0.01,
-                        longitudeDelta: 0.01,
+                    finalRegion = {
+                        latitude: geocodeResult.latitude,
+                        longitude: geocodeResult.longitude,
+                        latitudeDelta: 0.005, // More zoomed in for street level
+                        longitudeDelta: 0.005, // More zoomed in for street level
                     };
-                    setRegion(geocodedRegion);
-                    setMarker({ latitude, longitude });
+                    setMarker({ latitude: geocodeResult.latitude, longitude: geocodeResult.longitude });
+                } else if (currentLocation) {
+                    finalRegion = {
+                        latitude: currentLocation.coords.latitude,
+                        longitude: currentLocation.coords.longitude,
+                        latitudeDelta: 0.005, // More zoomed in for street level
+                        longitudeDelta: 0.005, // More zoomed in for street level
+                    };
                 } else {
-                    setRegion(defaultRegion);
+                    // Final fallback to Tehran with city-level zoom
+                    finalRegion = {
+                        latitude: 35.6892,
+                        longitude: 51.3890,
+                        latitudeDelta: 0.02, // City level zoom for fallback
+                        longitudeDelta: 0.02,
+                    };
                 }
+
+                setRegion(finalRegion);
 
             } catch (error) {
-                console.error(t('messages.errorMapInit'), error);
-                // Use default location
+                console.error('Map initialization error:', error);
+                // Use Tehran as ultimate fallback
                 setRegion({
-                    latitude: 37.78825,
-                    longitude: -122.4324,
-                    latitudeDelta: 0.0922,
-                    longitudeDelta: 0.0421,
+                    latitude: 35.6892,
+                    longitude: 51.3890,
+                    latitudeDelta: 0.05,
+                    longitudeDelta: 0.05,
                 });
             } finally {
                 setLoading(false);

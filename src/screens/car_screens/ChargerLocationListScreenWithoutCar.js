@@ -99,7 +99,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                             {location.street_address || t('messages.chargingStation')}
                         </FarsiText>
                         <FarsiText style={styles.locationAddress}>
-                            {location.city}, {location.state || t('messages.unknown')}
+                            {location.city}, {location.street || t('messages.unknown')}
                         </FarsiText>
                         {location.postcode && (
                             <Text style={styles.locationPostcode}>

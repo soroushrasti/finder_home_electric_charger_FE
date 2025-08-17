@@ -163,18 +163,18 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="schedule" size={16} color="#666" />
-                    <Text style={styles.detailText}>{t('messages.startTime')}: {item.formatted_start_time || t('messages.noDate')}</Text>
+                    <FarsiText style={styles.detailText}>{t('messages.startTime')}: {item.formatted_start_time || t('messages.noDate')}</FarsiText>
                 </View>
                 {item.end_time && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="schedule" size={16} color="#666" />
-                        <Text style={styles.detailText}>{t('messages.endTime')}: {item.formatted_end_time}</Text>
+                        <FarsiText style={styles.detailText}>{t('messages.endTime')}: {item.formatted_end_time}</FarsiText>
                     </View>
                 )}
                 {item.duration && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="timer" size={16} color="#666" />
-                        <Text style={styles.detailText}>{t('messages.duration')}: {item.duration}</Text>
+                        <FarsiText style={styles.detailText}>{t('messages.duration')}: {item.duration}</FarsiText>
                     </View>
                 )}
                 {item.price && (
@@ -186,7 +186,7 @@ export default function CarBookingsScreen({ navigation, route }) {
                 {item.booking_id && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="confirmation-number" size={16} color="#666" />
-                        <Text style={styles.detailText}>{t('messages.reviewMessage')}: {item.review_message}</Text>
+                        <FarsiText style={styles.detailText}>{t('messages.reviewMessage')}: {item.review_message}</FarsiText>
                     </View>
                 )}
                 {item.charger_location_id && (

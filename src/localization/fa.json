@@ -438,6 +438,9 @@
     "forgotPass": "فراموشی رمز عبور",
     "newPass": "رمز عبور جدید",
     "home": "خانه",
-    "reviewMessage": " تجربه شما"
+    "reviewMessage": " تجربه شما",
+    "startTime" : "زمان شروع",
+    "endTime": "زمان پایان",
+    "duration": "مدت"
   }
 }

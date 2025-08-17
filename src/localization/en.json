@@ -440,6 +440,9 @@
     "forgotPass": "ForgotPassword",
     "newPass": "NewPassword",
     "home" : "Home",
-    "reviewMessage": "Review Message"
+    "reviewMessage": "Review Message",
+    "startTime": "startTime",
+    "endTime": "endTime",
+    "duration": "duration"
   }
 }

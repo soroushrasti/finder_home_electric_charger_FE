@@ -99,7 +99,25 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
             </View>
 
             <View style={styles.locationActions}>
-                <TouchableOpacity style={styles.actionButton}>
+                <TouchableOpacity
+                        style={styles.actionButton}
+                        onPress={() => navigation.navigate('EditChargerLocationScreen', {
+                            location: {
+                                 charging_location_id: item.charging_location_id,
+                                 post_code: item.post_code,
+                                 alley: item.alley,
+                                 street: item.street,
+                                 city: item.city,
+                                 name: item.name,
+                                 country: item.country,
+                                 phone_number: item.phone_number,
+                                 price_per_hour: item.price_per_hour,
+                                 power_output: item.power_output,
+                                 description: item.description,
+                                 fast_charging : item.fast_charging
+                            }, user: user
+                        })}
+                >
                     <MaterialIcons name="edit" size={18} color="#667eea" />
                     <FarsiText style={styles.actionText}>{t('messages.edit')}</FarsiText>
                 </TouchableOpacity>

@@ -407,7 +407,6 @@
     "updatingCar": "Updating Car...",
     "carUpdate": "Update the car",
     "stationName": "Station Name (e.g., Home Charger) *",
-    "city": "City *",
     "postcode": "Postcode *",
     "streetAdd": "Street Address *",
     "alley": "Alley/Lane (Optional)",
@@ -439,6 +438,7 @@
     "emailScreen": "EmailVerificationScreen",
     "forgotPass": "ForgotPassword",
     "newPass": "NewPassword",
-    "home" : "Home"
+    "home" : "Home",
+    "editStation": "editStation"
   }
 }

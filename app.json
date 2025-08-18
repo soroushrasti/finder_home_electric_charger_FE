@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
+    "newArchEnabled": false,
     "splash": {
       "image": "./assets/splash-icon.png",
       "resizeMode": "contain",
@@ -16,7 +16,8 @@
       "supportsTablet": true,
       "config": {
         "googleMapsApiKey": "AIzaSyB9DI9YLDhlvlv4afuelxWKgGoIIhrWCVA"
-      }
+      },
+      "bundleIdentifier": "com.soroushrasti.ChargeBridge"
     },
     "android": {
       "adaptiveIcon": {

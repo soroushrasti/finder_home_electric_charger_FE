@@ -1,5 +1,5 @@
 {
-  "name": "finder_home_electric_charger",
+  "name": "ChargeBridge",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {

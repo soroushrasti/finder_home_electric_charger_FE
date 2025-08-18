@@ -23,6 +23,16 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
 
     useEffect(() => {
         const initializeMap = async () => {
+            // Request location permissions
+            const { status } = await Location.requestForegroundPermissionsAsync();
+            if (status !== 'granted') {
+                Alert.alert(
+                    t('Permission Denied'),
+                    t('Location permission is required to show the map. Showing default location.'),
+                );
+                setLoading(false);
+                return;
+            }
             try {
                 // Define fallback coordinates for common locations
                 const getLocationFallback = (country, city) => {
@@ -60,27 +70,6 @@ export default function FinalizeLocationOnMapScreen({ route, navigation }) {
                     // Global fallback
                     return { latitude: 35.6892, longitude: 51.3890 }; // Tehran as default
                 };
-
-                // Request location permissions
-                const { status } = await Location.requestForegroundPermissionsAsync();
-                if (status !== 'granted') {
-                    console.log('Location permission denied, using fallback coordinates');
-
-                    // Use predefined coordinates instead of geocoding
-                    const fallbackCoords = getLocationFallback(formData.country, formData.city);
-
-                    const fallbackRegion = {
-                        latitude: fallbackCoords.latitude,
-                        longitude: fallbackCoords.longitude,
-                        latitudeDelta: 0.05,
-                        longitudeDelta: 0.05,
-                    };
-
-                    setRegion(fallbackRegion);
-                    setMarker({ latitude: fallbackCoords.latitude, longitude: fallbackCoords.longitude });
-                    setLoading(false);
-                    return;
-                }
 
                 // If permission granted, try to get current location first
                 let currentLocation;

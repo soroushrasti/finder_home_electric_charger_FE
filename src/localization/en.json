@@ -443,6 +443,11 @@
     "reviewMessage": "Review Message",
     "startTime": "startTime",
     "endTime": "endTime",
-    "duration": "duration"
+    "duration": "duration",
+    "endedSession": "End Session",
+    "completed": "Completed",
+    "editChargingStation": "Edit Charging Station",
+    "editingStation": "Editing Station...",
+    "countryRequire": "Country is required"
   }
 }

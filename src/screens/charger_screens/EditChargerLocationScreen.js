@@ -19,20 +19,18 @@ export default function EditChargingLocationScreen({ navigation, route }) {
 
     const location = route.params.location
     const user = route.params.user;
-    const [formData, setFormData] = useState({
-        name: location.name,
-        city: location.city,
-        country: location.country, // Default country
-        postcode: location.post_code,
-        street: location.street,
-        alley: location.alley,
-        phone_number: location.phone_number,
-        power_output: location.power_output, // Default 7.4 kW (typical home charger)
-        price_per_hour: location.price_per_hour, // Default price in Iranian Rials
-        description: location.description,
-        fast_charging: location.fast_charging,
-        user_id: user?.user_id || null
-    });
+    const [name, setName] = useState(location?.name || '');
+    const [city, setCity] = useState(location?.city || '');
+    const [country, setCountry] = useState(location?.country || '');
+    const [postcode, setPostcode] = useState(location?.postcode || '');
+    const [street, setStreet] = useState(location?.street || '');
+    const [alley, setAlley] = useState(location?.alley || '');
+    const [phone_number, setPhoneNumber] = useState(location?.phone_number?.toString() || '');
+    const [power_output, setPowerOutput] = useState(location?.power_output?.toString() || '');
+    const [price_per_hour, setPricePerHour] = useState(location?.price_per_hour?.toString() || '');
+    const [description, setDescription] = useState(location?.description || '');
+    const [fast_charging, setFastCharging] = useState(location?.fast_charging?.toString() || '');
+
     const [loading, setLoading] = useState(false);
     const handleNext = () => {
         if (!validateForm()) return;
@@ -65,12 +63,16 @@ export default function EditChargingLocationScreen({ navigation, route }) {
     };
 
     const validateForm = () => {
-        const { name, city, postcode, street, phone_number, power_output, price_per_hour } = formData;
+        const { name, country, city, postcode, street, phone_number, power_output, price_per_hour } = formData;
 
         if (!name.trim()) {
             Alert.alert(t('messages.validationError'), t('messages.stationName'));
             return false;
         }
+         if (!country.trim()) {
+              Alert.alert(t('messages.validationError'), t('messages.countryRequire'));
+              return false;
+         }
         if (!city.trim()) {
             Alert.alert(t('messages.validationError'), t('messages.cityRequire'));
             return false;
@@ -146,9 +148,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                         <MaterialIcons name="location-on" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder= {t('messages.stationName')}
-                            value={formData.name}
-                            onChangeText={(value) => handleInputChange('name', value)}
+                            placeholder= {name}
+                            value={name}
+                            onChangeText={setName}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -162,9 +164,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                         <MaterialIcons name="public" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder={t('messages.country') || 'Country'}
-                            value={formData.country}
-                            onChangeText={(value) => handleInputChange('country', value)}
+                            placeholder= {country}
+                            value={country}
+                            onChangeText={setCountry}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -174,9 +176,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             <MaterialIcons name="location-city" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder= {t('messages.city')}
-                                value={formData.city}
-                                onChangeText={(value) => handleInputChange('city', value)}
+                                placeholder= {city}
+                                value={city}
+                                onChangeText={setCity}
                                 placeholderTextColor="#999"
                             />
                         </View>
@@ -185,9 +187,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             <MaterialIcons name="markunread-mailbox" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder= {t('messages.postcode')}
-                                value={formData.postcode}
-                                onChangeText={(value) => handleInputChange('postcode', value)}
+                                placeholder= {postcode}
+                                value={postcode}
+                                onChangeText={setPostcode}
                                 keyboardType="numeric"
                                 placeholderTextColor="#999"
                             />
@@ -199,9 +201,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                         <MaterialIcons name="home" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder={t('messages.streetAdd')}
-                            value={formData.street}
-                            onChangeText={(value) => handleInputChange('street', value)}
+                            placeholder={street}
+                            value={street}
+                            onChangeText={setStreet}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -210,9 +212,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                         <MaterialIcons name="place" size={20} color="#4285F4" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
-                            placeholder={t('messages.alley')}
-                            value={formData.alley}
-                            onChangeText={(value) => handleInputChange('alley', value)}
+                            placeholder={alley}
+                            value={alley}
+                            onChangeText={setAlley}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -231,9 +233,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                         <MaterialIcons name="phone" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder={t('messages.phoneNum')}
-                            value={formData.phone_number}
-                            onChangeText={(value) => handleInputChange('phone_number', value)}
+                            placeholder={phone_number}
+                            value={phone_number}
+                            onChangeText={setPhoneNumber}
                             keyboardType="phone-pad"
                             placeholderTextColor="#999"
                         />
@@ -249,9 +251,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             <MaterialIcons name="flash-on" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder={t('messages.power')}
-                                value={formData.power_output}
-                                onChangeText={(value) => handleInputChange('power_output', value)}
+                                placeholder={power_output}
+                                value={power_output}
+                                onChangeText={setPowerOutput}
                                 keyboardType="decimal-pad"
                                 placeholderTextColor="#999"
                             />
@@ -261,9 +263,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             <MaterialIcons name="attach-money" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder={t('messages.hour')}
-                                value={formData.price_per_hour}
-                                onChangeText={(value) => handleInputChange('price_per_hour', value)}
+                                placeholder={price_per_hour}
+                                value={price_per_hour}
+                                onChangeText={setPricePerHour}
                                 keyboardType="decimal-pad"
                                 placeholderTextColor="#999"
                             />
@@ -281,10 +283,10 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             </View>
                         </View>
                         <Switch
-                            value={formData.fast_charging}
-                            onValueChange={(value) => handleInputChange('fast_charging', value)}
+                            value={fast_charging}
+                            onValueChange={setFastCharging}
                             trackColor={{ false: '#ccc', true: '#4285F4' }}
-                            thumbColor={formData.fast_charging ? '#fff' : '#f4f3f4'}
+                            thumbColor={fast_charging ? '#fff' : '#f4f3f4'}
                         />
                     </View>
 
@@ -292,9 +294,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                         <MaterialIcons name="description" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={[styles.input, styles.multilineInput]}
-                            placeholder={t('messages.description')}
-                            value={formData.description}
-                            onChangeText={(value) => handleInputChange('description', value)}
+                            placeholder={description}
+                            value={description}
+                            onChangeText={setDescription}
                             placeholderTextColor="#999"
                             multiline
                             numberOfLines={3}
@@ -319,7 +321,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                                 <MaterialIcons name="add-location" size={24} color="#fff" />
                             )}
                             <FarsiText style={styles.buttonText}>
-                                {loading ? t('messages.addStation') : t('messages.addChargingStation')}
+                                {loading ? t('messages.editingStation') : t('messages.editChargingStation')}
                             </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>

@@ -85,11 +85,15 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     };
 
     const validateForm = () => {
-        const { name, city, postcode, street, phone_number, power_output, price_per_hour } = formData;
+        const { name, country, city, postcode, street, phone_number, power_output, price_per_hour } = formData;
 
         if (!name.trim()) {
             Alert.alert(t('messages.validationError'), t('messages.stationName'));
             return false;
+        }
+        if (!country.trim()) {
+             Alert.alert(t('messages.validationError'), t('messages.countryRequire'));
+             return false;
         }
         if (!city.trim()) {
             Alert.alert(t('messages.validationError'), t('messages.cityRequire'));

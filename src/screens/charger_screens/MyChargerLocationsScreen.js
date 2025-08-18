@@ -121,16 +121,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                     <MaterialIcons name="edit" size={18} color="#667eea" />
                     <FarsiText style={styles.actionText}>{t('messages.edit')}</FarsiText>
                 </TouchableOpacity>
-             /*   <TouchableOpacity
-                    style={styles.actionButton}
-                    onPress={() => navigation.navigate('LocationBookings', {
-                        location: item,
-                        user
-                    })}
-                >
-                    <MaterialIcons name="history" size={18} color="#667eea" />
-                    <FarsiText style={styles.actionText}>{t('messages.booking')}</FarsiText>
-                </TouchableOpacity>*/
+
             </View>
         </View>
     );

@@ -1,4 +1,5 @@
 // App.js
+import 'react-native-gesture-handler';
 import { NavigationContainer } from '@react-navigation/native';
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';

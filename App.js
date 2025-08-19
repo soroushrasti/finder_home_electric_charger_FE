@@ -31,10 +31,11 @@ import {LanguageProvider, useLanguage} from './src/context/LanguageContext';
 import './src/localization/i18n';
 import LanguageSwitcher from './src/components/LanguageSwitcher';
 import {useTranslation} from "react-i18next";
-import FinalizeLocationOnMapScreen from './src/screens/charger_screens/FinalizeLocationOnMapScreen';
+import FinalizeAddLocation from './src/screens/charger_screens/FinalizeAddLocation';
 import FarsiText from './src/components/FarsiText';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import MapScreen from "./src/screens/charger_screens/MapScreen";
 const Stack = createStackNavigator();
 
 function Home({ navigation }) {
@@ -347,7 +348,8 @@ export default function App() {
                                 <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />
                                 <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: t('messages.myStation') }} />
                                 <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: t('messages.addStation') }} />
-                                <Stack.Screen name="FinalizeLocationOnMapScreen" component={FinalizeLocationOnMapScreen} options={{ title: t('messages.addStation')}} />
+                                <Stack.Screen name="FinalizeAddLocationScreen" component={FinalizeAddLocation} options={{ title: t('messages.addStation')}} />
+                                <Stack.Screen name="MapScreen" component={MapScreen} options={{ title: t('messages.mapScreen')}} />
                                 <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: t('messages.endCharging') }} />
 
                             </>

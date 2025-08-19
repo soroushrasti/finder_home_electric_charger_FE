@@ -35,7 +35,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
     const handleNext = () => {
         if (!validateForm()) return;
-        navigation.navigate('FinalizeLocationOnMapScreen', {
+        navigation.navigate('FinalizeAddLocationScreen', {
             formData,
             onLocationAdded // Pass this callback
         });

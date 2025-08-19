@@ -7,7 +7,6 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    KeyboardAvoidingView,
     Platform
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -17,6 +16,7 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 export default function LoginScreen({ navigation, setUser }) {
@@ -125,9 +125,12 @@ export default function LoginScreen({ navigation, setUser }) {
     };
 
     return (
-        <KeyboardAvoidingView
+        <KeyboardAwareScrollView
             style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            enableOnAndroid={true}
+            extraScrollHeight={40}
         >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
@@ -183,14 +186,10 @@ export default function LoginScreen({ navigation, setUser }) {
                                 placeholderTextColor="#999"
                             />
                             <TouchableOpacity
+                                style={styles.showPasswordIcon}
                                 onPress={() => setShowPassword(!showPassword)}
-                                style={styles.eyeIcon}
                             >
-                                <MaterialIcons
-                                    name={showPassword ? "visibility" : "visibility-off"}
-                                    size={20}
-                                    color="#666"
-                                />
+                                <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="#666" />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -237,7 +236,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
     );
 }
 
@@ -330,7 +329,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
     },
-    eyeIcon: {
+    showPasswordIcon: {
         padding: 5,
     },
     forgotPasswordButton: {

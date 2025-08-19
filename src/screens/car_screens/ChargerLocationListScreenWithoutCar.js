@@ -12,6 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
+import MapScreen from '../charger_screens/MapScreen';
 
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {
@@ -178,6 +179,29 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
     return (
         <View style={styles.container}>
+            {/* MapScreen above the list */}
+            <View style={{ height: 300 }}>
+                <MapScreen
+                    initialRegion={chargingLocations.length > 0 ? {
+                        latitude: chargingLocations[0].latitude || 35.6892,
+                        longitude: chargingLocations[0].longitude || 51.3890,
+                        latitudeDelta: 0.05,
+                        longitudeDelta: 0.05,
+                    } : {
+                        latitude: 35.6892,
+                        longitude: 51.3890,
+                        latitudeDelta: 0.5,
+                        longitudeDelta: 0.5,
+                    }}
+                    initialMarker={null}
+                    markers={chargingLocations.map(loc => ({
+                        latitude: loc.latitude,
+                        longitude: loc.longitude,
+                        title: loc.name,
+                        description: `${loc.city}, ${loc.country}`
+                    }))}
+                />
+            </View>
             <LinearGradient
                 colors={['#4CAF50', '#45a049']}
                 style={styles.header}

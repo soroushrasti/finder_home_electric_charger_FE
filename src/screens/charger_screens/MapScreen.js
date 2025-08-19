@@ -16,6 +16,19 @@ export default function MapScreen({ initialRegion, initialMarker, onLocationSele
     const [marker, setMarker] = useState(initialMarker || null);
     const [loading, setLoading] = useState(true);
 
+    function isValidRegion(region) {
+        return (
+            typeof region?.latitude === 'number' &&
+            typeof region?.longitude === 'number' &&
+            typeof region?.latitudeDelta === 'number' &&
+            typeof region?.longitudeDelta === 'number' &&
+            !isNaN(region.latitude) &&
+            !isNaN(region.longitude) &&
+            !isNaN(region.latitudeDelta) &&
+            !isNaN(region.longitudeDelta)
+        );
+    }
+
     useEffect(() => {
         const initializeMap = async () => {
             const { status } = await Location.requestForegroundPermissionsAsync();
@@ -24,6 +37,12 @@ export default function MapScreen({ initialRegion, initialMarker, onLocationSele
                     t('Permission Denied'),
                     t('Location permission is required to show the map. Showing default location.'),
                 );
+                setRegion({
+                    latitude: 35.6892,
+                    longitude: 51.3890,
+                    latitudeDelta: 0.05,
+                    longitudeDelta: 0.05,
+                });
                 setLoading(false);
                 return;
             }
@@ -82,7 +101,9 @@ export default function MapScreen({ initialRegion, initialMarker, onLocationSele
                     geocodeResult = getLocationFallback(formData?.country, formData?.city);
                 }
                 let finalRegion = region;
-                if (geocodeResult) {
+                if (geocodeResult &&
+                    typeof geocodeResult.latitude === 'number' &&
+                    typeof geocodeResult.longitude === 'number') {
                     finalRegion = {
                         latitude: geocodeResult.latitude,
                         longitude: geocodeResult.longitude,
@@ -90,9 +111,18 @@ export default function MapScreen({ initialRegion, initialMarker, onLocationSele
                         longitudeDelta: 0.005,
                     };
                     setMarker({ latitude: geocodeResult.latitude, longitude: geocodeResult.longitude });
+                } else {
+                    finalRegion = {
+                        latitude: 35.6892,
+                        longitude: 51.3890,
+                        latitudeDelta: 0.05,
+                        longitudeDelta: 0.05,
+                    };
                 }
+                console.log('MapScreen: finalRegion', finalRegion);
                 setRegion(finalRegion);
-            } catch {
+            } catch (err) {
+                console.log('MapScreen: error in initializeMap', err);
                 setRegion({
                     latitude: 35.6892,
                     longitude: 51.3890,
@@ -121,6 +151,13 @@ export default function MapScreen({ initialRegion, initialMarker, onLocationSele
             </View>
         );
     }
+    if (!isValidRegion(region)) {
+        return (
+            <View style={styles.centered}>
+                <FarsiText style={styles.loadingText}>{t('messages.mapError')}</FarsiText>
+            </View>
+        );
+    }
 
     return (
         <View style={styles.container}>
@@ -128,16 +165,13 @@ export default function MapScreen({ initialRegion, initialMarker, onLocationSele
                 style={styles.map}
                 region={region}
                 onPress={handleMapPress}
-                showsUserLocation={true}
-                showsMyLocationButton={true}
-                showsCompass={true}
                 showsScale={true}
                 zoomEnabled={true}
                 scrollEnabled={true}
                 pitchEnabled={true}
                 rotateEnabled={true}
                 zoomControlEnabled={true}
-                mapType="standard"
+                mapType="standard" // changed from satellite to standard
                 toolbarEnabled={false}
             >
                 {marker && (
@@ -148,6 +182,11 @@ export default function MapScreen({ initialRegion, initialMarker, onLocationSele
                     />
                 )}
             </MapView>
+            {/* Debug info for troubleshooting */}
+            <View style={{position: 'absolute', bottom: 10, left: 10, backgroundColor: 'rgba(255,255,255,0.8)', padding: 5, borderRadius: 5}}>
+                <FarsiText>Region: {JSON.stringify(region)}</FarsiText>
+                <FarsiText>Marker: {JSON.stringify(marker)}</FarsiText>
+            </View>
         </View>
     );
 }
@@ -172,4 +211,3 @@ const styles = StyleSheet.create({
         flex: 1,
     },
 });
-

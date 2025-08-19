@@ -41,10 +41,10 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
 
     const handleSearch = async () => {
         // Validate required fields
-        if (!formData.city || !formData.street) {
-            Alert.alert(t('messages.error'), t('messages.fill'));
-            return;
-        }
+        // if (!formData.city || !formData.street) {
+        //     Alert.alert(t('messages.error'), t('messages.fill'));
+        //     return;
+        // }
 
         setLoading(true);
 

@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyB9DI9YLDhlvlv4afuelxWKgGoIIhrWCVA"
+        "googleMapsApiKey": "AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk"
       },
       "bundleIdentifier": "com.soroushrasti.ChargeBridge"
     },
@@ -28,7 +28,7 @@
       "package": "com.soroushrasti.ChargeBridge",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyB9DI9YLDhlvlv4afuelxWKgGoIIhrWCVA"
+          "apiKey": "AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk"
         }
       },
       "permissions": [

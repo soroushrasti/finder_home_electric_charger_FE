@@ -287,7 +287,7 @@
     "track": "تمام جلسات شارژ خود را پیگیری کنید",
     "startCharge" : "برای مشاهده تاریخچه رزرو خود، شارژ ماشین خود را شروع کنید",
     "failCar": "ماشین هایتان را نیاوردم.»",
-    "Active": "فعال",
+    "active": "فعال",
     "edit": "ویرایش",
     "history": "تاریخچه",
     "loadCars": "بارگیری ماشین های شما...",
@@ -438,6 +438,15 @@
     "forgotPass": "فراموشی رمز عبور",
     "newPass": "رمز عبور جدید",
     "home": "خانه",
-    "reviewMessage": " تجربه شما"
+    "editStation": "ویرایش ایستگاه",
+    "reviewMessage": " تجربه شما",
+    "startTime" : "زمان شروع",
+    "endTime": "زمان پایان",
+    "duration": "مدت",
+    "endedSession": "پایان جلسه",
+    "completed": "تکمیل شد",
+    "editChargingStation": "ویرایش ایستگاه شارژ",
+    "editingStation": " در حال ویرایش ایستگاه ...",
+    "countryRequire": "کشور مورد نیاز است"
   }
 }

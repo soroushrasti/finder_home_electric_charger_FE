@@ -5,7 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
-
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function CarBookingsScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -13,6 +13,10 @@ export default function CarBookingsScreen({ navigation, route }) {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const { language, changeLanguage } = useLanguage();
+    const country = language === 'fa' ? 'fa-IR' : 'en-US';
+    const timeZone = language === 'fa'? 'Asia/Tehran' : 'America/New_York'
+
 
     const { car, user } = route.params || {};
 
@@ -59,8 +63,10 @@ export default function CarBookingsScreen({ navigation, route }) {
                         const endTime = new Date(booking.end_time);
                         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
 
+
                         // Format start and end times for better display
-                        booking.formatted_start_time = startTime.toLocaleString('en-US', {
+                        booking.formatted_start_time = startTime.toLocaleString(country, {
+                            timeZone : timeZone,
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
@@ -69,7 +75,8 @@ export default function CarBookingsScreen({ navigation, route }) {
                             hour12: true
                         });
 
-                        booking.formatted_end_time = endTime.toLocaleString('en-US', {
+                        booking.formatted_end_time = endTime.toLocaleString(country, {
+                            timeZone : timeZone,
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
@@ -90,7 +97,8 @@ export default function CarBookingsScreen({ navigation, route }) {
                     } else if (booking.start_time) {
                         // Format start time even if no end time
                         const startTime = new Date(booking.start_time);
-                        booking.formatted_start_time = startTime.toLocaleString('en-US', {
+                        booking.formatted_start_time = startTime.toLocaleString(country, {
+                            timeZone : timeZone,
                             year: 'numeric',
                             month: 'short',
                             day: 'numeric',
@@ -156,25 +164,25 @@ export default function CarBookingsScreen({ navigation, route }) {
                 </View>
                 <View style={[styles.statusBadge, { backgroundColor: getStatusColor(item.status) }]}>
                     <MaterialIcons name={getStatusIcon(item.status)} size={16} color="#fff" />
-                    <Text style={styles.statusText}>{item.status || t('messages.success')}</Text>
+                    <FarsiText style={styles.statusText}>{item.status || t('messages.success')}</FarsiText>
                 </View>
             </View>
 
             <View style={styles.bookingDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="schedule" size={16} color="#666" />
-                    <Text style={styles.detailText}>{t('messages.startTime')}: {item.formatted_start_time || t('messages.noDate')}</Text>
+                    <FarsiText style={styles.detailText}>{t('messages.startTime')}: {item.formatted_start_time || t('messages.noDate')}</FarsiText>
                 </View>
                 {item.end_time && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="schedule" size={16} color="#666" />
-                        <Text style={styles.detailText}>{t('messages.endTime')}: {item.formatted_end_time}</Text>
+                        <FarsiText style={styles.detailText}>{t('messages.endTime')}: {item.formatted_end_time}</FarsiText>
                     </View>
                 )}
                 {item.duration && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="timer" size={16} color="#666" />
-                        <Text style={styles.detailText}>{t('messages.duration')}: {item.duration}</Text>
+                        <FarsiText style={styles.detailText}>{t('messages.duration')}: {item.duration}</FarsiText>
                     </View>
                 )}
                 {item.price && (
@@ -186,7 +194,7 @@ export default function CarBookingsScreen({ navigation, route }) {
                 {item.booking_id && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="confirmation-number" size={16} color="#666" />
-                        <Text style={styles.detailText}>{t('messages.reviewMessage')}: {item.review_message}</Text>
+                        <FarsiText style={styles.detailText}>{t('messages.reviewMessage')}: {item.review_message}</FarsiText>
                     </View>
                 )}
                 {item.charger_location_id && (

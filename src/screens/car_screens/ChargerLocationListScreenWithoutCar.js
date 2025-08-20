@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import MapScreen from '../charger_screens/MapScreen';
+import env from "../../config/env";
 
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {
@@ -21,6 +22,12 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     const { user, searchResults, searchCriteria } = route.params;
     const [chargingLocations, setChargingLocations] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // --- New State ---
+    const [mapRegion, setMapRegion] = useState(null);
+    const [mapMarkers, setMapMarkers] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [isMapInteracting, setIsMapInteracting] = useState(false);
 
     useEffect(() => {
         if (searchResults) {
@@ -56,6 +63,92 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             user,
             chargingLocation: location
         });
+    };
+
+    // --- Helper: Get fallback region from searchCriteria ---
+    const getFallbackRegion = () => {
+        const cityCoords = {
+            'tehran': { latitude: 35.6892, longitude: 51.3890 },
+            'isfahan': { latitude: 32.6546, longitude: 51.6680 },
+            'shiraz': { latitude: 29.5918, longitude: 52.5837 },
+            'mashhad': { latitude: 36.2974, longitude: 59.6067 },
+            'tabriz': { latitude: 38.0962, longitude: 46.2738 }
+        };
+        const cityKey = searchCriteria?.city?.toLowerCase();
+        return cityCoords[cityKey] || { latitude: 35.6892, longitude: 51.3890 };
+    };
+
+    // --- Initial Map Setup ---
+    useEffect(() => {
+        if (searchResults && searchResults.length > 0) {
+            setMapMarkers(searchResults.map(loc => ({
+                latitude: loc.latitude,
+                longitude: loc.longitude,
+                title: loc.name,
+                description: `${loc.city}, ${loc.country}`,
+                id: loc.charging_location_id
+            })));
+            setMapRegion({
+                latitude: searchResults[0].latitude,
+                longitude: searchResults[0].longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+            });
+        } else {
+            const fallback = getFallbackRegion();
+            setMapRegion({
+                latitude: fallback.latitude,
+                longitude: fallback.longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+            });
+            setMapMarkers([]);
+        }
+    }, [searchResults, searchCriteria]);
+
+    // --- Map Interactivity: Find Nearby Locations ---
+    const handleRegionChangeComplete = async (region) => {
+        if (isMapInteracting) return;
+        setIsMapInteracting(true);
+        try {
+            const response = await fetch(`${env.apiUrl}/find-nearby-locations`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Token': `${env.apiToken} `,
+                },
+                body: JSON.stringify({ latitude: region.latitude, longitude: region.longitude })
+            });
+            const data = await response.json();
+            if (response.ok && Array.isArray(data)) {
+                setMapMarkers(data.map(loc => ({
+                    latitude: loc.latitude,
+                    longitude: loc.longitude,
+                    title: loc.name,
+                    description: `${loc.city}, ${loc.country}`,
+                    id: loc.charging_location_id
+                })));
+            }
+        } catch (error) {
+            // Optionally show error
+        } finally {
+            setIsMapInteracting(false);
+        }
+    };
+
+    // --- Marker Selection ---
+    const handleMarkerPress = (marker) => {
+        setSelectedLocation(marker);
+    };
+
+    // --- Proceed Button ---
+    const handleProceed = () => {
+        if (selectedLocation) {
+            navigation.navigate('CarSelectionScreen', {
+                user,
+                chargingLocation: selectedLocation
+            });
+        }
     };
 
     const renderSearchCriteria = () => {
@@ -182,24 +275,10 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             {/* MapScreen above the list */}
             <View style={{ height: 300 }}>
                 <MapScreen
-                    initialRegion={chargingLocations.length > 0 ? {
-                        latitude: chargingLocations[0].latitude || 35.6892,
-                        longitude: chargingLocations[0].longitude || 51.3890,
-                        latitudeDelta: 0.05,
-                        longitudeDelta: 0.05,
-                    } : {
-                        latitude: 35.6892,
-                        longitude: 51.3890,
-                        latitudeDelta: 0.5,
-                        longitudeDelta: 0.5,
-                    }}
-                    initialMarker={null}
-                    markers={chargingLocations.map(loc => ({
-                        latitude: loc.latitude,
-                        longitude: loc.longitude,
-                        title: loc.name,
-                        description: `${loc.city}, ${loc.country}`
-                    }))}
+                    region={mapRegion}
+                    markers={mapMarkers.map(m => ({ ...m, selected: selectedLocation?.id === m.id }))}
+                    onRegionChangeComplete={handleRegionChangeComplete}
+                    onMarkerPress={handleMarkerPress}
                 />
             </View>
             <LinearGradient
@@ -245,6 +324,13 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         chargingLocations.map(renderLocationCard)
                     )}
                 </View>
+
+                {/* Proceed Button */}
+                {selectedLocation && (
+                    <TouchableOpacity style={{margin: 16, padding: 16, backgroundColor: '#4CAF50', borderRadius: 8}} onPress={handleProceed}>
+                        <FarsiText style={{color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>{t('messages.proceedWithSelectedLocation')}</FarsiText>
+                    </TouchableOpacity>
+                )}
             </ScrollView>
         </View>
     );

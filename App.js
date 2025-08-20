@@ -16,6 +16,7 @@ import EndBookingScreen from "./src/screens/car_screens/EndBookingScreen";
 import MyBookingsScreen from "./src/screens/car_screens/MyBookingsScreen";
 import MyChargerLocationsScreen from './src/screens/charger_screens/MyChargerLocationsScreen';
 import ChargerLocationFormScreen from './src/screens/charger_screens/ChargerLocationFormScreen';
+import EditChargerLocationScreen from './src/screens/charger_screens/EditChargerLocationScreen';
 import MyCarsScreen from './src/screens/car_screens/MyCarsScreen';
 import BookingConfirmationScreen from './src/screens/car_screens/BookingConfirmationScreen';
 import ChargerLocationListScreen from './src/screens/car_screens/ChargerLocationListScreen';
@@ -347,6 +348,7 @@ export default function App() {
                                 <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />
                                 <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: t('messages.myStation') }} />
                                 <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: t('messages.addStation') }} />
+                                <Stack.Screen name="EditChargerLocationScreen" component={EditChargerLocationScreen} options={{ title: t('messages.editStation') }} />
                                 <Stack.Screen name="FinalizeLocationOnMapScreen" component={FinalizeLocationOnMapScreen} options={{ title: t('messages.addStation')}} />
                                 <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: t('messages.endCharging') }} />
 

@@ -10,28 +10,27 @@ import { useLanguage } from '../../context/LanguageContext';
 import faCountries from '../../localization/faCountryCodes.json';
 import enCountries from '../../localization/enCountryCodes.json';
 
-export default function ChargerLocationFormScreen({ navigation, route }) {
+export default function EditChargingLocationScreen({ navigation, route }) {
     const { t } = useTranslation();
 
     const [countryCode, setCountryCode] = useState('+98');
     const { language, changeLanguage } = useLanguage();
     const countries = language === 'fa' ? faCountries : enCountries;
 
-    const user = route.params?.user;
-    const [formData, setFormData] = useState({
-        name: '',
-        city: '',
-        country: 'Iran', // Default country
-        postcode: '',
-        street: '',
-        alley: '',
-        phone_number: '',
-        power_output: '7.4', // Default 7.4 kW (typical home charger)
-        price_per_hour: '50000', // Default price in Iranian Rials
-        description: '',
-        fast_charging: false,
-        user_id: user?.user_id || null
-    });
+    const location = route.params.location
+    const user = route.params.user;
+    const [name, setName] = useState(location?.name || '');
+    const [city, setCity] = useState(location?.city || '');
+    const [country, setCountry] = useState(location?.country || '');
+    const [postcode, setPostcode] = useState(location?.postcode || '');
+    const [street, setStreet] = useState(location?.street || '');
+    const [alley, setAlley] = useState(location?.alley || '');
+    const [phone_number, setPhoneNumber] = useState(location?.phone_number?.toString() || '');
+    const [power_output, setPowerOutput] = useState(location?.power_output?.toString() || '');
+    const [price_per_hour, setPricePerHour] = useState(location?.price_per_hour?.toString() || '');
+    const [description, setDescription] = useState(location?.description || '');
+    const [fast_charging, setFastCharging] = useState(location?.fast_charging?.toString() || '');
+
     const [loading, setLoading] = useState(false);
     const handleNext = () => {
         if (!validateForm()) return;
@@ -45,31 +44,10 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
     const handleInputChange = (field, value) => {
         setFormData(prev => {
-            let updated = {
+            const updated = {
                 ...prev,
                 [field]: value
             };
-
-            // Special handling for phone number - allow Farsi/English digits, +, and starting with zero
-            if (field === 'phone_number') {
-                // Convert Farsi digits to English and keep only digits and +
-                const normalizedValue = value
-                    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
-                    .replace(/[^0-9+]/g, '');
-
-                // Only allow + at the beginning
-                let cleanValue = normalizedValue;
-                if (cleanValue.includes('+')) {
-                    const firstPlus = cleanValue.indexOf('+');
-                    if (firstPlus === 0) {
-                        cleanValue = '+' + cleanValue.substring(1).replace(/\+/g, '');
-                    } else {
-                        cleanValue = cleanValue.replace(/\+/g, '');
-                    }
-                }
-
-                updated[field] = cleanValue;
-            }
 
             // Automatically update price when country changes
             if (field === 'country') {
@@ -91,10 +69,10 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
             Alert.alert(t('messages.validationError'), t('messages.stationName'));
             return false;
         }
-        if (!country.trim()) {
-             Alert.alert(t('messages.validationError'), t('messages.countryRequire'));
-             return false;
-        }
+         if (!country.trim()) {
+              Alert.alert(t('messages.validationError'), t('messages.countryRequire'));
+              return false;
+         }
         if (!city.trim()) {
             Alert.alert(t('messages.validationError'), t('messages.cityRequire'));
             return false;
@@ -120,17 +98,10 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
             return false;
         }
 
-        // Validate phone number format - should be digits only, can start with + or 0
-        const phoneRegex = /^(\+?[0-9]+|[0-9]+)$/;
+        // Validate phone number format
+        const phoneRegex = /^[+]?[1-9۱-۹][d۰-۹]{0,15}$/;
         if (!phoneRegex.test(phone_number.replace(/\s/g, ''))) {
-            Alert.alert(t('messages.validationError'), t('messages.validPhone') || 'Please enter a valid phone number (digits only, can start with + or 0)');
-            return false;
-        }
-
-        // Check minimum phone number length (at least 8 digits)
-        const digitsOnly = phone_number.replace(/\+/g, '');
-        if (digitsOnly.length < 8) {
-            Alert.alert(t('messages.validationError'), t('messages.phoneMinLength') || 'Phone number must be at least 8 digits');
+            Alert.alert(t('messages.validationError'), t('messages.validPhone'));
             return false;
         }
 
@@ -177,9 +148,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <MaterialIcons name="location-on" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder= {t('messages.stationName')}
-                            value={formData.name}
-                            onChangeText={(value) => handleInputChange('name', value)}
+                            placeholder= {name}
+                            value={name}
+                            onChangeText={setName}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -193,9 +164,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <MaterialIcons name="public" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder={t('messages.country') || 'Country'}
-                            value={formData.country}
-                            onChangeText={(value) => handleInputChange('country', value)}
+                            placeholder= {country}
+                            value={country}
+                            onChangeText={setCountry}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -205,9 +176,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             <MaterialIcons name="location-city" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder= {t('messages.city')}
-                                value={formData.city}
-                                onChangeText={(value) => handleInputChange('city', value)}
+                                placeholder= {city}
+                                value={city}
+                                onChangeText={setCity}
                                 placeholderTextColor="#999"
                             />
                         </View>
@@ -216,9 +187,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             <MaterialIcons name="markunread-mailbox" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder= {t('messages.postcode')}
-                                value={formData.postcode}
-                                onChangeText={(value) => handleInputChange('postcode', value)}
+                                placeholder= {postcode}
+                                value={postcode}
+                                onChangeText={setPostcode}
                                 keyboardType="numeric"
                                 placeholderTextColor="#999"
                             />
@@ -226,14 +197,13 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                     </View>
 
 
-
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="home" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder={t('messages.streetAdd')}
-                            value={formData.street}
-                            onChangeText={(value) => handleInputChange('street', value)}
+                            placeholder={street}
+                            value={street}
+                            onChangeText={setStreet}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -242,9 +212,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <MaterialIcons name="place" size={20} color="#4285F4" style={styles.inputIcon} />
                         <TextInput
                             style={styles.input}
-                            placeholder={t('messages.alley')}
-                            value={formData.alley}
-                            onChangeText={(value) => handleInputChange('alley', value)}
+                            placeholder={alley}
+                            value={alley}
+                            onChangeText={setAlley}
                             placeholderTextColor="#999"
                         />
                     </View>
@@ -263,9 +233,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <MaterialIcons name="phone" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
-                            placeholder={t('messages.phoneNum')}
-                            value={formData.phone_number}
-                            onChangeText={(value) => handleInputChange('phone_number', value)}
+                            placeholder={phone_number}
+                            value={phone_number}
+                            onChangeText={setPhoneNumber}
                             keyboardType="phone-pad"
                             placeholderTextColor="#999"
                         />
@@ -281,9 +251,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             <MaterialIcons name="flash-on" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder={t('messages.power')}
-                                value={formData.power_output}
-                                onChangeText={(value) => handleInputChange('power_output', value)}
+                                placeholder={power_output}
+                                value={power_output}
+                                onChangeText={setPowerOutput}
                                 keyboardType="decimal-pad"
                                 placeholderTextColor="#999"
                             />
@@ -293,9 +263,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             <MaterialIcons name="attach-money" size={20} color="#4285F4" style={styles.inputIcon} />
                             <FarsiTextInput
                                 style={styles.input}
-                                placeholder={t('messages.hour')}
-                                value={formData.price_per_hour}
-                                onChangeText={(value) => handleInputChange('price_per_hour', value)}
+                                placeholder={price_per_hour}
+                                value={price_per_hour}
+                                onChangeText={setPricePerHour}
                                 keyboardType="decimal-pad"
                                 placeholderTextColor="#999"
                             />
@@ -313,10 +283,10 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             </View>
                         </View>
                         <Switch
-                            value={formData.fast_charging}
-                            onValueChange={(value) => handleInputChange('fast_charging', value)}
+                            value={fast_charging}
+                            onValueChange={setFastCharging}
                             trackColor={{ false: '#ccc', true: '#4285F4' }}
-                            thumbColor={formData.fast_charging ? '#fff' : '#f4f3f4'}
+                            thumbColor={fast_charging ? '#fff' : '#f4f3f4'}
                         />
                     </View>
 
@@ -324,9 +294,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         <MaterialIcons name="description" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={[styles.input, styles.multilineInput]}
-                            placeholder={t('messages.description')}
-                            value={formData.description}
-                            onChangeText={(value) => handleInputChange('description', value)}
+                            placeholder={description}
+                            value={description}
+                            onChangeText={setDescription}
                             placeholderTextColor="#999"
                             multiline
                             numberOfLines={3}
@@ -351,7 +321,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                                 <MaterialIcons name="add-location" size={24} color="#fff" />
                             )}
                             <FarsiText style={styles.buttonText}>
-                                {loading ? t('messages.addStation') : t('messages.addChargingStation')}
+                                {loading ? t('messages.editingStation') : t('messages.editChargingStation')}
                             </FarsiText>
                         </LinearGradient>
                     </TouchableOpacity>

@@ -5,6 +5,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '../../context/LanguageContext';
 
 
 export default function MyBookingsScreen({ navigation, route }) {
@@ -13,6 +14,8 @@ export default function MyBookingsScreen({ navigation, route }) {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const { language, changeLanguage } = useLanguage();
+    const country = language === 'fa' ? 'fa-IR' : 'en-US';
 
     const { user } = route.params || {};
     const user_type = user.user_type;
@@ -76,13 +79,13 @@ export default function MyBookingsScreen({ navigation, route }) {
     const getStatusInfo = (item) => {
         if (item.end_time) {
             return {
-                status: 'Completed',
+                status: t('messages.completed'),
                 color: '#4CAF50',
                 icon: 'check-circle'
             };
         } else {
             return {
-                status: 'Active',
+                status: t('messages.Active'),
                 color: '#ff9800',
                 icon: 'flash-on'
             };
@@ -91,7 +94,7 @@ export default function MyBookingsScreen({ navigation, route }) {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString(language, {
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
@@ -182,7 +185,7 @@ export default function MyBookingsScreen({ navigation, route }) {
                                 end={{ x: 1, y: 0 }}
                             >
                                 <MaterialIcons name="stop" size={20} color="#fff" />
-                                <Text style={styles.endButtonText}>End Session</Text>
+                                <Text style={styles.endButtonText}>{t('messages.endedSession')}</Text>
                             </LinearGradient>
                         </TouchableOpacity>
                     </View>

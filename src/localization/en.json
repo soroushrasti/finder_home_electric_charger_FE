@@ -407,7 +407,6 @@
     "updatingCar": "Updating Car...",
     "carUpdate": "Update the car",
     "stationName": "Station Name (e.g., Home Charger) *",
-    "city": "City *",
     "postcode": "Postcode *",
     "streetAdd": "Street Address *",
     "alley": "Alley/Lane (Optional)",
@@ -440,6 +439,15 @@
     "forgotPass": "ForgotPassword",
     "newPass": "NewPassword",
     "home" : "Home",
-    "reviewMessage": "Review Message"
+    "editStation": "editStation",
+    "reviewMessage": "Review Message",
+    "startTime": "startTime",
+    "endTime": "endTime",
+    "duration": "duration",
+    "endedSession": "End Session",
+    "completed": "Completed",
+    "editChargingStation": "Edit Charging Station",
+    "editingStation": "Editing Station...",
+    "countryRequire": "Country is required"
   }
 }

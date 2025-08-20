@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
-import FarsiText from '../../components/FarsiText';
+import FarsiText from './FarsiText';
 import { useTranslation } from 'react-i18next';
 
 // Use .env or app constants to store API keys in production!
@@ -60,15 +60,18 @@ function getLocationFallback(country, city) {
 }
 
 export default function MapScreen({
-                                      region,
-                                      markers = [],
-                                      onRegionChangeComplete,
-                                      onMarkerPress,
-                                      formData,
-                                  }) {
+    region,
+    markers = [],
+    onRegionChangeComplete,
+    onMarkerPress,
+    formData,
+    onLocationSelected,
+    enableTapToSelect = false,
+}) {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [finalRegion, setFinalRegion] = useState(region);
+    const [selectedMarker, setSelectedMarker] = useState(null);
 
     function isValidRegion(r) {
         return (
@@ -151,6 +154,15 @@ export default function MapScreen({
         initializeMap();
     }, [formData]);
 
+    const handleMapPress = (event) => {
+        if (!enableTapToSelect) return;
+        const coordinate = event.nativeEvent.coordinate;
+        setSelectedMarker(coordinate);
+        if (onLocationSelected) {
+            onLocationSelected(coordinate);
+        }
+    };
+
     if (loading) {
         return (
             <View style={styles.centered}>
@@ -181,6 +193,7 @@ export default function MapScreen({
                 zoomControlEnabled
                 mapType="standard"
                 toolbarEnabled={false}
+                onPress={handleMapPress}
             >
                 {markers.map((m, idx) => (
                     <Marker
@@ -192,6 +205,13 @@ export default function MapScreen({
                         onPress={() => onMarkerPress && onMarkerPress(m)}
                     />
                 ))}
+                {enableTapToSelect && selectedMarker && (
+                    <Marker
+                        coordinate={selectedMarker}
+                        title={t('messages.selectedLocation')}
+                        pinColor="green"
+                    />
+                )}
             </MapView>
         </View>
     );

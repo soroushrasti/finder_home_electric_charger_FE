@@ -12,7 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
-import MapScreen from '../charger_screens/MapScreen';
+import MapScreen from '../../components/MapScreen';
 import env from "../../config/env";
 
 
@@ -175,15 +175,22 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     const renderLocationCard = (location) => {
         const isAvailable = location.is_available === true;
         const pricePerHour = location.price_per_hour || 'N/A';
-
+        const isSelected = selectedLocation && selectedLocation.id === location.charging_location_id;
         return (
             <TouchableOpacity
                 key={location.charging_location_id}
-                style={[
-                    styles.locationCard,
-                    !isAvailable && styles.unavailableCard
-                ]}
-                onPress={() => isAvailable ? handleLocationSelect(location) : null}
+                style={[styles.locationCard, !isAvailable && styles.unavailableCard, isSelected && styles.selectedCard]}
+                onPress={() => {
+                    if (isAvailable) {
+                        setSelectedLocation({
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                            title: location.name,
+                            description: `${location.city}, ${location.street}`,
+                            id: location.charging_location_id
+                        });
+                    }
+                }}
                 activeOpacity={isAvailable ? 0.8 : 1}
                 disabled={!isAvailable}
             >
@@ -436,6 +443,11 @@ const styles = StyleSheet.create({
     unavailableCard: {
         backgroundColor: '#f8f8f8',
         opacity: 0.7,
+    },
+    selectedCard: {
+        borderColor: '#4CAF50',
+        borderWidth: 2,
+        backgroundColor: '#e8f5e9',
     },
     cardHeader: {
         flexDirection: 'row',

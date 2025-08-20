@@ -4,7 +4,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import env from '../../config/environment';
 import FarsiText from '../../components/FarsiText';
 import { useTranslation } from 'react-i18next';
-import MapScreen from './MapScreen';
+import MapScreen from '../../components/MapScreen';
 
 export default function FinalizeAddLocation({ route, navigation }) {
     const { t } = useTranslation();
@@ -20,14 +20,18 @@ export default function FinalizeAddLocation({ route, navigation }) {
         return true;
     };
 
-    const handleLocationSelected = async (location) => {
+    const handleLocationSelected = (location) => {
         setSelectedLocation(location);
+    };
+
+    const handleConfirm = async () => {
+        if (!selectedLocation) return;
         if (!validateForm()) return;
         setLoading(true);
         try {
             let url = '';
             let method = 'POST';
-            let requestBody = { ...formData, latitude: location.latitude, longitude: location.longitude };
+            let requestBody = { ...formData, latitude: selectedLocation.latitude, longitude: selectedLocation.longitude };
             if (formData.charging_location_id) {
                 url = `${env.apiUrl}/update-charging-location/${formData.charging_location_id}`;
             } else if (route.params?.isFindLocation) {
@@ -74,14 +78,21 @@ export default function FinalizeAddLocation({ route, navigation }) {
             </View>
             <View style={styles.mapContainer}>
                 <MapScreen
+                    region={{
+                        latitude: formData.latitude || 35.6892,
+                        longitude: formData.longitude || 51.3890,
+                        latitudeDelta: 0.05,
+                        longitudeDelta: 0.05,
+                    }}
                     formData={formData}
                     onLocationSelected={handleLocationSelected}
+                    enableTapToSelect={true}
                 />
             </View>
             <View style={styles.footer}>
                 <TouchableOpacity
                     style={styles.confirmButton}
-                    onPress={() => selectedLocation && handleLocationSelected(selectedLocation)}
+                    onPress={handleConfirm}
                     disabled={loading || !selectedLocation}
                 >
                     {loading ? (

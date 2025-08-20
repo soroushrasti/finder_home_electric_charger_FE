@@ -36,7 +36,7 @@ import FinalizeAddLocation from './src/screens/charger_screens/FinalizeAddLocati
 import FarsiText from './src/components/FarsiText';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import MapScreen from "./src/screens/charger_screens/MapScreen";
+import MapScreen from "./src/components/MapScreen";
 const Stack = createStackNavigator();
 
 function Home({ navigation }) {

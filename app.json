@@ -15,7 +15,7 @@
     "ios": {
       "supportsTablet": true,
       "config": {
-        "googleMapsApiKey": "AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk"
+        "googleMapsApiKey": ""
       },
       "bundleIdentifier": "com.soroushrasti.ChargeBridge"
     },
@@ -28,7 +28,7 @@
       "package": "com.soroushrasti.ChargeBridge",
       "config": {
         "googleMaps": {
-          "apiKey": "AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk"
+          "apiKey": ""
         }
       },
       "permissions": [
@@ -41,7 +41,8 @@
     },
     "plugins": [
       "expo-localization",
-      "expo-location"
+      "expo-location",
+      "expo-font"
     ],
     "owner": "soroushrasti",
     "extra": {

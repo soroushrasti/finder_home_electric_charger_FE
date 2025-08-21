@@ -123,7 +123,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                             <MaterialIcons name="location-on" size={20} color="#666" />
                             <View style={styles.locationDetails}>
                                 <Text style={styles.locationText}>
-                                    {chargingLocation?.street  || 'Location Street'}
+                                    {chargingLocation?.street  || t('messages.locStreet')}
                                 </Text>
                                 <Text style={styles.locationSubtext}>
                                     {chargingLocation?.city}, {chargingLocation?.post_code}
@@ -159,7 +159,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                         <View style={styles.pricingRow}>
                             <FarsiText style={styles.pricingLabel}>{t('messages.rate')}</FarsiText>
                             <Text style={styles.pricingValue}>
-                                {formatPrice(chargingLocation?.price_per_hour)}/hour
+                                {formatPrice(chargingLocation?.price_per_hour)}{t('messages.hour')}
                             </Text>
                         </View>
                         <View style={styles.pricingNote}>

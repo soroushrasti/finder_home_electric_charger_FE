@@ -448,6 +448,15 @@
     "completed": "Completed",
     "editChargingStation": "Edit Charging Station",
     "editingStation": "Editing Station...",
-    "countryRequire": "Country is required"
+    "countryRequire": "Country is required",
+    "location": "location",
+    "poor": "Poor",
+    "fair": "Fair",
+    "good": "Good",
+    "veryGood": "Very Good",
+    "excellent": "Excellent",
+    "reviewNum": "review numbers",
+    "rateAverage" : "rate average",
+    "locStreet": "Location Street"
   }
 }

@@ -132,6 +132,14 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         </Text>
                     </View>
 
+
+                      <View style={styles.detailRow}>
+                         <MaterialIcons name="review-average" size={20} color="#4CAF50" />
+                         <FarsiText style={styles.detailText}>
+                            {t('messages.rateAverage')}{booking.review_average}
+                         </FarsiText>
+                      </View>
+
                     {location.phone_number && (
                         <View style={styles.detailRow}>
                             <MaterialIcons name="phone" size={20} color="#2196F3" />

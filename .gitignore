@@ -38,4 +38,3 @@ yarn-error.*
 /ios
 /android
 credentials.json
-app.json

@@ -9,6 +9,7 @@ import {Picker} from '@react-native-picker/picker';
 import { useLanguage } from '../../context/LanguageContext';
 import faCountries from '../../localization/faCountryCodes.json';
 import enCountries from '../../localization/enCountryCodes.json';
+import MapScreen from '../../components/MapScreen';
 
 export default function EditChargingLocationScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -30,6 +31,11 @@ export default function EditChargingLocationScreen({ navigation, route }) {
     const [price_per_hour, setPricePerHour] = useState(location?.price_per_hour?.toString() || '');
     const [description, setDescription] = useState(location?.description || '');
     const [fast_charging, setFastCharging] = useState(location?.fast_charging?.toString() || '');
+    const [selectedCoords, setSelectedCoords] = useState({
+        latitude: location?.latitude || 35.6892,
+        longitude: location?.longitude || 51.389,
+    });
+    const [locationConfirmed, setLocationConfirmed] = useState(false);
 
     const [loading, setLoading] = useState(false);
     const handleNext = () => {
@@ -301,6 +307,41 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             multiline
                             numberOfLines={3}
                         />
+                    </View>
+
+                    <View style={{ height: 300, marginVertical: 16 }}>
+                        <MapScreen
+                            region={{
+                                latitude: selectedCoords.latitude,
+                                longitude: selectedCoords.longitude,
+                                latitudeDelta: 0.005,
+                                longitudeDelta: 0.005,
+                            }}
+                            markers={[{ latitude: selectedCoords.latitude, longitude: selectedCoords.longitude }]}
+                            enableTapToSelect={true}
+                            onLocationSelected={(coords) => {
+                                setSelectedCoords(coords);
+                                setLocationConfirmed(false);
+                            }}
+                            formData={formData}
+                        />
+                        <TouchableOpacity
+                            style={{ backgroundColor: '#4285F4', padding: 10, borderRadius: 8, marginTop: 8 }}
+                            onPress={() => {
+                                setFormData(prev => ({
+                                    ...prev,
+                                    latitude: selectedCoords.latitude,
+                                    longitude: selectedCoords.longitude,
+                                }));
+                                setLocationConfirmed(true);
+                                Alert.alert(t('messages.locationConfirmed'), t('messages.locationUpdated'));
+                            }}
+                        >
+                            <Text style={{ color: 'white', textAlign: 'center' }}>{t('messages.confirmLocation')}</Text>
+                        </TouchableOpacity>
+                        {!locationConfirmed && (
+                            <Text style={{ color: 'red', textAlign: 'center', marginTop: 4 }}>{t('messages.tapToSelectLocation')}</Text>
+                        )}
                     </View>
 
                     <TouchableOpacity

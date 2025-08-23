@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, StyleSheet, ActivityIndicator, Alert } from 'react-native';
+import { View, StyleSheet, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 import FarsiText from './FarsiText';
@@ -158,9 +158,7 @@ export default function MapScreen({
         if (!enableTapToSelect) return;
         const coordinate = event.nativeEvent.coordinate;
         setSelectedMarker(coordinate);
-        if (onLocationSelected) {
-            onLocationSelected(coordinate);
-        }
+        // Do NOT call onLocationSelected here; wait for user confirmation
     };
 
     if (loading) {
@@ -213,6 +211,14 @@ export default function MapScreen({
                     />
                 )}
             </MapView>
+            {enableTapToSelect && selectedMarker && (
+                <TouchableOpacity
+                    style={{ backgroundColor: '#4285F4', padding: 10, borderRadius: 8, margin: 8 }}
+                    onPress={() => onLocationSelected && onLocationSelected(selectedMarker)}
+                >
+                    <FarsiText style={{ color: 'white', textAlign: 'center' }}>{t('messages.confirmLocation')}</FarsiText>
+                </TouchableOpacity>
+            )}
         </View>
     );
 }

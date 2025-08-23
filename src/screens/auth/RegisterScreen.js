@@ -8,7 +8,9 @@ import {
     Alert,
     ScrollView,
     ActivityIndicator,
-    Platform
+    Platform,
+    Modal,
+    FlatList
 } from 'react-native';
 import {Picker} from '@react-native-picker/picker';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -29,6 +31,8 @@ export default function RegisterScreen({ navigation, setUser }) {
     const [countryCode, setCountryCode] = useState('+98');
     const { language, changeLanguage } = useLanguage();
     const countries = language === 'fa' ? faCountries : enCountries;
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedCode, setSelectedCode] = useState(countries[0].value);
 
     const { t, i18n } = useTranslation();
     const [formData, setFormData] = useState({
@@ -280,28 +284,49 @@ export default function RegisterScreen({ navigation, setUser }) {
                     <View style={styles.inputGroup}>
                         <FarsiText style={styles.label}>{t('messages.phone')}</FarsiText>
                         <View style={styles.inputContainer}>
+                         <View style={styles.container}>
+                             <TouchableOpacity
+                                style={styles.pickerButton}
+                                onPress={() => setModalVisible(true)}>
+                            <Text style={styles.codeText}>{selectedCode}</Text>
+                              </TouchableOpacity>
 
-                           <Picker
-                                    selectedValue={countryCode}
-                                    style={{ height: 60, width: 133 }}
-                                    onValueChange={setCountryCode}
-                                  >
-                                    {countries.map(item => (
-                                      <Picker.Item key={item.value} label={item.label} value={item.value} />
-                                    ))}
-                                  </Picker>
-                            <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
-                            <FarsiTextInput
-                                style={styles.input}
-                                placeholder={t('messages.enterPhone')}
-                                value={formData.phone_number}
-                                onChangeText={(value) => handleInputChange('phone_number', value)}
-                                keyboardType="phone-pad"
-                                placeholderTextColor="#999"
-                            />
+                          <Modal
+                            visible={modalVisible}
+                            transparent
+                            animationType="slide"        onRequestClose={() => setModalVisible(false)}>
+                            <View style={styles.modalBackground}>
+                              <View style={styles.modalBox}>
+                                <FlatList
+                                  data={countries}
+                                  keyExtractor={(item) => item.value}
+                                  renderItem={({ item }) => (
+                                    <TouchableOpacity
+                                      style={styles.item}
+                                      onPress={() => {
+                                        setSelectedCode(item.value);
+                                        setModalVisible(false);
+                                      }}>
+                                      <Text>{item.label} ({item.value})</Text>
+                                    </TouchableOpacity>
+                                  )}
+                                />
+
+                              </View>
+                            </View>
+                          </Modal>
+                        </View>
+                      <MaterialIcons name="phone" size={20} color="#666" style={styles.inputIcon} />
+                                                  <FarsiTextInput
+                                                      style={styles.input}
+                                                      placeholder={t('messages.enterPhone')}
+                                                      value={formData.phone_number}
+                                                      onChangeText={(value) => handleInputChange('phone_number', value)}
+                                                      keyboardType="phone-pad"
+                                                      placeholderTextColor="#999"
+                                                  />
                         </View>
                     </View>
-
                     <FarsiText style={styles.sectionTitle}>{t('messages.security')}</FarsiText>
 
                     <View style={styles.inputGroup}>
@@ -626,4 +651,33 @@ const styles = StyleSheet.create({
         color: '#667eea',
         fontWeight: 'bold',
     },
+    pickerButton: {
+        padding: 10,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#bbb',
+        backgroundColor: '#f8f8f8',
+        alignItems: 'center',
+        width: 100,
+      },
+      codeText: { fontSize: 16 },
+      modalBackground: {
+        flex: 1,
+        backgroundColor: '#00000099',
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+      modalBox: {
+        backgroundColor: '#fff',
+        padding: 25,
+        borderRadius: 8,
+        width: 250
+      },
+      item: {
+        padding: 12
+      },
+      closeBtn: {
+        marginTop: 10,
+        alignSelf: 'center'
+      }
 });

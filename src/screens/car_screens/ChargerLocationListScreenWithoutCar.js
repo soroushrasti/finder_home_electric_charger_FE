@@ -12,7 +12,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
-
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {
     const { t } = useTranslation();
@@ -81,6 +81,10 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     const renderLocationCard = (location) => {
         const isAvailable = location.is_available === true;
         const pricePerHour = location.price_per_hour || 'N/A';
+        const reviewAverage = location.review_average;
+        const reviewNumber = location.review_number;
+        const filledStars = Math.floor(reviewAverage);
+        const hasHalfStar = reviewAverage - filledStars >= 0.5;
 
         return (
             <TouchableOpacity
@@ -128,17 +132,30 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="attach-money" size={20} color="#4CAF50" />
                         <Text style={styles.detailText}>
-                            £{pricePerHour}/hour
+                              £{pricePerHour}/hour
                         </Text>
                     </View>
 
 
-                      <View style={styles.detailRow}>
-                         <MaterialIcons name="review-average" size={20} color="#4CAF50" />
-                         <FarsiText style={styles.detailText}>
-                            {t('messages.rateAverage')}{booking.review_average}
-                         </FarsiText>
-                      </View>
+                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                        <Text style={{ marginRight: 4, fontSize: 16 }}>{reviewAverage}</Text>
+
+                        {[...Array(5)].map((_, i) => (
+                            <Icon
+                            key={i}
+                            name={
+                                i < filledStars
+                                ? 'star'
+                                : i === filledStars && hasHalfStar
+                                ? 'star-half-full'
+                                : 'star-o'
+                            }
+                            size={20}
+                            color= {'#FFD700'}  />
+                       ))}
+
+                         <Text style={{ marginLeft: 4, fontSize: 16 }}>({reviewNumber})</Text>
+                     </View>
 
                     {location.phone_number && (
                         <View style={styles.detailRow}>

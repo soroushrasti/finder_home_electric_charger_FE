@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform, Modal, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
@@ -16,6 +16,8 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const [countryCode, setCountryCode] = useState('+98');
     const { language, changeLanguage } = useLanguage();
     const countries = language === 'fa' ? faCountries : enCountries;
+    const [modalVisible, setModalVisible] = useState(false);
+    const [selectedCode, setSelectedCode] = useState(countries[0].value);
 
     const user = route.params?.user;
     const [formData, setFormData] = useState({
@@ -251,15 +253,38 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
                     <View style={styles.inputContainer}>
 
-                           <Picker
-                                    selectedValue={countryCode}
-                                    style={{ height: 60, width: 133 }}
-                                    onValueChange={setCountryCode}
-                                  >
-                                    {countries.map(item => (
-                                      <Picker.Item key={item.value} label={item.label} value={item.value} />
-                                    ))}
-                                  </Picker>
+                           <View style={styles.container}>
+                                                        <TouchableOpacity
+                                                           style={styles.pickerButton}
+                                                           onPress={() => setModalVisible(true)}>
+                                                       <Text style={styles.codeText}>{selectedCode}</Text>
+                                                         </TouchableOpacity>
+
+                                                     <Modal
+                                                       visible={modalVisible}
+                                                       transparent
+                                                       animationType="slide"        onRequestClose={() => setModalVisible(false)}>
+                                                       <View style={styles.modalBackground}>
+                                                         <View style={styles.modalBox}>
+                                                           <FlatList
+                                                             data={countries}
+                                                             keyExtractor={(item) => item.value}
+                                                             renderItem={({ item }) => (
+                                                               <TouchableOpacity
+                                                                 style={styles.item}
+                                                                 onPress={() => {
+                                                                   setSelectedCode(item.value);
+                                                                   setModalVisible(false);
+                                                                 }}>
+                                                                 <Text>{item.label} ({item.value})</Text>
+                                                               </TouchableOpacity>
+                                                             )}
+                                                           />
+
+                                                         </View>
+                                                       </View>
+                                                     </Modal>
+                                                   </View>
                         <MaterialIcons name="phone" size={20} color="#4285F4" style={styles.inputIcon} />
                         <FarsiTextInput
                             style={styles.input}
@@ -576,4 +601,33 @@ const styles = StyleSheet.create({
         flex: 1,
         lineHeight: 16,
     },
+    pickerButton: {
+            padding: 10,
+            borderWidth: 1,
+            borderRadius: 5,
+            borderColor: '#bbb',
+            backgroundColor: '#f8f8f8',
+            alignItems: 'center',
+            width: 100,
+          },
+          codeText: { fontSize: 16 },
+          modalBackground: {
+            flex: 1,
+            backgroundColor: '#00000099',
+            justifyContent: 'center',
+            alignItems: 'center'
+          },
+          modalBox: {
+            backgroundColor: '#fff',
+            padding: 25,
+            borderRadius: 8,
+            width: 250
+          },
+          item: {
+            padding: 12
+          },
+          closeBtn: {
+            marginTop: 10,
+            alignSelf: 'center'
+          }
 });

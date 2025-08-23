@@ -235,7 +235,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="attach-money" size={20} color="#4CAF50" />
                         <Text style={styles.detailText}>
-                              £{pricePerHour}/hour
+                              {pricePerHour}/hour
                         </Text>
                     </View>
 

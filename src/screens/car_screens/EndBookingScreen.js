@@ -6,11 +6,14 @@ import env from '../../config/environment';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
+import { useLanguage } from '../../context/LanguageContext';
 
 
 export default function EndBookingScreen({ navigation, route }) {
     const { t } = useTranslation();
 
+    const { language, changeLanguage } = useLanguage();
+    const country = language === 'fa' ? 'fa-IR' : 'en-US';
     const [reviewRate, setReviewRate] = useState(5);
     const [reviewMessage, setReviewMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -66,7 +69,7 @@ export default function EndBookingScreen({ navigation, route }) {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString(country, {
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
@@ -129,11 +132,11 @@ export default function EndBookingScreen({ navigation, route }) {
                     ))}
                 </View>
                 <Text style={styles.ratingText}>
-                    {reviewRate === 1 && "Poor"}
-                    {reviewRate === 2 && "Fair"}
-                    {reviewRate === 3 && "Good"}
-                    {reviewRate === 4 && "Very Good"}
-                    {reviewRate === 5 && "Excellent"}
+                    {reviewRate === 1 && t('messages.poor')}
+                    {reviewRate === 2 && t('messages.fair')}
+                    {reviewRate === 3 && t('messages.good')}
+                    {reviewRate === 4 && t('messages.veryGood')}
+                    {reviewRate === 5 && t('messages.excellent')}
                 </Text>
             </View>
         );

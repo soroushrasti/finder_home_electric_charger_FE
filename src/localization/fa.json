@@ -412,7 +412,7 @@
     "hour": "ریال/ساعت *",
     "validPrice": "قیمت هر ساعت باید یک عدد معتبر باشد",
     "country": "کشور",
-    "addStation": "ایستگاه شارژ با موفقیت اضافه شد!",
+    "addStation": "ایستگاه با موفقیت اضافه شد!",
     "errorMapInit": "خطای مقداردهی اولیه نقشه:",
     "geoFail": "کد جغرافیایی کشور ناموفق بود:",
     "geoCountry": "کشور با کد جغرافیایی:",
@@ -447,6 +447,16 @@
     "completed": "تکمیل شد",
     "editChargingStation": "ویرایش ایستگاه شارژ",
     "editingStation": " در حال ویرایش ایستگاه ...",
-    "countryRequire": "کشور مورد نیاز است"
+    "countryRequire": "کشور مورد نیاز است",
+    "location": "موقعیت",
+    "rateExperience": "به تجربه خود امتیاز دهید",
+    "poor": "ضعیف",
+    "fair": "منصفانه",
+    "good": "خوب",
+    "veryGood": "خیلی خوب",
+    "excellent": "عالی",
+    "reviewNum": "تعداد بازدیدها",
+    "rateAverage": "میانگین رتبه بندی",
+    "locStreet": "خیابان موقعیت"
   }
 }

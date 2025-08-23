@@ -85,7 +85,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
             street: '',
             city: '',
             country: '', // Default country
-            fast_charging: false
+            fast_charging: false,
         });
     };
 

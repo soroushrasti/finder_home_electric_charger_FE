@@ -85,7 +85,7 @@ export default function MyBookingsScreen({ navigation, route }) {
             };
         } else {
             return {
-                status: t('messages.Active'),
+                status: t('messages.active'),
                 color: '#ff9800',
                 icon: 'flash-on'
             };

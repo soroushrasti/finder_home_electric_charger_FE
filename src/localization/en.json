@@ -249,7 +249,7 @@
     "findStation": "Find Charging Stations",
     "searchLoc": "search for available charging locations",
     "locDetail": "Location Details",
-    "city": "City *",
+    "city": "City",
     "cityName": "Enter city name",
     "street": "Street *",
     "streetName": "Enter street name",

@@ -78,8 +78,13 @@ export default function MapScreen({
     useEffect(() => {
         const initializeMap = async () => {
             let geocodeResult = null;
-            console.log(formData)
-            if (formData?.street && formData?.city && formData?.country) {
+            console.log(formData, 'formData');
+            console.log(region, 'initial region');
+            // use intial regioon if exist
+            if (region && typeof region.latitude === 'number' && typeof region.longitude === 'number') {
+                geocodeResult = { lat: region.latitude, lng: region.longitude };
+            }
+            if (!geocodeResult && formData?.street && formData?.city && formData?.country) {
                 const fullAddress = `${formData.street}, ${formData.city}, ${formData.country}`;
                 geocodeResult = await geocodeAddress(fullAddress);
                 console.log(`Tried geocoding full address: ${fullAddress}`, geocodeResult);

@@ -82,6 +82,19 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     // --- Initial Map Setup ---
     useEffect(() => {
         if (searchResults && searchResults.length > 0) {
+            // Calculate bounding box for all markers
+            const lats = searchResults.map(loc => loc.latitude);
+            const lngs = searchResults.map(loc => loc.longitude);
+            const minLat = Math.min(...lats);
+            const maxLat = Math.max(...lats);
+            const minLng = Math.min(...lngs);
+            const maxLng = Math.max(...lngs);
+            // Center point
+            const centerLat = (minLat + maxLat) / 2;
+            const centerLng = (minLng + maxLng) / 2;
+            // Delta for zoom
+            const latDelta = Math.max(0.05, (maxLat - minLat) * 1.5);
+            const lngDelta = Math.max(0.05, (maxLng - minLng) * 1.5);
             setMapMarkers(searchResults.map(loc => ({
                 latitude: loc.latitude,
                 longitude: loc.longitude,
@@ -90,10 +103,10 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                 id: loc.charging_location_id
             })));
             setMapRegion({
-                latitude: searchResults[0].latitude,
-                longitude: searchResults[0].longitude,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
+                latitude: centerLat,
+                longitude: centerLng,
+                latitudeDelta: latDelta,
+                longitudeDelta: lngDelta,
             });
         } else {
             const fallback = getFallbackRegion();

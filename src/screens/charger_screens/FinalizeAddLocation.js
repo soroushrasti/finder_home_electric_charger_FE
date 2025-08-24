@@ -50,15 +50,7 @@ export default function FinalizeAddLocation({ route, navigation }) {
                 timeout: 10000,
             });
             if (response.ok) {
-                const responseData = await response.json();
-                Alert.alert(t('messages.success'), t('messages.addStation'), [
-                    { text: 'OK', onPress: () => {
-                        if (route.params?.onLocationAdded) {
-                            route.params.onLocationAdded();
-                        }
-                        navigation.navigate('MyChargerLocationScreen', { user: { user_id: formData.user_id } });
-                    }}
-                ]);
+                        navigation.navigate('HomeOwnerScreen', { user: { user_id: formData.user_id } });
             } else {
                 const errorText = await response.text();
                 Alert.alert(t('messages.error'), `Failed: ${response.status} ${errorText}`);
@@ -78,12 +70,6 @@ export default function FinalizeAddLocation({ route, navigation }) {
             </View>
             <View style={styles.mapContainer}>
                 <MapScreen
-                    region={{
-                        latitude: formData.latitude || 35.6892,
-                        longitude: formData.longitude || 51.3890,
-                        latitudeDelta: 0.05,
-                        longitudeDelta: 0.05,
-                    }}
                     formData={formData}
                     onLocationSelected={handleLocationSelected}
                     enableTapToSelect={true}

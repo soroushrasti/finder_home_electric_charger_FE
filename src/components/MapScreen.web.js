@@ -94,10 +94,13 @@ export default function MapScreen({
                 console.log('Using fallback location:', geocodeResult);
             }
             // Fix: use correct property names from geocodeResult
+            const initialLat = geocodeResult.lat !== undefined ? geocodeResult.lat : geocodeResult.latitude;
+            const initialLng = geocodeResult.lng !== undefined ? geocodeResult.lng : geocodeResult.longitude;
             setFinalRegion({
-                latitude: geocodeResult.lat !== undefined ? geocodeResult.lat : geocodeResult.latitude,
-                longitude: geocodeResult.lng !== undefined ? geocodeResult.lng : geocodeResult.longitude,
+                latitude: initialLat,
+                longitude: initialLng,
             });
+            setSelectedMarker({ latitude: initialLat, longitude: initialLng });
             setLoading(false);
         };
         initializeMap();

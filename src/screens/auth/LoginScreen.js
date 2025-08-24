@@ -7,7 +7,8 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    Platform
+    Platform,
+    ScrollView
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -124,13 +125,15 @@ export default function LoginScreen({ navigation, setUser }) {
         }
     };
 
+    const ScrollContainer = Platform.OS === 'web' ? ScrollView : KeyboardAwareScrollView;
+
     return (
-        <KeyboardAwareScrollView
-            style={styles.container}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
+        <ScrollContainer
+            style={{ flex: 1, backgroundColor: '#fff' }}
+            contentContainerStyle={{ flexGrow: 1, minHeight: Platform.OS === 'web' ? '100vh' : undefined, justifyContent: 'center', padding: 16 }}
             enableOnAndroid={true}
             extraScrollHeight={40}
+            keyboardShouldPersistTaps="handled"
         >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
@@ -236,7 +239,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAwareScrollView>
+        </ScrollContainer>
     );
 }
 

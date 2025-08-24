@@ -25,7 +25,7 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "package": "com.soroushrasti.ChargeBridge",
+      "package": "com.soroushrasti.finder_home_electric_charger",
       "config": {
         "googleMaps": {
           "apiKey": ""

@@ -170,7 +170,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     rtl: {
-        direction: 'rtl',
+        writingDirection: 'rtl',
     },
     header: {
         paddingTop: 60,

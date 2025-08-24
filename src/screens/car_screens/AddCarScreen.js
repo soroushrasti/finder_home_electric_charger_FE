@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
@@ -61,7 +61,11 @@ export default function AddCarScreen({ navigation, route }) {
     };
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <ScrollView
+            style={[styles.container, Platform.OS === 'web' ? { height: '100vh', overflow: 'auto' } : {}]}
+            contentContainerStyle={Platform.OS === 'web' ? { flexGrow: 1 } : {}}
+            showsVerticalScrollIndicator={false}
+        >
             <View style={styles.header}>
                 <View style={styles.iconContainer}>
                     <MaterialIcons name="directions-car" size={50} color="#4285F4" />

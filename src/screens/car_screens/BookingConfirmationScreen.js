@@ -13,7 +13,6 @@ export default function BookingConfirmationScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
 
     const { car, user, chargingLocation } = route.params;
-    console.log('Selected Car in confirmation:', car);
     const handleCreateBooking = async () => {
         if (!car?.car_id || !chargingLocation?.charging_location_id) {
             Alert.alert(t('messages.error'), t('messages.missingInfo'));

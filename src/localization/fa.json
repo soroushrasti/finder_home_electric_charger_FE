@@ -457,6 +457,7 @@
     "excellent": "عالی",
     "reviewNum": "تعداد بازدیدها",
     "rateAverage": "میانگین رتبه بندی",
-    "locStreet": "خیابان موقعیت"
+    "locStreet": "خیابان موقعیت",
+    "tapToSelectLocation": "برای انتخاب مکان، ضربه بزنید",
   }
 }

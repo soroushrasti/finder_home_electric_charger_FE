@@ -4,19 +4,17 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
 import FarsiText from  "../../components/FarsiText";
-import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
-
 
 export default function HomeOwnerScreen({ navigation, user }) {
     const { t } = useTranslation();
 
     const handleTotalEarningsPress = () => {
-        console.log('to be implemented')
+        console.log('to be implemented');
     };
 
     const handleActiveSessionsPress = () => {
-        console.log('to be implemented')
+        console.log('to be implemented');
     };
 
     return (
@@ -37,10 +35,11 @@ export default function HomeOwnerScreen({ navigation, user }) {
             </LinearGradient>
 
             <ScrollView
-                contentContainerStyle={styles.scrollContainer}
+                contentContainerStyle={[styles.scrollContainer, { flexGrow: 1 }]}
                 showsVerticalScrollIndicator={false}
+                keyboardShouldPersistTaps="handled"
+                scrollEnabled={true}
             >
-                {/* Enhanced Menu Cards - Bigger and Fancier */}
                 <View style={styles.menuContainer}>
                     <TouchableOpacity
                         style={styles.menuCard}
@@ -115,7 +114,6 @@ export default function HomeOwnerScreen({ navigation, user }) {
                     </TouchableOpacity>
                 </View>
 
-                {/* Activity Dashboard moved to bottom with better title */}
                 <View style={styles.activitySection}>
                     <FarsiText style={styles.sectionTitle}>📊 {t('messages.performanceOverview')}</FarsiText>
                     <ActivityDashboard

@@ -457,6 +457,7 @@
     "excellent": "Excellent",
     "reviewNum": "review numbers",
     "rateAverage" : "rate average",
-    "locStreet": "Location Street"
+    "locStreet": "Location Street",
+    "tapToSelectLocation": "Tap to select location on map",
   }
 }

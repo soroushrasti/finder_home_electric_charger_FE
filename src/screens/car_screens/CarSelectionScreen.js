@@ -63,7 +63,6 @@ export default function CarSelectionScreen({ navigation, route }) {
             Alert.alert(t('messages.error'), t('messages.selectCar'));
             return;
         }
-        console.log('Selected Car:', selectedCar);
         // Navigate to BookingConfirmationScreen with selected car and charging location
         navigation.navigate('BookingConfirmationScreen', {
             car: selectedCar, // Fixed: use 'car' key instead of 'selectedCar'

@@ -6,7 +6,7 @@ import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/LanguageContext';
-
+import moment from 'jalali-moment';
 
 export default function MyBookingsScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -15,7 +15,6 @@ export default function MyBookingsScreen({ navigation, route }) {
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
     const { language, changeLanguage } = useLanguage();
-    const country = language === 'fa' ? 'fa-IR' : 'en-US';
 
     const { user } = route.params || {};
     const user_type = user.user_type;
@@ -94,12 +93,17 @@ export default function MyBookingsScreen({ navigation, route }) {
 
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString(language, {
+        return date.toLocaleDateString('en-US', {
             month: 'short',
             day: 'numeric',
             hour: '2-digit',
             minute: '2-digit'
         });
+    };
+
+    const formatJalaliDate = (dateString) => {
+        if (!dateString) return '';
+             return moment(dateString).locale('fa').format('jMMMM jD، ساعت HH:mm');
     };
 
     const renderBooking = ({ item }) => {
@@ -134,14 +138,20 @@ export default function MyBookingsScreen({ navigation, route }) {
                     <View style={styles.detailRow}>
                         <MaterialIcons name="schedule" size={18} color="#666" />
                         <FarsiText style={styles.detailLabel}>{t('messages.started')} , ':'</FarsiText>
-                        <Text style={styles.detailValue}>{formatDate(item.start_time)}</Text>
+                        if(language == 'en')
+                            <Text style={styles.detailValue}>{formatDate(item.start_time)}</Text>
+                        if(language == 'fa')
+                            <Text style={styles.detailValue}>{formatJalaliDate(item.start_time)}</Text>
                     </View>
 
                     {item.end_time && (
                         <View style={styles.detailRow}>
                             <MaterialIcons name="event-available" size={18} color="#666" />
                             <FarsiText style={styles.detailLabel}>{t('messages.ended')}</FarsiText>
-                            <Text style={styles.detailValue}>{formatDate(item.end_time)}</Text>
+                            if(language == 'en')
+                                <Text style={styles.detailValue}>{formatDate(item.end_time)}</Text>
+                            if(language == 'fa')
+                                <Text style={styles.detailValue}>{formatJalaliDate(item.end_time)}</Text>
                         </View>
                     )}
 

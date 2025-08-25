@@ -28,7 +28,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
         alley: '',
         street: '',
         city: '',
-        country: 'Iran', // Default country
+        country: t('messages.iran'), // Default country
         fast_charging: false
     });
 

@@ -23,7 +23,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const [formData, setFormData] = useState({
         name: '',
         city: '',
-        country: 'Iran', // Default country
+        country: t('messages.iran'), // Default country
         postcode: '',
         street: '',
         alley: '',

@@ -152,7 +152,13 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
     // --- Marker Selection ---
     const handleMarkerPress = (marker) => {
-        setSelectedLocation(marker);
+        setSelectedLocation({
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+            title: location.name,
+            description: `${location.city}, ${location.street}`,
+            id: location.charging_location_id
+        });
     };
 
     // --- Proceed Button ---
@@ -325,7 +331,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     region={mapRegion}
                     markers={mapMarkers.map(m => ({ ...m, selected: selectedLocation?.id === m.id }))}
                     onRegionChangeComplete={handleRegionChangeComplete}
-                    onMarkerPress={handleMarkerPress}
+                    onLocationSelected={handleMarkerPress}
                 />
             </View>
             <LinearGradient

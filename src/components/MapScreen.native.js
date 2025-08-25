@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-native';
 import FarsiText from './FarsiText';
 import { useTranslation } from 'react-i18next';
@@ -15,11 +15,9 @@ const geocodeAddress = async (address) => {
         if (data.status === 'OK' && data.results.length > 0) {
             return data.results[0].geometry.location;
         } else {
-            console.log('Geocoding error:', data.status, data.error_message);
             return null;
         }
     } catch (err) {
-        console.log('Geocode fetch failed:', err);
         return null;
     }
 };
@@ -57,27 +55,23 @@ function getLocationFallback(country, city) {
 }
 
 export default function MapScreen({
-                                      region,
-                                      markers = [],
-                                      onRegionChangeComplete,
-                                      onMarkerPress,
-                                      formData,
-                                      onLocationSelected,
-                                      enableTapToSelect = false,
-                                  }) {
+    region,
+    markers = [],
+    onRegionChangeComplete,
+    formData,
+    onLocationSelected,
+    enableTapToSelect = false,
+}) {
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [finalRegion, setFinalRegion] = useState(region);
     const [selectedMarker, setSelectedMarker] = useState(null);
-    const [mapLoaded, setMapLoaded] = useState(false);
+    const [confirmPressed, setConfirmPressed] = useState(false);
     const mapRef = useRef(null);
-    const markersRef = useRef([]);
 
     useEffect(() => {
         const initializeMap = async () => {
             let geocodeResult = null;
-            console.log(formData, 'formData');
-            console.log(region, 'initial region');
             // use intial regioon if exist
             if (region && typeof region.latitude === 'number' && typeof region.longitude === 'number') {
                 geocodeResult = { lat: region.latitude, lng: region.longitude };
@@ -85,16 +79,13 @@ export default function MapScreen({
             if (!geocodeResult && formData?.street && formData?.city && formData?.country) {
                 const fullAddress = `${formData.street}, ${formData.city}, ${formData.country}`;
                 geocodeResult = await geocodeAddress(fullAddress);
-                console.log(`Tried geocoding full address: ${fullAddress}`, geocodeResult);
             }
             if (!geocodeResult && formData?.city) {
                 const address = `${formData.city}`;
                 geocodeResult = await geocodeAddress(address);
-                console.log(`Tried geocoding city, country: ${address}`, geocodeResult);
             }
             if (!geocodeResult) {
                 geocodeResult = getLocationFallback(formData?.country, formData?.city);
-                console.log('Using fallback location:', geocodeResult);
             }
             // Fix: use correct property names from geocodeResult
             const initialLat = geocodeResult.lat !== undefined ? geocodeResult.lat : geocodeResult.latitude;
@@ -115,7 +106,14 @@ export default function MapScreen({
         if (!enableTapToSelect) return;
         const { latitude, longitude } = event.nativeEvent.coordinate;
         setSelectedMarker({ latitude, longitude });
+        setConfirmPressed(false); // Reset confirm state on new selection
     };
+
+    useEffect(() => {
+        if (mapRef.current && finalRegion) {
+            mapRef.current.animateToRegion(finalRegion, 500);
+        }
+    }, [finalRegion]);
 
     if (loading || !finalRegion) {
         return (
@@ -129,6 +127,7 @@ export default function MapScreen({
     return (
         <View style={styles.container}>
             <MapView
+                ref={mapRef}
                 style={styles.map}
                 initialRegion={finalRegion}
                 region={finalRegion}
@@ -144,7 +143,7 @@ export default function MapScreen({
                         title={m.title}
                         description={m.description}
                         pinColor={selectedMarker && selectedMarker.latitude === m.latitude && selectedMarker.longitude === m.longitude ? 'blue' : 'red'}
-                        onPress={() => onMarkerPress && onMarkerPress(m)}
+                        onPress={() => onLocationSelected && onLocationSelected(m)}
                     />
                 ))}
                 {enableTapToSelect && selectedMarker && (
@@ -157,10 +156,14 @@ export default function MapScreen({
             </MapView>
             {enableTapToSelect && selectedMarker && (
                 <TouchableOpacity
-                    style={{ backgroundColor: '#4285F4', padding: 10, borderRadius: 8, margin: 8 }}
-                    onPress={() => onLocationSelected && onLocationSelected(selectedMarker)}
+                    style={{ backgroundColor: confirmPressed ? '#4285F4' : '#cccccc', padding: 10, borderRadius: 8, margin: 8 }}
+                    onPress={() => {
+                        setConfirmPressed(true);
+                        onLocationSelected && onLocationSelected(selectedMarker);
+                    }}
+                    disabled={confirmPressed}
                 >
-                    <FarsiText style={{ color: 'white', textAlign: 'center' }}>{t('messages.confirmLocation')}</FarsiText>
+                    <FarsiText style={{ color: 'white', textAlign: 'center', opacity: confirmPressed ? 1 : 0.6 }}>{t('messages.confirmLocation')}</FarsiText>
                 </TouchableOpacity>
             )}
         </View>

@@ -62,7 +62,6 @@ export default function MapScreen({
     region,
     markers = [],
     onRegionChangeComplete,
-    onMarkerPress,
     formData,
     onLocationSelected,
     enableTapToSelect = false,
@@ -72,6 +71,7 @@ export default function MapScreen({
     const [finalRegion, setFinalRegion] = useState(region);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [mapLoaded, setMapLoaded] = useState(false);
+    const [confirmPressed, setConfirmPressed] = useState(false);
     const mapRef = useRef(null);
     const markersRef = useRef([]);
 
@@ -142,8 +142,8 @@ export default function MapScreen({
         if (!enableTapToSelect) return;
         const lat = event.latLng.lat();
         const lng = event.latLng.lng();
-        console.log('Map clicked:', lat, lng);
         setSelectedMarker({ latitude: lat, longitude: lng });
+        setConfirmPressed(false); // Reset confirm state on new selection
     };
 
     // Helper to clear markers
@@ -233,10 +233,14 @@ export default function MapScreen({
             )}
             {enableTapToSelect && selectedMarker && (
                 <TouchableOpacity
-                    style={{ backgroundColor: '#4285F4', padding: 10, borderRadius: 8, margin: 8 }}
-                    onPress={() => onLocationSelected && onLocationSelected(selectedMarker)}
+                    style={{ backgroundColor: confirmPressed ? '#4285F4' : '#cccccc', padding: 10, borderRadius: 8, margin: 8 }}
+                    onPress={() => {
+                        setConfirmPressed(true);
+                        onLocationSelected && onLocationSelected(selectedMarker);
+                    }}
+                    disabled={confirmPressed}
                 >
-                    <FarsiText style={{ color: 'white', textAlign: 'center' }}>{t('messages.confirmLocation')}</FarsiText>
+                    <FarsiText style={{ color: 'white', textAlign: 'center', opacity: confirmPressed ? 1 : 0.6 }}>{t('messages.confirmLocation')}</FarsiText>
                 </TouchableOpacity>
             )}
         </View>

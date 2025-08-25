@@ -44,7 +44,6 @@ export default function AddCarScreen({ navigation, route }) {
             });
 
             if (response.ok) {
-                Alert.alert(t('messages.success') ,  t('messages.addCar'));
                 if (onCarAdded) {
                     onCarAdded();
                 }

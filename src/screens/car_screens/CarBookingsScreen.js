@@ -6,6 +6,7 @@ import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import { useLanguage } from '../../context/LanguageContext';
+import moment from 'jalali-moment';
 
 export default function CarBookingsScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -63,6 +64,10 @@ export default function CarBookingsScreen({ navigation, route }) {
                         const endTime = new Date(booking.end_time);
                         const durationInMinutes = Math.floor((endTime - startTime) / (1000 * 60));
 
+                        const formatJalaliDate = (dateString) => {
+                                if (!dateString) return '';
+                                     return moment(dateString).locale('fa').format('jD jMMMM ، ساعت HH:mm');
+                            };
 
                         // Format start and end times for better display
                         booking.formatted_start_time = startTime.toLocaleString(country, {
@@ -171,12 +176,22 @@ export default function CarBookingsScreen({ navigation, route }) {
             <View style={styles.bookingDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="schedule" size={16} color="#666" />
-                    <FarsiText style={styles.detailText}>{t('messages.startTime')}: {item.formatted_start_time || t('messages.noDate')}</FarsiText>
+                    <FarsiText style={styles.detailText}>{t('messages.startTime')}</FarsiText>
+                   {
+                     language === 'en'
+                       ? <Text style={styles.detailText}>{item.formatted_start_time || t('messages.noDate')}</Text>
+                       : <Text style={styles.detailText}>{formatJalaliDate(item.start_time) || t('messages.noDate')}</Text>
+                   }
                 </View>
                 {item.end_time && (
                     <View style={styles.detailRow}>
                         <MaterialIcons name="schedule" size={16} color="#666" />
-                        <FarsiText style={styles.detailText}>{t('messages.endTime')}: {item.formatted_end_time}</FarsiText>
+                        <FarsiText style={styles.detailText}>{t('messages.endTime')}</FarsiText>
+                         {
+                                     language === 'en'
+                                         ? <Text style={styles.detailText}>{item.formatted_end_time || t('messages.noDate')}</Text>
+                                        : <Text style={styles.detailText}>{formatJalaliDate(item.end_time) || t('messages.noDate')}</Text>
+                              }
                     </View>
                 )}
                 {item.duration && (

@@ -103,7 +103,7 @@ export default function MyBookingsScreen({ navigation, route }) {
 
     const formatJalaliDate = (dateString) => {
         if (!dateString) return '';
-             return moment(dateString).locale('fa').format('jMMMM jD، ساعت HH:mm');
+             return moment(dateString).locale('fa').format('jD jMMMM ، ساعت HH:mm');
     };
 
     const renderBooking = ({ item }) => {
@@ -137,21 +137,23 @@ export default function MyBookingsScreen({ navigation, route }) {
 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="schedule" size={18} color="#666" />
-                        <FarsiText style={styles.detailLabel}>{t('messages.started')} , ':'</FarsiText>
-                        if(language == 'en')
-                            <Text style={styles.detailValue}>{formatDate(item.start_time)}</Text>
-                        if(language == 'fa')
-                            <Text style={styles.detailValue}>{formatJalaliDate(item.start_time)}</Text>
+                            <FarsiText style={styles.detailLabel}>{t('messages.started')} :</FarsiText>
+                            {
+                              language === 'en'
+                                ? <Text style={styles.detailValue}>{formatDate(item.start_time)}</Text>
+                                : <Text style={styles.detailValue}>{formatJalaliDate(item.start_time)}</Text>
+                            }
                     </View>
 
                     {item.end_time && (
                         <View style={styles.detailRow}>
                             <MaterialIcons name="event-available" size={18} color="#666" />
                             <FarsiText style={styles.detailLabel}>{t('messages.ended')}</FarsiText>
-                            if(language == 'en')
-                                <Text style={styles.detailValue}>{formatDate(item.end_time)}</Text>
-                            if(language == 'fa')
-                                <Text style={styles.detailValue}>{formatJalaliDate(item.end_time)}</Text>
+                            {
+                                language === 'en'
+                                        ? <Text style={styles.detailValue}>{formatDate(item.end_time)}</Text>
+                                        : <Text style={styles.detailValue}>{formatJalaliDate(item.end_time)}</Text>
+                                        }
                         </View>
                     )}
 

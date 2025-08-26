@@ -3,21 +3,38 @@ import { View, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-nat
 import FarsiText from './FarsiText';
 import { useTranslation } from 'react-i18next';
 import MapView, { Marker } from 'react-native-maps';
+import Constants from 'expo-constants';
 
-const GOOGLE_API_KEY = 'AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk';
+// Robust Google API key loading for dev/prod
+let GOOGLE_API_KEY = null;
+if (Constants.expoConfig && Constants.expoConfig.android && Constants.expoConfig.android.config && Constants.expoConfig.android.config.googleMaps) {
+    GOOGLE_API_KEY = Constants.expoConfig.android.config.googleMaps.apiKey;
+} else if (Constants.manifest && Constants.manifest.android && Constants.manifest.android.config && Constants.manifest.android.config.googleMaps) {
+    GOOGLE_API_KEY = Constants.manifest.android.config.googleMaps.apiKey;
+} else if (process.env.GOOGLE_MAPS_API_KEY) {
+    GOOGLE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
+}
+if (!GOOGLE_API_KEY) {
+    console.error('Google Maps API key not found!');
+}
+console.log('Loaded GOOGLE_API_KEY:', GOOGLE_API_KEY);
 
 const geocodeAddress = async (address) => {
     try {
+        console.log('Geocode GOOGLE_API_KEY: ', GOOGLE_API_KEY);
         const response = await fetch(
             `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_API_KEY}`
         );
         const data = await response.json();
         if (data.status === 'OK' && data.results.length > 0) {
+            console.log('Geocode succeeded:', data.results[0].geometry.location);
             return data.results[0].geometry.location;
         } else {
+            console.log('Geocoding error:', data.status, data.error_message);
             return null;
         }
     } catch (err) {
+        console.log('Geocoding error:', err);
         return null;
     }
 };
@@ -65,13 +82,17 @@ export default function MapScreen({
     const { t } = useTranslation();
     const [loading, setLoading] = useState(true);
     const [finalRegion, setFinalRegion] = useState(region);
+    const [mapLoaded, setMapLoaded] = useState(false);
     const [selectedMarker, setSelectedMarker] = useState(null);
     const [confirmPressed, setConfirmPressed] = useState(false);
     const mapRef = useRef(null);
+    const markersRef = useRef([]);
 
     useEffect(() => {
         const initializeMap = async () => {
             let geocodeResult = null;
+            console.log(formData, 'formData');
+            console.log(region, 'initial region');
             // use intial regioon if exist
             if (region && typeof region.latitude === 'number' && typeof region.longitude === 'number') {
                 geocodeResult = { lat: region.latitude, lng: region.longitude };
@@ -79,15 +100,20 @@ export default function MapScreen({
             if (!geocodeResult && formData?.street && formData?.city && formData?.country) {
                 const fullAddress = `${formData.street}, ${formData.city}, ${formData.country}`;
                 geocodeResult = await geocodeAddress(fullAddress);
+                console.log(`Tried geocoding full address: ${fullAddress}`, geocodeResult);
             }
             if (!geocodeResult && formData?.city) {
                 const address = `${formData.city}`;
                 geocodeResult = await geocodeAddress(address);
+                console.log(`Tried geocoding city, country: ${address}`, geocodeResult);
+
             }
             if (!geocodeResult) {
                 geocodeResult = getLocationFallback(formData?.country, formData?.city);
+                console.log('Using fallback location:', geocodeResult);
             }
             // Fix: use correct property names from geocodeResult
+            console.log(geocodeResult);
             const initialLat = geocodeResult.lat !== undefined ? geocodeResult.lat : geocodeResult.latitude;
             const initialLng = geocodeResult.lng !== undefined ? geocodeResult.lng : geocodeResult.longitude;
             setFinalRegion({
@@ -104,6 +130,7 @@ export default function MapScreen({
 
     const handleMapPress = (event) => {
         if (!enableTapToSelect) return;
+        console.log('Map pressed at:', event.nativeEvent.coordinate);
         const { latitude, longitude } = event.nativeEvent.coordinate;
         setSelectedMarker({ latitude, longitude });
         setConfirmPressed(false); // Reset confirm state on new selection
@@ -111,6 +138,7 @@ export default function MapScreen({
 
     useEffect(() => {
         if (mapRef.current && finalRegion) {
+            console.log('finalRegion:', finalRegion);
             mapRef.current.animateToRegion(finalRegion, 500);
         }
     }, [finalRegion]);
@@ -156,14 +184,14 @@ export default function MapScreen({
             </MapView>
             {enableTapToSelect && selectedMarker && (
                 <TouchableOpacity
-                    style={{ backgroundColor: confirmPressed ? '#4285F4' : '#cccccc', padding: 10, borderRadius: 8, margin: 8 }}
+                    style={{ backgroundColor: confirmPressed ? '#4CAF50' : '#F44336', padding: 10, borderRadius: 8, margin: 8 }}
                     onPress={() => {
                         setConfirmPressed(true);
                         onLocationSelected && onLocationSelected(selectedMarker);
                     }}
                     disabled={confirmPressed}
                 >
-                    <FarsiText style={{ color: 'white', textAlign: 'center', opacity: confirmPressed ? 1 : 0.6 }}>{t('messages.confirmLocation')}</FarsiText>
+                    <FarsiText style={{ color: 'white', textAlign: 'center', opacity: confirmPressed ? 1 : 0.6 }}>{!confirmPressed ? t('messages.toBeConfirmed') : t('messages.isConfirmed')}</FarsiText>
                 </TouchableOpacity>
             )}
         </View>

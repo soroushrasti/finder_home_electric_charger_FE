@@ -458,6 +458,8 @@
     "rateAverage": "میانگین رتبه بندی",
     "locStreet": "خیابان موقعیت",
     "iran": "ایران",
-    "tapToSelectLocation": "برای انتخاب مکان، ضربه بزنید"
+    "tapToSelectLocation": "برای انتخاب مکان، ضربه بزنید",
+    "toBeConfirmed": "تایید مکان",
+    "isConfirmed": "مکان تایید شد"
   }
 }

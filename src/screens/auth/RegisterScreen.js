@@ -174,9 +174,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                     language: i18n.language === 'fa' ? 'Farsi' : 'English',
                 }),
             });
-            console.log('Response status:', response.status);
             const data = await response.json();
-            console.log('Response data:', data);
             if (response.ok) {
                 Alert.alert(
                     t('messages.successRegister'),
@@ -215,39 +213,38 @@ export default function RegisterScreen({ navigation, setUser }) {
         }
     };
 
-    return (
-        <View style={styles.container}>
-        <LinearGradient
-                colors={['#667eea', '#764ba2']}
-                style={styles.header}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-            >
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation.goBack()}
-                >
-                    <MaterialIcons name="arrow-back" size={24} color="#fff" />
-                </TouchableOpacity>
-                <View style={styles.headerContent}>
-                    <View style={styles.iconContainer}>
-                        <MaterialIcons name="person-add" size={40} color="#fff" />
-                    </View>
-                    <FarsiText style={styles.headerTitle}>{t('messages.account')}</FarsiText>
-                    <FarsiText style={styles.headerSubtitle}>{t('messages.joiningCommunity')}</FarsiText>
-                </View>
-            </LinearGradient>
+    const ScrollContainer = Platform.OS === 'web' ? ScrollView : KeyboardAwareScrollView;
 
-            <KeyboardAwareScrollView
-                style={styles.content}
-                contentContainerStyle={styles.scrollContent}
-                showsVerticalScrollIndicator={true}
-                keyboardShouldPersistTaps="handled"
-                enableOnAndroid={true}
-                extraScrollHeight={150} // Increased to push content higher
-                enableResetScrollToCoords={false} // Prevent auto-reset
-                scrollToOverflowEnabled={true}
-            >
+    return (
+        <ScrollContainer
+            style={{ flex: 1, backgroundColor: '#fff' }}
+            contentContainerStyle={{ flexGrow: 1, minHeight: Platform.OS === 'web' ? '100vh' : undefined, justifyContent: 'center', padding: 16 }}
+            enableOnAndroid={true}
+            extraScrollHeight={40}
+            keyboardShouldPersistTaps="handled"
+        >
+            <View style={styles.container}>
+            <LinearGradient
+                    colors={['#667eea', '#764ba2']}
+                    style={styles.header}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                >
+                    <TouchableOpacity
+                        style={styles.backButton}
+                        onPress={() => navigation.goBack()}
+                    >
+                        <MaterialIcons name="arrow-back" size={24} color="#fff" />
+                    </TouchableOpacity>
+                    <View style={styles.headerContent}>
+                        <View style={styles.iconContainer}>
+                            <MaterialIcons name="person-add" size={40} color="#fff" />
+                        </View>
+                        <FarsiText style={styles.headerTitle}>{t('messages.account')}</FarsiText>
+                        <FarsiText style={styles.headerSubtitle}>{t('messages.joiningCommunity')}</FarsiText>
+                    </View>
+                </LinearGradient>
+
                 <View style={styles.formContainer}>
                     <FarsiText style={styles.sectionTitle}>{t('messages.personalInfo')}</FarsiText>
 
@@ -457,15 +454,16 @@ export default function RegisterScreen({ navigation, setUser }) {
                         </TouchableOpacity>
                     </View>
                 </View>
-            </KeyboardAwareScrollView>
-        </View>
+            </View>
+        </ScrollContainer>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
         backgroundColor: '#f8f9fa',
+        // Remove flex: 1 for web to allow scrolling
+        ...(Platform.OS !== 'web' ? { flex: 1 } : {}),
     },
     header: {
         paddingTop: 60,

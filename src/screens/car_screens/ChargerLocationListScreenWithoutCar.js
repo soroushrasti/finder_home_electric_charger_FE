@@ -12,6 +12,9 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
+import MapScreen from '../../components/MapScreen';
+import env from "../../config/env";
+
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {
@@ -20,6 +23,12 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     const { user, searchResults, searchCriteria } = route.params;
     const [chargingLocations, setChargingLocations] = useState([]);
     const [loading, setLoading] = useState(true);
+
+    // --- New State ---
+    const [mapRegion, setMapRegion] = useState(null);
+    const [mapMarkers, setMapMarkers] = useState([]);
+    const [selectedLocation, setSelectedLocation] = useState(null);
+    const [isMapInteracting, setIsMapInteracting] = useState(false);
 
     useEffect(() => {
         if (searchResults) {
@@ -57,6 +66,111 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
         });
     };
 
+    // --- Helper: Get fallback region from searchCriteria ---
+    const getFallbackRegion = () => {
+        const cityCoords = {
+            'tehran': { latitude: 35.6892, longitude: 51.3890 },
+            'isfahan': { latitude: 32.6546, longitude: 51.6680 },
+            'shiraz': { latitude: 29.5918, longitude: 52.5837 },
+            'mashhad': { latitude: 36.2974, longitude: 59.6067 },
+            'tabriz': { latitude: 38.0962, longitude: 46.2738 }
+        };
+        const cityKey = searchCriteria?.city?.toLowerCase();
+        return cityCoords[cityKey] || { latitude: 35.6892, longitude: 51.3890 };
+    };
+
+    // --- Initial Map Setup ---
+    useEffect(() => {
+        if (searchResults && searchResults.length > 0) {
+            // Calculate bounding box for all markers
+            const lats = searchResults.map(loc => loc.latitude);
+            const lngs = searchResults.map(loc => loc.longitude);
+            const minLat = Math.min(...lats);
+            const maxLat = Math.max(...lats);
+            const minLng = Math.min(...lngs);
+            const maxLng = Math.max(...lngs);
+            // Center point
+            const centerLat = (minLat + maxLat) / 2;
+            const centerLng = (minLng + maxLng) / 2;
+            // Delta for zoom
+            const latDelta = Math.max(0.05, (maxLat - minLat) * 1.5);
+            const lngDelta = Math.max(0.05, (maxLng - minLng) * 1.5);
+            setMapMarkers(searchResults.map(loc => ({
+                latitude: loc.latitude,
+                longitude: loc.longitude,
+                title: loc.name,
+                description: `${loc.city}, ${loc.country}`,
+                id: loc.charging_location_id
+            })));
+            setMapRegion({
+                latitude: centerLat,
+                longitude: centerLng,
+                latitudeDelta: latDelta,
+                longitudeDelta: lngDelta,
+            });
+        } else {
+            const fallback = getFallbackRegion();
+            setMapRegion({
+                latitude: fallback.latitude,
+                longitude: fallback.longitude,
+                latitudeDelta: 0.05,
+                longitudeDelta: 0.05,
+            });
+            setMapMarkers([]);
+        }
+    }, [searchResults, searchCriteria]);
+
+    // --- Map Interactivity: Find Nearby Locations ---
+    const handleRegionChangeComplete = async (region) => {
+        if (isMapInteracting) return;
+        setIsMapInteracting(true);
+        try {
+            const response = await fetch(`${env.apiUrl}/find-nearby-locations`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-API-Token': `${env.apiToken} `,
+                },
+                body: JSON.stringify({ latitude: region.latitude, longitude: region.longitude })
+            });
+            const data = await response.json();
+            if (response.ok && Array.isArray(data)) {
+                setMapMarkers(data.map(loc => ({
+                    latitude: loc.latitude,
+                    longitude: loc.longitude,
+                    title: loc.name,
+                    description: `${loc.city}, ${loc.country}`,
+                    id: loc.charging_location_id
+                })));
+            }
+        } catch (error) {
+            // Optionally show error
+        } finally {
+            setIsMapInteracting(false);
+        }
+    };
+
+    // --- Marker Selection ---
+    const handleMarkerPress = (marker) => {
+        setSelectedLocation({
+            latitude: marker.latitude,
+            longitude: marker.longitude,
+            title: location.name,
+            description: `${location.city}, ${location.street}`,
+            id: location.charging_location_id
+        });
+    };
+
+    // --- Proceed Button ---
+    const handleProceed = () => {
+        if (selectedLocation) {
+            navigation.navigate('CarSelectionScreen', {
+                user,
+                chargingLocation: selectedLocation
+            });
+        }
+    };
+
     const renderSearchCriteria = () => {
         if (!searchCriteria) return null;
 
@@ -86,14 +200,22 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
         const filledStars = Math.floor(reviewAverage);
         const hasHalfStar = reviewAverage - filledStars >= 0.5;
 
+        const isSelected = selectedLocation && selectedLocation.id === location.charging_location_id;
         return (
             <TouchableOpacity
                 key={location.charging_location_id}
-                style={[
-                    styles.locationCard,
-                    !isAvailable && styles.unavailableCard
-                ]}
-                onPress={() => isAvailable ? handleLocationSelect(location) : null}
+                style={[styles.locationCard, !isAvailable && styles.unavailableCard, isSelected && styles.selectedCard]}
+                onPress={() => {
+                    if (isAvailable) {
+                        setSelectedLocation({
+                            latitude: location.latitude,
+                            longitude: location.longitude,
+                            title: location.name,
+                            description: `${location.city}, ${location.street}`,
+                            id: location.charging_location_id
+                        });
+                    }
+                }}
                 activeOpacity={isAvailable ? 0.8 : 1}
                 disabled={!isAvailable}
             >
@@ -132,7 +254,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="attach-money" size={20} color="#4CAF50" />
                         <Text style={styles.detailText}>
-                              £{pricePerHour}/hour
+                              {pricePerHour}/hour
                         </Text>
                     </View>
 
@@ -203,6 +325,15 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
     return (
         <View style={styles.container}>
+            {/* MapScreen above the list */}
+            <View style={{ height: 300 }}>
+                <MapScreen
+                    region={mapRegion}
+                    markers={mapMarkers.map(m => ({ ...m, selected: selectedLocation?.id === m.id }))}
+                    onRegionChangeComplete={handleRegionChangeComplete}
+                    onLocationSelected={handleMarkerPress}
+                />
+            </View>
             <LinearGradient
                 colors={['#4CAF50', '#45a049']}
                 style={styles.header}
@@ -246,6 +377,13 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         chargingLocations.map(renderLocationCard)
                     )}
                 </View>
+
+                {/* Proceed Button */}
+                {selectedLocation && (
+                    <TouchableOpacity style={{margin: 16, padding: 16, backgroundColor: '#4CAF50', borderRadius: 8}} onPress={handleProceed}>
+                        <FarsiText style={{color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>{t('messages.proceedWithSelectedLocation')}</FarsiText>
+                    </TouchableOpacity>
+                )}
             </ScrollView>
         </View>
     );
@@ -351,6 +489,11 @@ const styles = StyleSheet.create({
     unavailableCard: {
         backgroundColor: '#f8f8f8',
         opacity: 0.7,
+    },
+    selectedCard: {
+        borderColor: '#4CAF50',
+        borderWidth: 2,
+        backgroundColor: '#e8f5e9',
     },
     cardHeader: {
         flexDirection: 'row',

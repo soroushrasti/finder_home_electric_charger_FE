@@ -17,6 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/LanguageContext';
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 export default function ForgotPasswordScreen({ navigation }) {
     const { t, i18n } = useTranslation();
@@ -73,9 +74,12 @@ export default function ForgotPasswordScreen({ navigation }) {
     };
 
     return (
-        <KeyboardAvoidingView
+        <KeyboardAwareScrollView
             style={[styles.container, isRTL && styles.rtl]}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            enableOnAndroid={true}
+            extraScrollHeight={40}
         >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
@@ -97,7 +101,6 @@ export default function ForgotPasswordScreen({ navigation }) {
                     <FarsiText style={styles.headerSubtitle}>{t('messages.resetPassword')}</FarsiText>
                 </View>
             </LinearGradient>
-
             <View style={styles.content}>
                 <View style={styles.formContainer}>
                     <FarsiText style={styles.sectionTitle}> {t('messages.passRecover')} 🔐</FarsiText>
@@ -157,7 +160,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
     );
 }
 
@@ -167,7 +170,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#f5f5f5',
     },
     rtl: {
-        direction: 'rtl',
+        writingDirection: 'rtl',
     },
     header: {
         paddingTop: 60,

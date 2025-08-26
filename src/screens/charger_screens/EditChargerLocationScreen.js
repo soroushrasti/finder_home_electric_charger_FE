@@ -9,6 +9,7 @@ import {Picker} from '@react-native-picker/picker';
 import { useLanguage } from '../../context/LanguageContext';
 import faCountries from '../../localization/faCountryCodes.json';
 import enCountries from '../../localization/enCountryCodes.json';
+import MapScreen from '../../components/MapScreen';
 
 export default function EditChargingLocationScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -30,7 +31,51 @@ export default function EditChargingLocationScreen({ navigation, route }) {
     const [power_output, setPowerOutput] = useState(location?.power_output?.toString() || '');
     const [price_per_hour, setPricePerHour] = useState(location?.price_per_hour?.toString() || '');
     const [description, setDescription] = useState(location?.description || '');
-    const [fast_charging, setFastCharging] = useState(location?.fast_charging?.toString() || '');
+    const [fast_charging, setFastCharging] = useState(location?.fast_charging || false);
+    const [selectedCoords, setSelectedCoords] = useState({
+        latitude: location?.latitude || 35.6892,
+        longitude: location?.longitude || 51.389,
+    });
+    const [locationConfirmed, setLocationConfirmed] = useState(false);
+
+    // Add formData state and keep it in sync with individual fields
+    const [formData, setFormData] = useState({
+        name: location?.name || '',
+        city: location?.city || '',
+        country: location?.country || '',
+        postcode: location?.postcode || '',
+        street: location?.street || '',
+        alley: location?.alley || '',
+        phone_number: location?.phone_number?.toString() || '',
+        power_output: location?.power_output?.toString() || '',
+        price_per_hour: location?.price_per_hour?.toString() || '',
+        description: location?.description || '',
+        fast_charging: location?.fast_charging || false,
+        latitude: location?.latitude || 35.6892,
+        longitude: location?.longitude || 51.389,
+    });
+
+    React.useEffect(() => {
+        setFormData({
+            name,
+            city,
+            country,
+            postcode,
+            street,
+            alley,
+            phone_number,
+            power_output,
+            price_per_hour,
+            description,
+            fast_charging,
+            latitude: selectedCoords.latitude,
+            longitude: selectedCoords.longitude,
+        });
+    }, [
+        name, city, country, postcode, street, alley, phone_number,
+        power_output, price_per_hour, description, fast_charging,
+        selectedCoords.latitude, selectedCoords.longitude
+    ]);
 
     const [loading, setLoading] = useState(false);
     const handleNext = () => {
@@ -325,6 +370,26 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             multiline
                             numberOfLines={3}
                         />
+                    </View>
+
+                    <View style={{ height: 300, marginVertical: 16 }}>
+                        <MapScreen
+                            region={{
+                                latitude: selectedCoords.latitude,
+                                longitude: selectedCoords.longitude,
+                                latitudeDelta: 0.005,
+                                longitudeDelta: 0.005,
+                            }}
+                            markers={[{ latitude: selectedCoords.latitude, longitude: selectedCoords.longitude }]}
+                            enableTapToSelect={true}
+                            onLocationSelected={(coords) => {
+                                setSelectedCoords(coords);
+                                setLocationConfirmed(false);
+                            }}
+                            formData={formData}
+                        />
+                        {/* Confirm location button hidden as requested */}
+                        {/* Tap to select location text hidden as requested */}
                     </View>
 
                     <TouchableOpacity

@@ -3,14 +3,11 @@ import env from '../config/environment';
 
 export const getActivityData = async (userId, userType = 'car_owner') => {
     try {
-        console.log('Fetching activity data for:', { userId, userType });
-
         // Determine the correct payload structure based on user type
         const payload = userType === 'car_owner' || userType === 'Electric car owner'
             ? { car_owner_user_id: userId }
             : { charger_location_owner_user_id: userId };
 
-        console.log('API payload:', payload);
 
         const response = await fetch(`${env.apiUrl}/get-activity`, {
             method: 'POST',
@@ -24,12 +21,8 @@ export const getActivityData = async (userId, userType = 'car_owner') => {
             body: JSON.stringify(payload),
         });
 
-        console.log('Activity API response status:', response.status);
-
         if (response.ok) {
             const data = await response.json();
-            console.log('Activity API response data:', data);
-
             // Handle different possible response structures
             const activityData = {
                 totalPrice: Math.abs(data.total_price) || 0,
@@ -37,7 +30,6 @@ export const getActivityData = async (userId, userType = 'car_owner') => {
                 numberLocations: data.Number_locations || data.number_locations || data.numberLocations || 0
             };
 
-            console.log('Parsed activity data:', activityData);
 
             return {
                 success: true,

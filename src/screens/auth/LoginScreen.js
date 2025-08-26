@@ -7,8 +7,8 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    KeyboardAvoidingView,
-    Platform
+    Platform,
+    ScrollView
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,6 +17,7 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 export default function LoginScreen({ navigation, setUser }) {
@@ -124,10 +125,15 @@ export default function LoginScreen({ navigation, setUser }) {
         }
     };
 
+    const ScrollContainer = Platform.OS === 'web' ? ScrollView : KeyboardAwareScrollView;
+
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        <ScrollContainer
+            style={[{ flex: 1, backgroundColor: '#fff' }, Platform.OS === 'web' ? { height: '100vh', overflow: 'auto' } : {}]}
+            contentContainerStyle={[{ flexGrow: 1, justifyContent: 'center', padding: 16 }, Platform.OS === 'web' ? { minHeight: '100vh' } : {}]}
+            enableOnAndroid={true}
+            extraScrollHeight={40}
+            keyboardShouldPersistTaps="handled"
         >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
@@ -183,14 +189,10 @@ export default function LoginScreen({ navigation, setUser }) {
                                 placeholderTextColor="#999"
                             />
                             <TouchableOpacity
+                                style={styles.showPasswordIcon}
                                 onPress={() => setShowPassword(!showPassword)}
-                                style={styles.eyeIcon}
                             >
-                                <MaterialIcons
-                                    name={showPassword ? "visibility" : "visibility-off"}
-                                    size={20}
-                                    color="#666"
-                                />
+                                <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="#666" />
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -237,7 +239,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </ScrollContainer>
     );
 }
 
@@ -330,7 +332,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: '#333',
     },
-    eyeIcon: {
+    showPasswordIcon: {
         padding: 5,
     },
     forgotPasswordButton: {

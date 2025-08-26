@@ -249,9 +249,9 @@
     "findStation": "Find Charging Stations",
     "searchLoc": "search for available charging locations",
     "locDetail": "Location Details",
-    "city": "City *",
+    "city": "City",
     "cityName": "Enter city name",
-    "street": "Street *",
+    "street": "Street",
     "streetName": "Enter street name",
     "alley": "Alley",
     "enterAlley": "Enter alley (optional)",
@@ -385,9 +385,9 @@
     "dashboard": "Dashboard",
     "addVehicle": "Add Vehicle",
     "myVehicle": "My Vehicles",
-    "findCharger": "Find Chargers for car",
-    "listCharger": "List Chargers without car",
-    "carSelection": "Car selection after location",
+    "findCharger": "Find Chargers",
+    "listCharger": "List Chargers",
+    "carSelection": "Car selection",
     "endCharging": "End Charging",
     "confirmBooking": "Booking confirmation",
     "locChargerList": "Location charger list",
@@ -458,6 +458,7 @@
     "reviewNum": "review numbers",
     "rateAverage" : "rate average",
     "locStreet": "Location Street",
-    "iran": "Iran"
+    "iran": "Iran",
+    "tapToSelectLocation": "Tap to select location on map"
   }
 }

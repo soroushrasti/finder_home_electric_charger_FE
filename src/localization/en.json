@@ -413,7 +413,7 @@
     "phoneNum": "Phone Number *",
     "power": "Power (kW) *",
     "hour": " Euro/hour *",
-    "addStation": "Charging station added successfully!",
+    "addStation": "Station added successfully!",
     "errorMapInit": "Map initialization error:",
     "geoFail": "Country geocoding failed:",
     "geoCountry": "Geocoded country:",
@@ -458,6 +458,7 @@
     "reviewNum": "review numbers",
     "rateAverage" : "rate average",
     "locStreet": "Location Street",
-    "tapToSelectLocation": "Tap to select location on map",
+    "iran": "Iran",
+    "tapToSelectLocation": "Tap to select location on map"
   }
 }

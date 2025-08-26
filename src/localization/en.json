@@ -459,6 +459,7 @@
     "rateAverage" : "rate average",
     "locStreet": "Location Street",
     "iran": "Iran",
-    "tapToSelectLocation": "Tap to select location on map"
+    "tapToSelectLocation": "Tap to select location on map",
+    "setCountry": "Enter counrty name"
   }
 }

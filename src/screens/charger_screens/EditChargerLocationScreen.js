@@ -80,13 +80,13 @@ export default function EditChargingLocationScreen({ navigation, route }) {
     const [loading, setLoading] = useState(false);
     const handleNext = () => {
         if (!validateForm()) return;
-        navigation.navigate('FinalizeLocationOnMapScreen', {
+        navigation.navigate('FinalizeAddLocationScreen', {
             formData,
-            onLocationAdded // Pass this callback
+            onLocationUpdated // Pass this callback
         });
     };
 
-    const onLocationAdded = route.params?.onLocationAdded;
+    const onLocationUpdated = route.params?.onLocationUpdated;
 
     const handleInputChange = (field, value) => {
         setFormData(prev => {
@@ -164,10 +164,8 @@ export default function EditChargingLocationScreen({ navigation, route }) {
             Alert.alert(t('messages.validationError'), t('messages.validPrice'));
             return false;
         }
-
         return true;
     };
-
 
 
     return (

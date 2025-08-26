@@ -137,7 +137,7 @@ export default function MyBookingsScreen({ navigation, route }) {
 
                     <View style={styles.detailRow}>
                         <MaterialIcons name="schedule" size={18} color="#666" />
-                            <FarsiText style={styles.detailLabel}>{t('messages.started')} :</FarsiText>
+                            <FarsiText style={styles.detailLabel}>{t('messages.started')}:</FarsiText>
                             {
                               language === 'en'
                                 ? <Text style={styles.detailValue}>{formatDate(item.start_time)}</Text>
@@ -148,7 +148,7 @@ export default function MyBookingsScreen({ navigation, route }) {
                     {item.end_time && (
                         <View style={styles.detailRow}>
                             <MaterialIcons name="event-available" size={18} color="#666" />
-                            <FarsiText style={styles.detailLabel}>{t('messages.ended')}</FarsiText>
+                            <FarsiText style={styles.detailLabel}>{t('messages.ended')}:</FarsiText>
                             {
                                 language === 'en'
                                         ? <Text style={styles.detailValue}>{formatDate(item.end_time)}</Text>

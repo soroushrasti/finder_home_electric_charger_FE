@@ -16,6 +16,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
     const [street, setStreet] = useState(null);
     const [homePhone, setHomePhone] = useState(null);
     const [city, setCity] = useState(null);
+    const [country, setCountry] = useState(null);
     const [fastCharging, setFastCharging] = useState(false);
     const [loading, setLoading] = useState(false);
 
@@ -41,6 +42,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     street,
                     home_phone_number: homePhone,
                     city,
+                    country,
                     fast_charging: fastCharging,
                 }),
             });
@@ -143,6 +145,17 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                             placeholderTextColor="#999"
                         />
                     </View>
+
+                    <View style={styles.inputContainer}>
+                                            <MaterialIcons name="country" size={20} color="#667eea" style={styles.inputIcon} />
+                                            <TextInput
+                                                style={styles.input}
+                                                placeholder={t('messages.setCountry')}
+                                                value={country}
+                                                onChangeText={setCountry}
+                                                placeholderTextColor="#999"
+                                            />
+                                        </View>
 
                     <View style={styles.inputContainer}>
                         <MaterialIcons name="streetview" size={20} color="#667eea" style={styles.inputIcon} />

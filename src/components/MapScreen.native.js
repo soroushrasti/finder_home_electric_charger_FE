@@ -3,27 +3,12 @@ import { View, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-nat
 import FarsiText from './FarsiText';
 import { useTranslation } from 'react-i18next';
 import MapView, { Marker } from 'react-native-maps';
-import Constants from 'expo-constants';
-
-// Robust Google API key loading for dev/prod
-let GOOGLE_API_KEY = null;
-if (Constants.expoConfig && Constants.expoConfig.android && Constants.expoConfig.android.config && Constants.expoConfig.android.config.googleMaps) {
-    GOOGLE_API_KEY = Constants.expoConfig.android.config.googleMaps.apiKey;
-} else if (Constants.manifest && Constants.manifest.android && Constants.manifest.android.config && Constants.manifest.android.config.googleMaps) {
-    GOOGLE_API_KEY = Constants.manifest.android.config.googleMaps.apiKey;
-} else if (process.env.GOOGLE_MAPS_API_KEY) {
-    GOOGLE_API_KEY = process.env.GOOGLE_MAPS_API_KEY;
-}
-if (!GOOGLE_API_KEY) {
-    console.error('Google Maps API key not found!');
-}
-console.log('Loaded GOOGLE_API_KEY:', GOOGLE_API_KEY);
 
 const geocodeAddress = async (address) => {
     try {
-        console.log('Geocode GOOGLE_API_KEY: ', GOOGLE_API_KEY);
+        console.log('Geocode GOOGLE_API_KEY: ', 'AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk');
         const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_API_KEY}`
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk`
         );
         const data = await response.json();
         if (data.status === 'OK' && data.results.length > 0) {

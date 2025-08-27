@@ -5,12 +5,11 @@ import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
 
-const GOOGLE_API_KEY = 'AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk';
 
 const geocodeAddress = async (address) => {
     try {
         const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${GOOGLE_API_KEY}`
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk'`
         );
         const data = await response.json();
         if (data.status === 'OK' && data.results.length > 0) {

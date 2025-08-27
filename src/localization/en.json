@@ -462,5 +462,6 @@
     "tapToSelectLocation": "Tap to select location on map",
     "toBeConfirmed": "Click Here to Confirm Your Selection",
     "isConfirmed": "Location Selection is Confirmed"
+    "setCountry": "Enter counrty name"
   }
 }

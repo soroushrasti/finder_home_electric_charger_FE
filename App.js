@@ -214,7 +214,6 @@ export default function App() {
         },
         headerRight: () => (
             <View style={styles.headerRightContainer}>
-                <LanguageSwitcher />
                 {user && (
                     <TouchableOpacity
                         onPress={handleLogout}
@@ -268,7 +267,9 @@ export default function App() {
                     <>
                         <Stack.Screen
                             name="Home"
-                            options={{ title: t("messages.home") }}
+                            options={{ title: t("messages.home"),
+                                headerRight: () => <LanguageSwitcher />
+                            }}
                             component={Home}
                         />
                         <Stack.Screen
@@ -304,21 +305,63 @@ export default function App() {
                         {user.user_type === null ? (
                             <Stack.Screen
                                 name="CombinedDashboardScreen"
-                                options={{ title: t("messages.dashboard") }}
+                                options={{ title: t("messages.dashboard"),
+                                    headerRight: () => (
+                                        <View style={styles.headerRightContainer}>
+                                            <LanguageSwitcher />
+                                            {user && (
+                                                <TouchableOpacity
+                                                    onPress={handleLogout}
+                                                    style={styles.logoutButton}
+                                                    activeOpacity={0.7}
+                                                >
+                                                    <MaterialIcons name="logout" size={24} color="#fff" />
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
+                                    )                                }}
                             >
                                 {props => <CombinedDashboardScreen {...props} user={user} />}
                             </Stack.Screen>
                         ) : user.user_type === 'Electric car owner' ? (
                             <Stack.Screen
                                 name="CarOwnerScreen"
-                                options={{ title: t("messages.dashboard") }}
+                                options={{ title: t("messages.dashboard"),
+                                    headerRight: () => (
+                                        <View style={styles.headerRightContainer}>
+                                            <LanguageSwitcher />
+                                            {user && (
+                                                <TouchableOpacity
+                                                    onPress={handleLogout}
+                                                    style={styles.logoutButton}
+                                                    activeOpacity={0.7}
+                                                >
+                                                    <MaterialIcons name="logout" size={24} color="#fff" />
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
+                                    )                                }}
                             >
                                 {props => <CarOwnerScreen {...props} user={user} />}
                             </Stack.Screen>
                         ) : (
                             <Stack.Screen
                                 name="HomeOwnerScreen"
-                                options={{ title: t("messages.dashboard") }}
+                                options={{ title: t("messages.dashboard"),
+                                    headerRight: () => (
+                                        <View style={styles.headerRightContainer}>
+                                            <LanguageSwitcher />
+                                            {user && (
+                                                <TouchableOpacity
+                                                    onPress={handleLogout}
+                                                    style={styles.logoutButton}
+                                                    activeOpacity={0.7}
+                                                >
+                                                    <MaterialIcons name="logout" size={24} color="#fff" />
+                                                </TouchableOpacity>
+                                            )}
+                                        </View>
+                                    )                                }}
                             >
                                 {props => <HomeOwnerScreen {...props} user={user} />}
                             </Stack.Screen>

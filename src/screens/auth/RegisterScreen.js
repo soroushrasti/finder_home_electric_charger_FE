@@ -61,14 +61,8 @@ export default function RegisterScreen({ navigation, setUser }) {
             description: t('messages.shareStation'),
             icon: 'ev-station',
             colors: ['#667eea', '#764ba2']
-        },
-        {
-            id: 'both',
-            title: t('messages.both'),
-            description: t('messages.bothProvider'),
-            icon: 'electric-bolt',
-            colors: ['#43e97b', '#38f9d7']
         }
+
     ];
 
     const handleInputChange = (field, value) => {
@@ -176,21 +170,10 @@ export default function RegisterScreen({ navigation, setUser }) {
             });
             const data = await response.json();
             if (response.ok) {
-                Alert.alert(
-                    t('messages.successRegister'),
-                    t('messages.checkEmail'),
-                    [
-                        {
-                            text: t('messages.continue'),
-                            onPress: () => {
-                                navigation.navigate('EmailVerificationScreen', {
-                                    user: data,
-                                    setUser: setUser
-                                });
-                            }
-                        }
-                    ]
-                );
+                navigation.navigate('EmailVerificationScreen', {
+                    user: data,
+                    setUser: setUser
+                });
             } else {
                 if (data.detail && data.detail.includes('userExistEmail')) {
                       Alert.alert(t('messages.error'), t('messages.userExistEmail'));

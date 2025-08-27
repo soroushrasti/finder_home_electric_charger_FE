@@ -3,12 +3,13 @@ import { View, StyleSheet, ActivityIndicator, TouchableOpacity } from 'react-nat
 import FarsiText from './FarsiText';
 import { useTranslation } from 'react-i18next';
 import MapView, { Marker } from 'react-native-maps';
+import env from "../config/environment";
 
 const geocodeAddress = async (address) => {
     try {
-        console.log('Geocode GOOGLE_API_KEY: ', 'AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk');
+        console.log('Geocode GOOGLE_API_KEY: ', env.googleMapsApiKey);
         const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk`
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${env.googleMapsApiKey}`
         );
         const data = await response.json();
         if (data.status === 'OK' && data.results.length > 0) {

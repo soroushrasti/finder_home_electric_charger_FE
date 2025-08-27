@@ -4,12 +4,12 @@ import FarsiText from './FarsiText';
 import { useTranslation } from 'react-i18next';
 import Constants from 'expo-constants';
 import { GoogleMap, useJsApiLoader } from '@react-google-maps/api';
-
+import env from "../config/environment";
 
 const geocodeAddress = async (address) => {
     try {
         const response = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=AIzaSyCx8-7Y3c7sPHyDfltKMvBitIAmdUwvLFk'`
+            `https://maps.googleapis.com/maps/api/geocode/json?address=${encodeURIComponent(address)}&key=${env.googleMapsApiKey}`
         );
         const data = await response.json();
         if (data.status === 'OK' && data.results.length > 0) {
@@ -134,7 +134,7 @@ export default function MapScreen({
         lng: finalRegion?.longitude || 51.389,
     };
     const { isLoaded } = useJsApiLoader({
-        googleMapsApiKey: GOOGLE_API_KEY,
+        googleMapsApiKey: env.googleMapsApiKey,
     });
 
     const handleMapClick = (event) => {
@@ -232,14 +232,14 @@ export default function MapScreen({
             )}
             {enableTapToSelect && selectedMarker && (
                 <TouchableOpacity
-                    style={{ backgroundColor: confirmPressed ? '#4285F4' : '#cccccc', padding: 10, borderRadius: 8, margin: 8 }}
+                    style={{ backgroundColor: confirmPressed ? '#4CAF50' : '#F44336', padding: 10, borderRadius: 8, margin: 8 }}
                     onPress={() => {
                         setConfirmPressed(true);
                         onLocationSelected && onLocationSelected(selectedMarker);
                     }}
                     disabled={confirmPressed}
                 >
-                    <FarsiText style={{ color: 'white', textAlign: 'center', opacity: confirmPressed ? 1 : 0.6 }}>{t('messages.confirmLocation')}</FarsiText>
+                    <FarsiText style={{ color: 'white', textAlign: 'center', opacity: confirmPressed ? 1 : 0.6 }}>{!confirmPressed ? t('messages.toBeConfirmed') : t('messages.isConfirmed')}</FarsiText>
                 </TouchableOpacity>
             )}
         </View>

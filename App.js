@@ -349,9 +349,9 @@ export default function App() {
                                 <Stack.Screen name="FindChargerLocationsScreenForCar" component={FindChargerLocationsScreenForCar} options={{ title: t('messages.findCharger') }} />
                                 <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />
                                 <Stack.Screen name="MyChargerLocationScreen" component={MyChargerLocationsScreen} options={{ title: t('messages.myStation') }} />
-                                <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: t('messages.addStation') }} />
+                                <Stack.Screen name="ChargerLocationFormScreen" component={ChargerLocationFormScreen} options={{ title: t('messages.addingStation') }} />
                                 <Stack.Screen name="EditChargerLocationScreen" component={EditChargerLocationScreen} options={{ title: t('messages.editStation') }} />
-                                <Stack.Screen name="FinalizeAddLocationScreen" component={FinalizeAddLocation} options={{ title: t('messages.addStation')}} />
+                                <Stack.Screen name="FinalizeAddLocationScreen" component={FinalizeAddLocation} options={{ title: t('messages.addingStation')}} />
                                 <Stack.Screen name="MapScreen" component={MapScreen} options={{ title: t('messages.mapScreen')}} />
                                 <Stack.Screen name="EndBooking" component={EndBookingScreen} options={{ title: t('messages.endCharging') }} />
 

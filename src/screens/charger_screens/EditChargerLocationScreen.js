@@ -36,6 +36,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         latitude: location?.latitude || 35.6892,
         longitude: location?.longitude || 51.389,
     });
+    const [charging_location_id, setId] = useState(location?.charging_location_id?.toString() || '');
     const [locationConfirmed, setLocationConfirmed] = useState(false);
 
     // Add formData state and keep it in sync with individual fields
@@ -53,6 +54,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         fast_charging: location?.fast_charging || false,
         latitude: location?.latitude || 35.6892,
         longitude: location?.longitude || 51.389,
+        charging_location_id: location?.charging_location_id?.toString()
     });
 
     React.useEffect(() => {
@@ -70,11 +72,12 @@ export default function EditChargingLocationScreen({ navigation, route }) {
             fast_charging,
             latitude: selectedCoords.latitude,
             longitude: selectedCoords.longitude,
+            charging_location_id
         });
     }, [
         name, city, country, postcode, street, alley, phone_number,
         power_output, price_per_hour, description, fast_charging,
-        selectedCoords.latitude, selectedCoords.longitude
+        selectedCoords.latitude, selectedCoords.longitude, charging_location_id
     ]);
 
     const [loading, setLoading] = useState(false);
@@ -82,34 +85,55 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         if (!validateForm()) return;
         navigation.navigate('FinalizeAddLocationScreen', {
             formData,
-            onLocationUpdated // Pass this callback
+            onLocationAdded // Pass this callback
         });
     };
 
-    const onLocationUpdated = route.params?.onLocationUpdated;
+    const onLocationAdded = route.params?.onLocationAdded;
 
-    const handleInputChange = (field, value) => {
-        setFormData(prev => {
-            const updated = {
-                ...prev,
-                [field]: value
-            };
+      const handleInputChange = (field, value) => {
+            setFormData(prev => {
+                let updated = {
+                    ...prev,
+                    [field]: value
+                };
 
-            // Automatically update price when country changes
-            if (field === 'country') {
-                if (value.toLowerCase() === 'iran') {
-                    updated.price_per_hour = '50000'; // Iranian Rials
-                } else {
-                    updated.price_per_hour = '5'; // Euros
+                // Special handling for phone number - allow Farsi/English digits, +, and starting with zero
+                if (field === 'phone_number') {
+                    // Convert Farsi digits to English and keep only digits and +
+                    const normalizedValue = value
+                        .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
+                        .replace(/[^0-9+]/g, '');
+
+                    // Only allow + at the beginning
+                    let cleanValue = normalizedValue;
+                    if (cleanValue.includes('+')) {
+                        const firstPlus = cleanValue.indexOf('+');
+                        if (firstPlus === 0) {
+                            cleanValue = '+' + cleanValue.substring(1).replace(/\+/g, '');
+                        } else {
+                            cleanValue = cleanValue.replace(/\+/g, '');
+                        }
+                    }
+
+                    updated[field] = cleanValue;
                 }
-            }
 
-            return updated;
-        });
-    };
+                // Automatically update price when country changes
+                if (field === 'country') {
+                    if (value.toLowerCase() === 'iran') {
+                        updated.price_per_hour = '50000'; // Iranian Rials
+                    } else {
+                        updated.price_per_hour = '5'; // Euros
+                    }
+                }
+
+                return updated;
+            });
+        };
 
     const validateForm = () => {
-        const { name, country, city, postcode, street, phone_number, power_output, price_per_hour } = formData;
+        const { name, country, city, postcode, street, phone_number, power_output, price_per_hour, charging_location_id} = formData;
 
         if (!name.trim()) {
             Alert.alert(t('messages.validationError'), t('messages.stationName'));

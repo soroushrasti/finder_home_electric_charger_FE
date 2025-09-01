@@ -10,6 +10,8 @@ import { useLanguage } from '../../context/LanguageContext';
 import faCountries from '../../localization/faCountryCodes.json';
 import enCountries from '../../localization/enCountryCodes.json';
 import MapScreen from '../../components/MapScreen';
+import env from "../../config/environment";
+
 
 export default function EditChargingLocationScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -37,6 +39,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         longitude: location?.longitude || 51.389,
     });
     const [charging_location_id, setId] = useState(location?.charging_location_id?.toString() || '');
+    const [user_id, setUserId] = useState(location?.user_id?.toString() || '');
     const [locationConfirmed, setLocationConfirmed] = useState(false);
 
     // Add formData state and keep it in sync with individual fields
@@ -54,7 +57,9 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         fast_charging: location?.fast_charging || false,
         latitude: location?.latitude || 35.6892,
         longitude: location?.longitude || 51.389,
-        charging_location_id: location?.charging_location_id?.toString()
+        charging_location_id: location?.charging_location_id?.toString(),
+        user_id: location?.user_id?.toString()
+
     });
 
     React.useEffect(() => {
@@ -72,24 +77,40 @@ export default function EditChargingLocationScreen({ navigation, route }) {
             fast_charging,
             latitude: selectedCoords.latitude,
             longitude: selectedCoords.longitude,
-            charging_location_id
+            charging_location_id,
+            user_id: user?.user_id || null
         });
     }, [
         name, city, country, postcode, street, alley, phone_number,
         power_output, price_per_hour, description, fast_charging,
-        selectedCoords.latitude, selectedCoords.longitude, charging_location_id
+        selectedCoords.latitude, selectedCoords.longitude, charging_location_id, user_id
     ]);
 
     const [loading, setLoading] = useState(false);
-    const handleNext = () => {
-        if (!validateForm()) return;
-        navigation.navigate('FinalizeAddLocationScreen', {
-            formData,
-            onLocationAdded // Pass this callback
-        });
+    const handleNext = async () => {
+      setLoading(true);
+         try {
+             const response = await fetch(`${env.apiUrl}/update-charging-location/${formData.charging_location_id}`, {
+                 method: 'POST',
+                 headers: {
+                  'Content-Type': 'application/json',
+                  'X-API-Token': `${env.apiToken} `,
+                 },
+                 body: JSON.stringify(formData),
+             });
+             if (response.ok) {
+                   navigation.navigate('HomeOwnerScreen', { user: { user_id: formData.user_id } });
+               } else {
+                          const errorText = await response.text();
+                          Alert.alert(t('messages.error'), `Failed: ${response.status} ${errorText}`);
+                   }
+            } catch (error) {
+                Alert.alert(t('messages.error'), `Network error: ${error.message}`);
+        } finally {
+        setLoading(false);
+      }
     };
 
-    const onLocationAdded = route.params?.onLocationAdded;
 
       const handleInputChange = (field, value) => {
             setFormData(prev => {

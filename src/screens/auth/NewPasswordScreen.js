@@ -25,18 +25,14 @@ export default function NewPasswordScreen({ navigation, route }) {
     const { userId } = route.params || {};
 
     const handleNewPassword = async () => {
-        if (!password || !confirmPassword) {
+        if (!password ) {
             Alert.alert(t('messages.error'), t('messages.fillBoth'));
-            return;
-        }
-        if (password !== confirmPassword) {
-            Alert.alert(t('messages.error'), t('messages.passNotMatch'));
             return;
         }
         setLoading(true);
         try {
             const response = await fetch(`${env.apiUrl}/update-user/${userId}`, {
-                method: 'PUT',
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'X-API-Token': `${env.apiToken}`,
@@ -114,20 +110,6 @@ export default function NewPasswordScreen({ navigation, route }) {
                         </View>
                     </View>
 
-                    <View style={styles.inputGroup}>
-                        <FarsiText style={styles.label}>{t('messages.confirmPass')}</FarsiText>
-                        <View style={styles.inputContainer}>
-                            <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
-                            <FarsiTextInput
-                                style={styles.input}
-                                placeholder= {t('messages.confirm')}
-                                secureTextEntry
-                                value={confirmPassword}
-                                onChangeText={setConfirmPassword}
-                                placeholderTextColor="#999"
-                            />
-                        </View>
-                    </View>
                 </View>
 
                 <View style={styles.buttonContainer}>

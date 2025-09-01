@@ -47,21 +47,10 @@ export default function ForgotPasswordScreen({ navigation }) {
             const data = await response.json();
 
             if (response.ok) {
-                Alert.alert(
-                    t('messages.success'),
-                    t('messages.emailVerifySend'),
-                    [
-                        {
-                            text: t('messages.continue'),
-                            onPress: () => {
-                                navigation.navigate('EmailVerificationScreen', {
-                                    user: data,
-                                    isPasswordReset: true,
-                                });
-                            }
-                        }
-                    ]
-                );
+                    navigation.navigate('EmailVerificationScreen', {
+                        user: data,
+                        isPasswordReset: true,
+                    });
             } else {
                 Alert.alert(t('messages.error'), data.message || t('messages.failRequest'));
             }

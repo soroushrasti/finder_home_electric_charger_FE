@@ -206,12 +206,12 @@ const styles = StyleSheet.create({
         padding: 20,
     },
     formContainer: {
-        flex: 1,
         paddingTop: 40,
+        minHeight: 400,
     },
     sectionTitle: {
-        fontSize: 18,
         fontWeight: 'bold',
+        paddingBottom: 40,
         color: '#333',
         marginBottom: 30,
         textAlign: 'center',

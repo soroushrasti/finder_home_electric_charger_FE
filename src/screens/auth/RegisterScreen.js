@@ -201,10 +201,14 @@ export default function RegisterScreen({ navigation, setUser }) {
     return (
         <ScrollContainer
             style={{ flex: 1, backgroundColor: '#fff' }}
-            contentContainerStyle={{ flexGrow: 1, minHeight: Platform.OS === 'web' ? '100vh' : undefined, justifyContent: 'center', padding: 16 }}
+            contentContainerStyle={{ flexGrow: 1, minHeight: Platform.OS === 'web' ? '100vh' : undefined, padding: 16 }}
             enableOnAndroid={true}
             extraScrollHeight={40}
             keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={true}
+            bounces={true}
+            scrollEnabled={true}
+            nestedScrollEnabled={true}
         >
             <View style={styles.container}>
             <LinearGradient

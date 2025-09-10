@@ -7,7 +7,6 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    KeyboardAvoidingView,
     Platform
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
@@ -16,6 +15,7 @@ import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import FarsiText from  "../../components/FarsiText";
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 
 
 export default function EmailVerificationScreen({ navigation, route, setUser }) {
@@ -177,9 +177,16 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
     }
 
     return (
-        <KeyboardAvoidingView
+        <KeyboardAwareScrollView
             style={styles.container}
-            behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+            contentContainerStyle={{ flexGrow: 1 }}
+            keyboardShouldPersistTaps="handled"
+            enableOnAndroid={true}
+            extraScrollHeight={40}
+            showsVerticalScrollIndicator={true}
+            bounces={true}
+            scrollEnabled={true}
+            nestedScrollEnabled={true}
         >
             <LinearGradient
                 colors={['#667eea', '#764ba2']}
@@ -269,7 +276,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAvoidingView>
+        </KeyboardAwareScrollView>
     );
 }
 

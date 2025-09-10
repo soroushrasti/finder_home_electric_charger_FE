@@ -130,10 +130,14 @@ export default function LoginScreen({ navigation, setUser }) {
     return (
         <ScrollContainer
             style={[{ flex: 1, backgroundColor: '#fff' }, Platform.OS === 'web' ? { height: '100vh', overflow: 'auto' } : {}]}
-            contentContainerStyle={[{ flexGrow: 1, justifyContent: 'center', padding: 16 }, Platform.OS === 'web' ? { minHeight: '100vh' } : {}]}
+            contentContainerStyle={[{ flexGrow: 1, padding: 16 }, Platform.OS === 'web' ? { minHeight: '100vh' } : {}]}
             enableOnAndroid={true}
             extraScrollHeight={40}
             keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={true}
+            bounces={true}
+            scrollEnabled={true}
+            nestedScrollEnabled={true}
         >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}

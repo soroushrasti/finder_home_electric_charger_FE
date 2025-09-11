@@ -218,9 +218,13 @@ export default function MapScreen({
   const handleTap = (e) => {
     if (!enableTapToSelect) return;
     const { latitude, longitude } = e.nativeEvent.coordinate;
-    setSelectedMarker({ latitude, longitude });
-    // prefer onLocationSelected callback for coordinate selection
-    if (onLocationSelected) onLocationSelected({ latitude, longitude });
+    const next = { latitude, longitude };
+    setSelectedMarker(next);
+    setRegion(r => ({ ...r, latitude, longitude }));
+    if (mapRef.current) {
+      mapRef.current.animateToRegion({ ...region, latitude, longitude }, 400);
+    }
+    if (onLocationSelected) onLocationSelected(next);
   };
 
   // Automatically fetch combined locations if none supplied
@@ -458,5 +462,7 @@ const styles = StyleSheet.create({
   legendContainer:{ position:'absolute', bottom:18, left:12, backgroundColor:'rgba(255,255,255,0.92)', padding:10, borderRadius:12, elevation:3, shadowColor:'#000', shadowOffset:{width:0,height:1}, shadowOpacity:0.2, shadowRadius:2 },
   legendRow:{ flexDirection:'row', alignItems:'center', marginBottom:4 },
   legendDot:{ width:14, height:14, borderRadius:7, marginRight:6 },
-  legendLabel:{ fontSize:11, color:'#333' }
+  legendLabel:{ fontSize:11, color:'#333' },
+  coordOverlay:{ position:'absolute', bottom:90, right:10, backgroundColor:'rgba(0,0,0,0.55)', paddingHorizontal:10, paddingVertical:6, borderRadius:8 },
+  coordText:{ color:'#fff', fontSize:12, fontWeight:'600', letterSpacing:0.5 }
 });

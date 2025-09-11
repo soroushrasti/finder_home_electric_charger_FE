@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
-import {Picker} from '@react-native-picker/picker';
 import { useLanguage } from '../../context/LanguageContext';
 import faCountries from '../../localization/faCountryCodes.json';
 import enCountries from '../../localization/enCountryCodes.json';
@@ -13,8 +12,7 @@ import enCountries from '../../localization/enCountryCodes.json';
 export default function ChargerLocationFormScreen({ navigation, route }) {
     const { t } = useTranslation();
 
-    const [countryCode, setCountryCode] = useState('+98');
-    const { language, changeLanguage } = useLanguage();
+    const { language } = useLanguage();
     const countriesSource = language === 'fa' ? faCountries : enCountries;
     const extractFlag = (label='') => {
         if(!label || typeof label !== 'string') return '';
@@ -35,6 +33,9 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const [countries, setCountries] = useState(enrich(countriesSource));
     const [selectedCountry, setSelectedCountry] = useState(enrich(countriesSource)[0]);
     const [phoneLocalNumber, setPhoneLocalNumber] = useState('');
+    const [showCountryDropdown, setShowCountryDropdown] = useState(false); // NEW
+    const currentFlag = selectedCountry?.flag; // NEW
+    const normalizeLocalDigits = (v='') => v.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[^0-9]/g,''); // NEW helper
     // keep legacy selectedCode for backward compatibility (can be removed later)
     const [selectedCode, setSelectedCode] = useState(countries[0].value);
 

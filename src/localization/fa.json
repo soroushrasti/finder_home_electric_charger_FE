@@ -334,7 +334,7 @@
     "fillFields": "لطفا تمام فیلدهای ضروری را پر کنید.",
     "netError": "جزئیات خطای شبکه:",
     "netRequest": "درخواست شبکه ناموفق بود",
-    "noConnectToServer": "اتصال به سرور امکان\u200Cپذیر نیست. لطفاً موارد زیر را بررسی کنید:\\n\\n• اتصال اینترنت شما\\n• در دسترس بودن سرور\\n• پیکربندی نقطه پایانی API",
+    "noConnectToServer": "اتصال به سرور امکانپذیر نیست. لطفاً موارد زیر را بررسی کنید:\\n\\n• اتصال اینترنت شما\\n• در دسترس بودن سرور\\n• پیکربندی نقطه پایانی API",
     "retry": "دوباره امتحان کنید",
     "findingLoc": "پیدا کردن مکان...",
     "selectExactLocation": "محل دقیق را انتخاب کنید",
@@ -354,7 +354,7 @@
     "networkErr": "خطای شبکه:",
     "netErrorRequest": "خطای شبکه برای این درخواست",
     "booking": "رزروها",
-    "loadingLoc": "در حال بارگیری مکان های شارژر شما...",
+    "loadingLoc": "در حال بارگذاری مکان های شارژر شما...",
     "myChargingStation": "ایستگاه های شارژ من",
     "manageLocationPerformance": "مکان های شارژ خود را مدیریت کنید و عملکرد را پیگیری کنید",
     "addLocation": "اضافه کردن مکان",
@@ -461,6 +461,24 @@
     "tapToSelectLocation": "برای انتخاب مکان، ضربه بزنید",
     "setCountry": "نام کشور را وارد کنید",
     "toBeConfirmed": "تایید مکان",
-    "isConfirmed": "مکان تایید شد"
+    "isConfirmed": "مکان تایید شد",
+    "hasAccommodation": "امکان اقامت",
+    "enableAccommodation": "اگر امکان استراحت یا اقامت وجود دارد فعال کنید",
+    "nearby": "نزدیک",
+    "more": "بیشتر",
+    "loadMore": "نمایش مکان‌های بیشتر",
+    "proceedWithSelectedLocation": "ادامه با مکان انتخاب شده"
+  },
+  "map": {
+    "loadingLocations": "در حال بارگذاری مکان های شارژ...",
+    "showAll": "همه",
+    "showPublicOnly": "فقط عمومی",
+    "showUserOnly": "فقط خصوصی",
+    "public": "عمومی",
+    "private": "خصوصی",
+    "showClustered": "خوشه ای",
+    "showIndividual": "تکی",
+    "filterAccommodation": "فقط با اقامت",
+    "accommodation": "اقامت"
   }
 }

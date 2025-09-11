@@ -5,7 +5,8 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    Platform
+    Platform,
+    SafeAreaView
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -75,100 +76,110 @@ export default function NewPasswordScreen({ navigation, route }) {
         }
     };
 
+    const ContentWrapper = Platform.OS === 'web' ? View : KeyboardAwareScrollView;
+
     return (
-        <KeyboardAwareScrollView
+        <SafeAreaView style={{ flex:1, backgroundColor:'#f5f5f5' }}>
+          <ContentWrapper
             style={styles.container}
-            contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            enableOnAndroid={true}
-            extraScrollHeight={40}
-            showsVerticalScrollIndicator={true}
-            bounces={true}
-            scrollEnabled={true}
-            nestedScrollEnabled={true}
-        >
+            {...(Platform.OS !== 'web' ? {
+              contentContainerStyle: { flexGrow: 1 },
+              keyboardShouldPersistTaps: 'handled',
+              enableOnAndroid: true,
+              extraScrollHeight: 40,
+              showsVerticalScrollIndicator: true
+            } : {})}
+          >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
                 style={styles.header}
                 start={{ x: 0, y: 0 }}
                 end={{ x: 1, y: 1 }}
             >
-                <TouchableOpacity
-                    style={styles.backButton}
-                    onPress={() => navigation.goBack()}
-                >
-                    <MaterialIcons name="arrow-back" size={24} color="#fff" />
-                </TouchableOpacity>
-                <View style={styles.headerContent}>
-                    <View style={styles.iconContainer}>
-                        <MaterialIcons name="lock-outline" size={60} color="#fff" />
-                    </View>
-                    <FarsiText style={styles.headerTitle}>{t('messages.newPass')}</FarsiText>
-                    <FarsiText style={styles.headerSubtitle}>{t('messages.setPass')}</FarsiText>
-                </View>
+              <TouchableOpacity
+                  style={styles.backButton}
+                  onPress={() => navigation.goBack()}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('messages.back')}
+              >
+                  <MaterialIcons name="arrow-back" size={24} color="#fff" />
+              </TouchableOpacity>
+              <View style={styles.headerContent}>
+                  <View style={styles.iconContainer}>
+                      <MaterialIcons name="lock-outline" size={60} color="#fff" />
+                  </View>
+                  <FarsiText style={styles.headerTitle}>{t('messages.newPass')}</FarsiText>
+                  <FarsiText style={styles.headerSubtitle}>{t('messages.setPass')}</FarsiText>
+              </View>
             </LinearGradient>
 
             <View style={styles.content}>
-                <View style={styles.formContainer}>
-                    <FarsiText style={styles.sectionTitle}>🔒 {t('messages.createPass')}</FarsiText>
-
-                    <View style={styles.inputGroup}>
-                        <FarsiText style={styles.label}>{t('messages.newPass')}</FarsiText>
-                        <View style={styles.inputContainer}>
-                            <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
-                            <FarsiTextInput
-                                style={styles.input}
-                                placeholder= {t('messages.enterPassword')}
-                                secureTextEntry={!showPassword}
-                                value={password}
-                                onChangeText={setPassword}
-                                placeholderTextColor="#999"
-                            />
-                            <TouchableOpacity
-                                onPress={() => setShowPassword(!showPassword)}
-                                style={styles.togglePasswordVisibility}
-                            >
-                                <MaterialIcons name={showPassword ? "visibility" : "visibility-off"} size={20} color="#666" />
-                            </TouchableOpacity>
-                        </View>
-                    </View>
-
-                </View>
-
-                <View style={styles.buttonContainer}>
+              <View style={styles.formContainer}>
+                <FarsiText style={styles.sectionTitle}>🔒 {t('messages.createPass')}</FarsiText>
+                <View style={styles.inputGroup}>
+                  <FarsiText style={styles.label}>{t('messages.newPass')}</FarsiText>
+                  <View style={styles.inputContainer}>
+                    <MaterialIcons name="vpn-key" size={20} color="#666" style={styles.inputIcon} />
+                    <FarsiTextInput
+                      style={styles.input}
+                      placeholder={t('messages.enterPassword')}
+                      secureTextEntry={!showPassword}
+                      value={password}
+                      onChangeText={setPassword}
+                      placeholderTextColor="#999"
+                      accessibilityLabel={t('messages.newPass')}
+                    />
                     <TouchableOpacity
-                        style={[styles.resetButton, loading && styles.resetButtonDisabled]}
-                        onPress={handleNewPassword}
-                        disabled={loading}
-                        activeOpacity={0.8}
+                      onPress={() => setShowPassword(!showPassword)}
+                      style={styles.togglePasswordVisibility}
+                      accessibilityRole="button"
+                      accessibilityLabel={showPassword? t('messages.hide'): t('messages.show')}
                     >
-                        <LinearGradient
-                            colors={loading ? ['#ccc', '#999'] : ['#4facfe', '#00f2fe']}
-                            style={styles.resetButtonGradient}
-                            start={{ x: 0, y: 0 }}
-                            end={{ x: 1, y: 1 }}
-                        >
-                            {loading ? (
-                                <ActivityIndicator size="small" color="#fff" />
-                            ) : (
-                                <MaterialIcons name="send" size={24} color="#fff" />
-                            )}
-                            <FarsiText style={styles.resetButtonText}>
-                                {loading ? t('messages.update'): t('messages.updatePass')}
-                            </FarsiText>
-                        </LinearGradient>
+                      <MaterialIcons name={showPassword ? 'visibility' : 'visibility-off'} size={20} color="#666" />
                     </TouchableOpacity>
-                    <TouchableOpacity
-                        style={styles.loginRedirectButton}
-                        onPress={() => navigation.navigate('LoginScreen')}
-                    >
-                        <FarsiText style={styles.loginRedirectText}>
-                            {t('messages.back')} <FarsiText style={styles.loginRedirectLink}>{t('messages.signIn')}</FarsiText>
-                        </FarsiText>
-                    </TouchableOpacity>
+                  </View>
                 </View>
+              </View>
+
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={[styles.resetButton, loading && styles.resetButtonDisabled]}
+                  onPress={handleNewPassword}
+                  disabled={loading}
+                  activeOpacity={0.8}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('messages.updatePass')}
+                >
+                  <LinearGradient
+                    colors={loading ? ['#ccc', '#999'] : ['#4facfe', '#00f2fe']}
+                    style={styles.resetButtonGradient}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 1, y: 1 }}
+                  >
+                    {loading ? (
+                      <ActivityIndicator size="small" color="#fff" />
+                    ) : (
+                      <MaterialIcons name="send" size={24} color="#fff" />
+                    )}
+                    <FarsiText style={styles.resetButtonText}>
+                      {loading ? t('messages.update'): t('messages.updatePass')}
+                    </FarsiText>
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.loginRedirectButton}
+                  onPress={() => navigation.navigate('LoginScreen')}
+                  accessibilityRole="button"
+                  accessibilityLabel={t('messages.signIn')}
+                >
+                  <FarsiText style={styles.loginRedirectText}>
+                    {t('messages.back')} <FarsiText style={styles.loginRedirectLink}>{t('messages.signIn')}</FarsiText>
+                  </FarsiText>
+                </TouchableOpacity>
+              </View>
             </View>
-        </KeyboardAwareScrollView>
+          </ContentWrapper>
+        </SafeAreaView>
     );
 }
 
@@ -176,10 +187,10 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: '#f5f5f5',
-        // Web-specific styles
         ...(Platform.OS === 'web' && {
             minHeight: '100vh',
-            width: '100%'
+            width: '100%',
+            overflowY: 'auto'
         })
     },
     header: {

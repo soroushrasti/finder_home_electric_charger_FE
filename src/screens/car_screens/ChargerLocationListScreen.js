@@ -6,16 +6,24 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 
 
-export default function ChargerLocationListScreen({ navigation, route }) {
+export default function ChargerLocationListScreen({ navigation, route, visibleLocations = [], selectedLocationId = null, onLocationSelectFromList, disableNavigation = false }) {
     const { t } = useTranslation();
 
-    const { car, user, chargingLocations, searchCriteria } = route.params;
+    // Use visibleLocations if provided, else fallback to route.params
+    const { car, user, chargingLocations, searchCriteria } = route?.params || {};
+    const locations = visibleLocations.length > 0 ? visibleLocations : (chargingLocations || []);
 
     const formatPrice = (price) => {
         return price ? `${parseFloat(price).toFixed(2)}` : 'N/A';
     };
 
+    const badge = (txt, style) => (
+      <View style={[styles.badge, style]}><FarsiText style={styles.badgeText}>{txt}</FarsiText></View>
+    );
+
     const handleLocationSelect = (selectedLocation) => {
+        if (onLocationSelectFromList) onLocationSelectFromList(selectedLocation);
+        if(disableNavigation) return;
         navigation.navigate('BookingConfirmationScreen', {
             car,
             user,
@@ -23,109 +31,81 @@ export default function ChargerLocationListScreen({ navigation, route }) {
         });
     };
 
-    const renderLocation = ({ item }) => (
+    const renderLocation = ({ item }) => {
+        const isUser = item.is_user || item.type === 'user';
+        const isSelected = selectedLocationId === item.id;
+        const displayName = item.name || item.title || `Station ${item.id}`;
+        const coordLat = item.latitude || item.coordinate?.latitude;
+        const coordLng = item.longitude || item.coordinate?.longitude;
+        return (
         <TouchableOpacity
-            style={styles.locationCard}
+            style={[
+                styles.locationCard,
+                isSelected && styles.selectedCard,
+                isUser ? styles.userCard : styles.publicCard,
+                item._extra && styles.extraNearbyCard,
+                item._extra2 && styles.extraNearbyCard2
+            ]}
             onPress={() => handleLocationSelect(item)}
             activeOpacity={0.8}
         >
             <View style={styles.locationHeader}>
-                <View style={styles.locationIconContainer}>
-                    <MaterialIcons name="ev-station" size={24} color="#667eea" />
+                <View style={[styles.locationIconContainer, isUser && {backgroundColor:'#e3f2fd'}]}>
+                    <MaterialIcons name={isUser? 'home':'ev-station'} size={24} color={isUser ? '#2196f3' : '#e53935'} />
                 </View>
                 <View style={styles.locationInfo}>
-                    <Text style={styles.locationName}>{item.name || `Station ${item.id}`}</Text>
-                    <Text style={styles.locationAddress}>{item.address}</Text>
-                    <Text style={styles.locationCity}>{item.city}, {item.post_code}</Text>
+                    <Text style={styles.locationName}>{displayName}</Text>
+                    {item.address && <Text style={styles.locationAddress}>{item.address}</Text>}
+                    {(item.city || item.post_code || item.country) && (
+                      <Text style={styles.locationCity}>{item.city || ''}{item.post_code? ', '+item.post_code:''}{item.country? ', '+item.country:''}</Text>
+                    )}
+                    <View style={styles.badgeRow}>
+                      {badge(isUser ? 'USER' : 'PUBLIC', isUser ? styles.userTypeBadge : styles.publicTypeBadge)}
+                      {item._extra && badge('NEARBY', styles.nearbyBadge)}
+                      {item._extra2 && badge('MORE', styles.nearbyMoreBadge)}
+                      {item.hasAccommodation && badge('ACCOM', styles.accommodationBadge)}
+                    </View>
                 </View>
-                <View style={[styles.statusBadge, { backgroundColor: item.is_available ? '#4CAF50' : '#ff6b6b' }]}>
+                <View style={[styles.statusBadge, { backgroundColor: item.is_available === false ? '#ff6b6b' : '#4CAF50' }]}>
                     <MaterialIcons
-                        name={item.is_available ? "check-circle" : "cancel"}
+                        name={item.is_available === false ? 'cancel' : 'check-circle'}
                         size={16}
                         color="#fff"
                     />
-                    <FarsiText style={styles.statusText}>{item.is_available ? t('messages.avail') : t('messages.occupied')}</FarsiText>
+                    <FarsiText style={styles.statusText}>{item.is_available === false ? t('messages.occupied') : t('messages.avail')}</FarsiText>
                 </View>
             </View>
-
             <View style={styles.locationDetails}>
                 <View style={styles.detailRow}>
                     <MaterialIcons name="electric-bolt" size={18} color="#667eea" />
                     <FarsiText style={styles.detailLabel}>{t('messages.pw')}</FarsiText>
-                    <FarsiText style={styles.detailValue}>{item.power_output || 'N/A'} {t('messages.kw')}</FarsiText>
+                    <FarsiText style={styles.detailValue}>{item.power_output || item.powerKw || 'N/A'} {t('messages.kw')}</FarsiText>
                 </View>
-                <View style={styles.detailRow}>
+                {item.price_per_hour && (
+                  <View style={styles.detailRow}>
                     <MaterialIcons name="attach-money" size={18} color="#667eea" />
                     <FarsiText style={styles.detailLabel}>{t('messages.rat')}</FarsiText>
                     <Text style={styles.detailValue}>{formatPrice(item.price_per_hour)}/hour</Text>
-                </View>
-                <View style={styles.detailRow}>
-                    <MaterialIcons name="speed" size={18} color="#667eea" />
-                    <FarsiText style={styles.detailLabel}>{t('messages.type')}</FarsiText>
-                    <FarsiText style={styles.detailValue}>
-                        {item.fast_charging ? t('messages.fastCharging') : t('messages.standard')}
-                    </FarsiText>
-                </View>
-            </View>
-
-            <View style={styles.selectButton}>
-                <MaterialIcons name="arrow-forward" size={20} color="#667eea" />
-                <FarsiText style={styles.selectText}>{t('messages.selectStation')}</FarsiText>
+                  </View>
+                )}
+                {(coordLat && coordLng) && (
+                  <View style={styles.detailRow}>
+                    <MaterialIcons name="location-on" size={18} color="#667eea" />
+                    <FarsiText style={styles.detailLabel}>Lat/Lng</FarsiText>
+                    <FarsiText style={styles.detailValue}>{coordLat.toFixed ? coordLat.toFixed(4): coordLat}, {coordLng.toFixed ? coordLng.toFixed(4): coordLng}</FarsiText>
+                  </View>
+                )}
             </View>
         </TouchableOpacity>
-    );
+    )};
 
     return (
-        <View style={styles.container}>
-            <LinearGradient
-                colors={['#667eea', '#764ba2']}
-                style={styles.headerGradient}
-                start={{ x: 0, y: 0 }}
-                end={{ x: 1, y: 1 }}
-            >
-                <View style={styles.iconContainer}>
-                    <MaterialIcons name="list" size={60} color="#fff" />
-                </View>
-                <FarsiText style={styles.title}>{t('messages.availableStation')}</FarsiText>
-                <Text style={styles.subtitle}>
-                    {chargingLocations.length} charging station{chargingLocations.length !== 1 ? 's' : ''} found
-                </Text>
-            </LinearGradient>
-
-            <View style={styles.searchSummary}>
-                <MaterialIcons name="search" size={20} color="#667eea" />
-                <Text style={styles.searchText}>
-                    {searchCriteria?.city}, {searchCriteria?.post_code}
-                    {searchCriteria?.fast_charging && ' • Fast Charging'}
-                </Text>
-            </View>
-
-            {chargingLocations.length === 0 ? (
-                <ScrollView contentContainerStyle={styles.emptyContainer}>
-                    <MaterialIcons name="ev-station" size={80} color="#ccc" />
-                    <FarsiText style={styles.emptyText}>{t('messages.noStation')}</FarsiText>
-                    <FarsiText style={styles.emptySubtext}>
-                        {t('messages.searchDifferent')}
-                    </FarsiText>
-                    <TouchableOpacity
-                        style={styles.backButton}
-                        onPress={() => navigation.goBack()}
-                        activeOpacity={0.8}
-                    >
-                        <MaterialIcons name="arrow-back" size={20} color="#667eea" />
-                        <FarsiText style={styles.backText}>{t('messages.searchBack')}</FarsiText>
-                    </TouchableOpacity>
-                </ScrollView>
-            ) : (
-                <FlatList
-                    data={chargingLocations}
-                    renderItem={renderLocation}
-                    keyExtractor={(item) => item.id?.toString() || Math.random().toString()}
-                    contentContainerStyle={styles.listContainer}
-                    showsVerticalScrollIndicator={false}
-                />
-            )}
-        </View>
+        <FlatList
+            data={locations}
+            renderItem={renderLocation}
+            keyExtractor={item => (item.id ? item.id.toString() : `${item.latitude || item.coordinate?.latitude}_${item.longitude || item.coordinate?.longitude}`)}
+            contentContainerStyle={{ padding: 12 }}
+        />
     );
 }
 
@@ -197,6 +177,17 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.1,
         shadowRadius: 4,
     },
+    selectedCard: { borderWidth: 2, borderColor: '#ffeb3b', backgroundColor: '#fffde7' },
+    extraNearbyCard: { borderRightWidth:4, borderRightColor:'#2196f3' },
+    extraNearbyCard2: { borderRightWidth:4, borderRightColor:'#ff9800' },
+    badgeRow:{ flexDirection:'row', flexWrap:'wrap', marginTop:6 },
+    badge:{ paddingHorizontal:6, paddingVertical:2, borderRadius:10, marginRight:6, marginBottom:4, backgroundColor:'#eee' },
+    badgeText:{ fontSize:9, fontWeight:'600', color:'#333' },
+    publicTypeBadge:{ backgroundColor:'#e53935' },
+    userTypeBadge:{ backgroundColor:'#2196f3' },
+    nearbyBadge:{ backgroundColor:'#2196f3' },
+    nearbyMoreBadge:{ backgroundColor:'#ff9800' },
+    accommodationBadge:{ backgroundColor:'#8e44ad' },
     locationHeader: {
         flexDirection: 'row',
         alignItems: 'flex-start',

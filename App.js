@@ -38,6 +38,7 @@ import FarsiText from './src/components/FarsiText';
 import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapScreen from "./src/components/MapScreen";
+import ChargingMapListWrapperScreen from './src/screens/car_screens/ChargingMapListWrapperScreen';
 const Stack = createStackNavigator();
 
 function Home({ navigation }) {
@@ -382,7 +383,7 @@ export default function App() {
                                 <Stack.Screen name="BookingConfirmationScreen" component={BookingConfirmationScreen} options={{ title: t('messages.confirmBooking') }} />
                                 <Stack.Screen name="ChargerLocationListScreen" component={ChargerLocationListScreen} options={{ title: t('messages.locChargerList') }} />
                                 <Stack.Screen name="MyBookingsScreen" component={MyBookingsScreen} options={{ title: t('messages.myBooking') }} />
-
+                                <Stack.Screen name="ChargingMapListWrapper" component={ChargingMapListWrapperScreen} options={{ title: t('messages.findCharger') }} />
                             </>
                         )}
 

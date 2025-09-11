@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform, Modal, FlatList } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform, FlatList } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
@@ -15,9 +15,42 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
 
     const [countryCode, setCountryCode] = useState('+98');
     const { language, changeLanguage } = useLanguage();
-    const countries = language === 'fa' ? faCountries : enCountries;
-    const [modalVisible, setModalVisible] = useState(false);
+    const countriesSource = language === 'fa' ? faCountries : enCountries;
+    const extractFlag = (label='') => {
+        if(!label || typeof label !== 'string') return '';
+        const trimmed = label.trim();
+        const all = trimmed.match(/(\uD83C[\uDDE6-\uDDFF]\uD83C[\uDDE6-\uDDFF])/g);
+        if(all && all.length) return all[all.length-1];
+        // Fallback scan by code units
+        for(let i=0;i<trimmed.length-1;i++){
+          const hi = trimmed.charCodeAt(i);
+          const lo = trimmed.charCodeAt(i+1);
+          if(hi >= 0xD83C && hi <= 0xD83C && lo >= 0xDDE6 && lo <= 0xDDFF){
+            // Try pair i & i+2 (two surrogate pairs)
+          }
+        }
+        return '';
+    };
+    const enrich = (arr) => arr.map(c=>({ ...c, flag: extractFlag(c.label), pureLabel: c.label.replace(c.value,'').replace(extractFlag(c.label),'').trim() }));
+    const [countries, setCountries] = useState(enrich(countriesSource));
+    const [selectedCountry, setSelectedCountry] = useState(enrich(countriesSource)[0]);
+    const [phoneLocalNumber, setPhoneLocalNumber] = useState('');
+    // keep legacy selectedCode for backward compatibility (can be removed later)
     const [selectedCode, setSelectedCode] = useState(countries[0].value);
+
+    // Update selectedCountry when language changes preserving previous dial code if possible
+    React.useEffect(()=>{
+        const enriched = enrich(countriesSource);
+        // preserve selection by value
+        const current = enriched.find(c=>c.value === selectedCountry?.value) || enriched[0];
+        setCountries(enriched);
+        setSelectedCountry(current);
+    }, [language]);
+
+    // Sync combined phone number into formData whenever pieces change
+    React.useEffect(()=>{
+        setFormData(prev=>({ ...prev, phone_number: `${selectedCountry?.value || ''}${phoneLocalNumber}` }));
+    }, [selectedCountry?.value, phoneLocalNumber]);
 
     const user = route.params?.user;
     const [formData, setFormData] = useState({
@@ -32,6 +65,7 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
         price_per_hour: '50000', // Default price in Iranian Rials
         description: '',
         fast_charging: false,
+        has_accommodation: false, // NEW FLAG
         user_id: user?.user_id || null
     });
     const [loading, setLoading] = useState(false);
@@ -46,112 +80,39 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const onLocationAdded = route.params?.onLocationAdded;
 
     const handleInputChange = (field, value) => {
+        // Skip phone_number here (handled separately)
+        if(field === 'phone_number') return;
         setFormData(prev => {
-            let updated = {
-                ...prev,
-                [field]: value
-            };
-
-            // Special handling for phone number - allow Farsi/English digits, +, and starting with zero
-            if (field === 'phone_number') {
-                // Convert Farsi digits to English and keep only digits and +
-                const normalizedValue = value
-                    .replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d))
-                    .replace(/[^0-9+]/g, '');
-
-                // Only allow + at the beginning
-                let cleanValue = normalizedValue;
-                if (cleanValue.includes('+')) {
-                    const firstPlus = cleanValue.indexOf('+');
-                    if (firstPlus === 0) {
-                        cleanValue = '+' + cleanValue.substring(1).replace(/\+/g, '');
-                    } else {
-                        cleanValue = cleanValue.replace(/\+/g, '');
-                    }
-                }
-
-                updated[field] = cleanValue;
-            }
-
-            // Automatically update price when country changes
+            let updated = { ...prev, [field]: value };
             if (field === 'country') {
                 if (value.toLowerCase() === 'iran') {
-                    updated.price_per_hour = '50000'; // Iranian Rials
+                    updated.price_per_hour = '50000';
                 } else {
-                    updated.price_per_hour = '5'; // Euros
+                    updated.price_per_hour = '5';
                 }
             }
-
             return updated;
         });
     };
 
     const validateForm = () => {
-        const { name, country, city, postcode, street, phone_number, power_output, price_per_hour } = formData;
-
-        if (!name.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.stationName'));
-            return false;
-        }
-        if (!country.trim()) {
-             Alert.alert(t('messages.validationError'), t('messages.countryRequire'));
-             return false;
-        }
-        if (!city.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.cityRequire'));
-            return false;
-        }
-        if (!postcode.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.postcodeRequire'));
-            return false;
-        }
-        if (!street.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.streetAddressRequire'));
-            return false;
-        }
-        if (!phone_number.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.phoneNumberRequire'));
-            return false;
-        }
-        if (!power_output.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.powerRequire'));
-            return false;
-        }
-        if (!price_per_hour.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.priceRequire'));
-            return false;
-        }
-
-        // Validate phone number format - should be digits only, can start with + or 0
-        const phoneRegex = /^(\+?[0-9]+|[0-9]+)$/;
-        if (!phoneRegex.test(phone_number.replace(/\s/g, ''))) {
-            Alert.alert(t('messages.validationError'), t('messages.validPhone') || 'Please enter a valid phone number (digits only, can start with + or 0)');
-            return false;
-        }
-
-        // Check minimum phone number length (at least 8 digits)
-        const digitsOnly = phone_number.replace(/\+/g, '');
-        if (digitsOnly.length < 8) {
-            Alert.alert(t('messages.validationError'), t('messages.phoneMinLength') || 'Phone number must be at least 8 digits');
-            return false;
-        }
-
-        // Validate power output is a number
+        const { name, country, city, postcode, street, power_output, price_per_hour } = formData;
+        const fullPhone = `${selectedCountry?.value || ''}${phoneLocalNumber}`;
+        if (!name.trim()) { Alert.alert(t('messages.validationError'), t('messages.stationName')); return false; }
+        if (!country.trim()) { Alert.alert(t('messages.validationError'), t('messages.countryRequire')); return false; }
+        if (!city.trim()) { Alert.alert(t('messages.validationError'), t('messages.cityRequire')); return false; }
+        if (!postcode.trim()) { Alert.alert(t('messages.validationError'), t('messages.postcodeRequire')); return false; }
+        if (!street.trim()) { Alert.alert(t('messages.validationError'), t('messages.streetAddressRequire')); return false; }
+        if (!phoneLocalNumber.trim()) { Alert.alert(t('messages.validationError'), t('messages.phoneNumberRequire')); return false; }
+        if (!power_output.trim()) { Alert.alert(t('messages.validationError'), t('messages.powerRequire')); return false; }
+        if (!price_per_hour.trim()) { Alert.alert(t('messages.validationError'), t('messages.priceRequire')); return false; }
+        const phoneRegex = /^\+[0-9]{1,4}[0-9]{6,}$/; // basic intl pattern
+        if(!phoneRegex.test(fullPhone)) { Alert.alert(t('messages.validationError'), t('messages.validPhone')); return false; }
         const englishPower = power_output.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
-        if (isNaN(parseFloat(englishPower))) {
-            Alert.alert(t('messages.validationError'), t('messages.validPower'));
-            return false;
-        }
-
-        // Validate price is a number
+        if (isNaN(parseFloat(englishPower))) { Alert.alert(t('messages.validationError'), t('messages.validPower')); return false; }
         const englishPrice = price_per_hour.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
-        if (isNaN(parseFloat(englishPrice))) {
-            Alert.alert(t('messages.validationError'), t('messages.validPrice'));
-            return false;
-        }
-
-        return true;
-    };
+        if (isNaN(parseFloat(englishPrice))) { Alert.alert(t('messages.validationError'), t('messages.validPrice')); return false; }
+        return true; };
 
 
 
@@ -251,49 +212,46 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                         />
                     </View>
 
-                    <View style={styles.inputContainer}>
-
-                           <View style={styles.container}>
-                                                        <TouchableOpacity
-                                                           style={styles.pickerButton}
-                                                           onPress={() => setModalVisible(true)}>
-                                                       <Text style={styles.codeText}>{selectedCode}</Text>
-                                                         </TouchableOpacity>
-
-                                                     <Modal
-                                                       visible={modalVisible}
-                                                       transparent
-                                                       animationType="slide"        onRequestClose={() => setModalVisible(false)}>
-                                                       <View style={styles.modalBackground}>
-                                                         <View style={styles.modalBox}>
-                                                           <FlatList
-                                                             data={countries}
-                                                             keyExtractor={(item) => item.value}
-                                                             renderItem={({ item }) => (
-                                                               <TouchableOpacity
-                                                                 style={styles.item}
-                                                                 onPress={() => {
-                                                                   setSelectedCode(item.value);
-                                                                   setModalVisible(false);
-                                                                 }}>
-                                                                 <Text>{item.label} ({item.value})</Text>
-                                                               </TouchableOpacity>
-                                                             )}
-                                                           />
-
-                                                         </View>
-                                                       </View>
-                                                     </Modal>
-                                                   </View>
+                    <View style={[styles.inputContainer, showCountryDropdown && styles.phoneContainerRaised]}>
                         <MaterialIcons name="phone" size={20} color="#4285F4" style={styles.inputIcon} />
-                        <FarsiTextInput
-                            style={styles.input}
-                            placeholder={t('messages.phoneNum')}
-                            value={formData.phone_number}
-                            onChangeText={(value) => handleInputChange('phone_number', value)}
-                            keyboardType="phone-pad"
-                            placeholderTextColor="#999"
-                        />
+                        <View style={styles.phoneRow}>
+                          <TouchableOpacity style={styles.dialCodeBtn} onPress={()=>setShowCountryDropdown(s=>!s)} activeOpacity={0.7}>
+                            <FarsiText style={styles.dialCodeText}>{selectedCountry?.value}</FarsiText>
+                            <FarsiText style={styles.flagText}>{currentFlag || '🏳️'}</FarsiText>
+                            <MaterialIcons name={showCountryDropdown? 'arrow-drop-up':'arrow-drop-down'} size={20} color="#555" />
+                          </TouchableOpacity>
+                          <FarsiTextInput
+                              style={[styles.input, styles.phoneInput]}
+                              placeholder={t('messages.phoneNum')}
+                              value={phoneLocalNumber}
+                              onChangeText={(v)=>setPhoneLocalNumber(normalizeLocalDigits(v))}
+                              keyboardType="phone-pad"
+                              placeholderTextColor="#999"
+                          />
+                          {showCountryDropdown && (
+                            <>
+                              <TouchableOpacity style={styles.fullscreenBackdrop} activeOpacity={1} onPress={()=>setShowCountryDropdown(false)} />
+                              <View style={styles.countryDropdown}>
+                                <ScrollView style={{maxHeight:300}}>
+                                  {countries.map(item => (
+                                      <TouchableOpacity
+                                        key={item.value}
+                                        style={styles.countryItem}
+                                        onPress={()=>{ setSelectedCountry(item); setSelectedCode(item.value); setShowCountryDropdown(false); }}
+                                      >
+                                        <FarsiText style={styles.countryFlag}>{item.flag || '🏳️'}</FarsiText>
+                                        <View style={{flex:1}}>
+                                          <FarsiText style={styles.countryName}>{item.pureLabel}</FarsiText>
+                                          <FarsiText style={styles.countryDial}>{item.value}</FarsiText>
+                                        </View>
+                                        {item.value === selectedCountry?.value && <MaterialIcons name="check" size={18} color="#34A853" />}
+                                      </TouchableOpacity>
+                                  ))}
+                                </ScrollView>
+                              </View>
+                            </>
+                          )}
+                        </View>
                     </View>
 
                     <View style={styles.sectionHeader}>
@@ -342,6 +300,25 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
                             onValueChange={(value) => handleInputChange('fast_charging', value)}
                             trackColor={{ false: '#ccc', true: '#4285F4' }}
                             thumbColor={formData.fast_charging ? '#fff' : '#f4f3f4'}
+                        />
+                    </View>
+
+                    {/* Accommodation Switch */}
+                    <View style={styles.switchContainer}>
+                        <View style={styles.switchInfo}>
+                            <MaterialIcons name="hotel" size={24} color="#4285F4" />
+                            <View style={styles.switchTextContainer}>
+                                <FarsiText style={styles.switchLabel}>{t('messages.hasAccommodation')}</FarsiText>
+                                <FarsiText style={styles.switchDescription}>
+                                    {t('messages.enableAccommodation')}
+                                </FarsiText>
+                            </View>
+                        </View>
+                        <Switch
+                            value={formData.has_accommodation}
+                            onValueChange={(value) => handleInputChange('has_accommodation', value)}
+                            trackColor={{ false: '#ccc', true: '#4285F4' }}
+                            thumbColor={formData.has_accommodation ? '#fff' : '#f4f3f4'}
                         />
                     </View>
 
@@ -469,6 +446,7 @@ const styles = StyleSheet.create({
         shadowOffset: { width: 0, height: 1 },
         shadowOpacity: 0.1,
         shadowRadius: 4,
+        overflow: 'visible',
     },
     inputRow: {
         flexDirection: 'row',
@@ -601,33 +579,16 @@ const styles = StyleSheet.create({
         flex: 1,
         lineHeight: 16,
     },
-    pickerButton: {
-            padding: 10,
-            borderWidth: 1,
-            borderRadius: 5,
-            borderColor: '#bbb',
-            backgroundColor: '#f8f8f8',
-            alignItems: 'center',
-            width: 100,
-          },
-          codeText: { fontSize: 16 },
-          modalBackground: {
-            flex: 1,
-            backgroundColor: '#00000099',
-            justifyContent: 'center',
-            alignItems: 'center'
-          },
-          modalBox: {
-            backgroundColor: '#fff',
-            padding: 25,
-            borderRadius: 8,
-            width: 250
-          },
-          item: {
-            padding: 12
-          },
-          closeBtn: {
-            marginTop: 10,
-            alignSelf: 'center'
-          }
+    phoneRow:{ flex:1, flexDirection:'row', alignItems:'center', paddingVertical:8, position:'relative', zIndex:1000 },
+    countryDropdown:{ position:'absolute', top:'100%', left:0, marginTop:6, backgroundColor:'#fff', borderRadius:10, paddingHorizontal:10, paddingVertical:6, elevation:20, shadowColor:'#000', shadowOffset:{width:0,height:4}, shadowOpacity:0.3, shadowRadius:8, width:250, zIndex:2000, borderWidth:1, borderColor:'#e0e0e0' },
+    fullscreenBackdrop:{ position:'absolute', top:-3000, left:-3000, width:6000, height:6000, backgroundColor:'transparent', zIndex:1500 },
+    dialCodeBtn:{ flexDirection:'row', alignItems:'center', backgroundColor:'#f0f4ff', paddingHorizontal:10, paddingVertical:8, borderRadius:8, marginRight:8 },
+    dialCodeText:{ fontSize:14, fontWeight:'600', color:'#333', marginRight:4 },
+    flagText:{ fontSize:20, marginRight:4 },
+    phoneInput:{ paddingVertical:8 },
+    countryItem:{ flexDirection:'row', alignItems:'center', paddingVertical:10, borderBottomWidth:1, borderBottomColor:'#eee' },
+    countryFlag:{ fontSize:22, marginRight:10 },
+    countryName:{ fontSize:14, fontWeight:'600', color:'#333' },
+    countryDial:{ fontSize:12, color:'#666' },
+    phoneContainerRaised:{ zIndex:4000, elevation:40 }
 });

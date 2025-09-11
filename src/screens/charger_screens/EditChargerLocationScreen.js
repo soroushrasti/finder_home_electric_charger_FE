@@ -34,6 +34,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
     const [price_per_hour, setPricePerHour] = useState(location?.price_per_hour?.toString() || '');
     const [description, setDescription] = useState(location?.description || '');
     const [fast_charging, setFastCharging] = useState(location?.fast_charging || false);
+    const [has_accommodation, setHasAccommodation] = useState(location?.has_accommodation || false); // NEW
     const [selectedCoords, setSelectedCoords] = useState({
         latitude: location?.latitude || 35.6892,
         longitude: location?.longitude || 51.389,
@@ -55,6 +56,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         price_per_hour: location?.price_per_hour?.toString() || '',
         description: location?.description || '',
         fast_charging: location?.fast_charging || false,
+        has_accommodation: location?.has_accommodation || false, // NEW
         latitude: location?.latitude || 35.6892,
         longitude: location?.longitude || 51.389,
         charging_location_id: location?.charging_location_id?.toString(),
@@ -75,6 +77,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
             price_per_hour,
             description,
             fast_charging,
+            has_accommodation, // NEW
             latitude: selectedCoords.latitude,
             longitude: selectedCoords.longitude,
             charging_location_id,
@@ -82,7 +85,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         });
     }, [
         name, city, country, postcode, street, alley, phone_number,
-        power_output, price_per_hour, description, fast_charging,
+        power_output, price_per_hour, description, fast_charging, has_accommodation,
         selectedCoords.latitude, selectedCoords.longitude, charging_location_id, user_id
     ]);
 
@@ -197,7 +200,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         }
 
         // Validate power output is a number
-        const englishPower = power_output.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
+        const englishPower = power_output.replace(/[۱-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
         if (isNaN(parseFloat(englishPower))) {
             Alert.alert(t('messages.validationError'), t('messages.validPower'));
             return false;
@@ -399,6 +402,25 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                             onValueChange={setFastCharging}
                             trackColor={{ false: '#ccc', true: '#4285F4' }}
                             thumbColor={fast_charging ? '#fff' : '#f4f3f4'}
+                        />
+                    </View>
+
+                    {/* Accommodation Switch */}
+                    <View style={styles.switchContainer}>
+                        <View style={styles.switchInfo}>
+                            <MaterialIcons name="hotel" size={24} color="#4285F4" />
+                            <View style={styles.switchTextContainer}>
+                                <FarsiText style={styles.switchLabel}>{t('messages.hasAccommodation')}</FarsiText>
+                                <FarsiText style={styles.switchDescription}>
+                                    {t('messages.enableAccommodation')}
+                                </FarsiText>
+                            </View>
+                        </View>
+                        <Switch
+                            value={has_accommodation}
+                            onValueChange={setHasAccommodation}
+                            trackColor={{ false: '#ccc', true: '#4285F4' }}
+                            thumbColor={has_accommodation ? '#fff' : '#f4f3f4'}
                         />
                     </View>
 

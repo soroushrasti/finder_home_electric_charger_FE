@@ -31,7 +31,7 @@ export default function FinalizeAddLocation({ route, navigation }) {
         try {
             let url = '';
             let method = 'POST';
-            let requestBody = { ...formData, latitude: selectedLocation.latitude, longitude: selectedLocation.longitude };
+            let requestBody = { ...formData, latitude: selectedLocation.latitude, longitude: selectedLocation.longitude, has_accommodation: formData.has_accommodation };
             if (formData.charging_location_id) {
                 url = `${env.apiUrl}/update-charging-location/${formData.charging_location_id}`;
             } else if (route.params?.isFindLocation) {
@@ -73,6 +73,8 @@ export default function FinalizeAddLocation({ route, navigation }) {
                     formData={formData}
                     onLocationSelected={handleLocationSelected}
                     enableTapToSelect={true}
+                    hideTypeToggle={true}
+                    showLegend={false}
                 />
             </View>
             <View style={styles.footer}>

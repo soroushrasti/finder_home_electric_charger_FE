@@ -462,6 +462,42 @@
     "tapToSelectLocation": "Tap to select location on map",
     "toBeConfirmed": "Click Here to Confirm Your Selection",
     "isConfirmed": "Location Selection is Confirmed",
-    "setCountry": "Enter counrty name"
+    "setCountry": "Enter counrty name",
+    "hasAccommodation": "Accommodation Available",
+    "enableAccommodation": "Toggle if guests can stay or rest while charging",
+    "nearby": "Nearby",
+    "more": "More",
+    "loadMore": "Load more nearby",
+    "proceedWithSelectedLocation": "Proceed with selected location"
+  },
+  "map": {
+    "loadingLocations": "Loading charging locations...",
+    "showAll": "Show All",
+    "showPublicOnly": "Public Only",
+    "showUserOnly": "Private Only",
+    "public": "Public",
+    "private": "Private",
+    "showClustered": "Clustered",
+    "showIndividual": "Individual",
+    "filterAccommodation": "Accommodation Only",
+    "accommodation": "Accommodation"
+  },
+  "chargingFinder": {
+    "title": "Find Charging Stations",
+    "subtitle": "Discover nearby charging locations",
+    "findChargingStations": "Find Charging Stations",
+    "enterCity": "Enter city *",
+    "enterCountry": "Enter country *",
+    "specificAddress": "Specific address (optional)",
+    "searchRadius": "Search radius",
+    "searching": "Searching...",
+    "searchLocations": "Search Locations",
+    "newSearch": "New Search",
+    "availableStations": "Available Stations",
+    "howItWorks": "How it works",
+    "howItWorksDescription": "Enter your location details and we'll show you all available charging stations in your area, including both public charging stations and private user-shared locations.",
+    "publicStations": "Public charging stations",
+    "privateLocations": "Private user locations",
+    "fastCharging": "Fast charging available"
   }
 }

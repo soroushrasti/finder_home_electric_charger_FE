@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import {
     View,
     Text,
@@ -14,8 +14,7 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import MapScreen from '../../components/MapScreen';
 import env from "../../config/env";
-
-import Icon from 'react-native-vector-icons/FontAwesome';
+import chargingLocationService from '../../services/chargingLocationService';
 
 export default function ChargerLocationListScreenWithoutCar({ navigation, route }) {
     const { t } = useTranslation();
@@ -23,12 +22,20 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     const { user, searchResults, searchCriteria } = route.params;
     const [chargingLocations, setChargingLocations] = useState([]);
     const [loading, setLoading] = useState(true);
-
-    // --- New State ---
-    const [mapRegion, setMapRegion] = useState(null);
-    const [mapMarkers, setMapMarkers] = useState([]);
     const [selectedLocation, setSelectedLocation] = useState(null);
-    const [isMapInteracting, setIsMapInteracting] = useState(false);
+    const [selectedLocationId, setSelectedLocationId] = useState(null);
+    // NEW state for primary + dynamic map management
+    const [primaryLocations, setPrimaryLocations] = useState([]); // user's own primary location(s)
+    const [extraNearby, setExtraNearby] = useState([]);           // fetched after big zoom out (user locations)
+    const [showingBase, setShowingBase] = useState(true);         // if base chargingLocations list visible in map
+    const [mapLocations, setMapLocations] = useState([]);         // what we pass to MapScreen
+    const [mapRegion, setMapRegion] = useState(null);             // region emitted from map
+    const [hasLoadedPrimary, setHasLoadedPrimary] = useState(false);
+    const [hasLoadedExtraNearby, setHasLoadedExtraNearby] = useState(false);
+    const [hasLoadedExtendedNearby, setHasLoadedExtendedNearby] = useState(false); // second manual load
+    // Debounce timer
+    const regionDebounceRef = useRef(null);
+    const pendingRegionRef = useRef(null);
 
     useEffect(() => {
         if (searchResults) {
@@ -56,14 +63,6 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
         } finally {
             setLoading(false);
         }
-    };
-
-    const handleLocationSelect = (location) => {
-        // Navigate to CarSelectionScreen with the selected charging location
-        navigation.navigate('CarSelectionScreen', {
-            user,
-            chargingLocation: location
-        });
     };
 
     // --- Helper: Get fallback region from searchCriteria ---
@@ -95,13 +94,15 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             // Delta for zoom
             const latDelta = Math.max(0.05, (maxLat - minLat) * 1.5);
             const lngDelta = Math.max(0.05, (maxLng - minLng) * 1.5);
-            setMapMarkers(searchResults.map(loc => ({
-                latitude: loc.latitude,
-                longitude: loc.longitude,
-                title: loc.name,
-                description: `${loc.city}, ${loc.country}`,
-                id: loc.charging_location_id
-            })));
+            setMapLocations(searchResults.map(loc => ({
+                id: loc.charging_location_id || loc.id,
+                type: 'public',
+                title: loc.name || loc.street_address || `Station ${loc.charging_location_id || loc.id}`,
+                subtitle: `${loc.city || ''}${loc.country ? ', ' + loc.country : ''}`,
+                address: loc.street_address || loc.address,
+                latitude: parseFloat(loc.latitude),
+                longitude: parseFloat(loc.longitude)
+            })).filter(l => !isNaN(l.latitude) && !isNaN(l.longitude)));
             setMapRegion({
                 latitude: centerLat,
                 longitude: centerLng,
@@ -116,64 +117,230 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                 latitudeDelta: 0.05,
                 longitudeDelta: 0.05,
             });
-            setMapMarkers([]);
+            setMapLocations([]);
         }
     }, [searchResults, searchCriteria]);
 
-    // --- Map Interactivity: Find Nearby Locations ---
-    const handleRegionChangeComplete = async (region) => {
-        if (isMapInteracting) return;
-        setIsMapInteracting(true);
-        try {
-            const response = await fetch(`${env.apiUrl}/find-nearby-locations`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-API-Token': `${env.apiToken} `,
-                },
-                body: JSON.stringify({ latitude: region.latitude, longitude: region.longitude })
-            });
-            const data = await response.json();
-            if (response.ok && Array.isArray(data)) {
-                setMapMarkers(data.map(loc => ({
-                    latitude: loc.latitude,
-                    longitude: loc.longitude,
-                    title: loc.name,
-                    description: `${loc.city}, ${loc.country}`,
-                    id: loc.charging_location_id
-                })));
+    // --- Fetch Primary User Location ---
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            const primary = await chargingLocationService.getUserPrimaryChargingLocation();
+            if(!mounted) return;
+            if(primary.length > 0){
+                // Mark them as user type explicitly
+                const norm = primary.map(p=>({
+                    id: p.id,
+                    type: 'user',
+                    title: p.title,
+                    subtitle: p.subtitle,
+                    address: p.address,
+                    latitude: p.coordinate.latitude,
+                    longitude: p.coordinate.longitude
+                }));
+                setPrimaryLocations(norm);
+                setMapLocations(norm); // start focused only on primary
+                setHasLoadedPrimary(true);
+                setShowingBase(false); // base list hidden until zoom out or selection
+            } else {
+                // No primary; fall back to base list below once loaded
+                setHasLoadedPrimary(true);
             }
-        } catch (error) {
-            // Optionally show error
-        } finally {
-            setIsMapInteracting(false);
+        })();
+        return () => { mounted = false; };
+    }, []);
+
+    // --- Update Map Locations when Charging Locations or Primary User Location changes ---
+    useEffect(() => {
+        if(!hasLoadedPrimary) return; // wait for primary attempt
+        if(chargingLocations.length > 0 && (showingBase || mapLocations.length === 0)){
+            const base = chargingLocations.map(loc => ({
+                id: loc.charging_location_id || loc.id,
+                type: loc.type || 'public',
+                title: loc.name || loc.street_address || `Station ${loc.charging_location_id || loc.id}`,
+                subtitle: `${loc.city || ''}${loc.country ? ', ' + loc.country : ''}`,
+                address: loc.street_address || loc.address,
+                latitude: parseFloat(loc.latitude),
+                longitude: parseFloat(loc.longitude)
+            })).filter(l=>!isNaN(l.latitude)&&!isNaN(l.longitude));
+            if(primaryLocations.length > 0 && !showingBase){
+                // Keep only primary until user action
+            } else {
+                setMapLocations(base);
+                setShowingBase(true);
+            }
         }
-    };
+    }, [chargingLocations, hasLoadedPrimary]);
 
-    // --- Marker Selection ---
-    const handleMarkerPress = (marker) => {
-        setSelectedLocation({
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-            title: location.name,
-            description: `${location.city}, ${location.street}`,
-            id: location.charging_location_id
-        });
-    };
+    // --- Compose Full List when Extra Nearby Locations are Added ---
+    useEffect(() => {
+        if(!showingBase && primaryLocations.length>0 && extraNearby.length===0) return; // still primary only
+        if(showingBase || extraNearby.length>0){
+            const base = showingBase ? mapLocations.filter(m=>m.type!=='extra') : primaryLocations;
+            const combined = [...base, ...extraNearby];
+            // de-dupe by id
+            const seen = new Set();
+            const final = [];
+            combined.forEach(l=>{ if(!seen.has(l.id)){ seen.add(l.id); final.push(l);} });
+            setMapLocations(final);
+        }
+    }, [extraNearby, showingBase]);
 
-    // --- Proceed Button ---
-    const handleProceed = () => {
-        if (selectedLocation) {
-            navigation.navigate('CarSelectionScreen', {
-                user,
-                chargingLocation: selectedLocation
+    // --- Ensure Base List is Visible ---
+    const ensureBaseVisible = () => {
+        if(!showingBase){
+            const base = chargingLocations.map(loc => ({
+                id: loc.charging_location_id || loc.id,
+                type: loc.type || 'public',
+                title: loc.name || loc.street_address || `Station ${loc.charging_location_id || loc.id}`,
+                subtitle: `${loc.city || ''}${loc.country ? ', ' + loc.country : ''}`,
+                address: loc.street_address || loc.address,
+                latitude: parseFloat(loc.latitude),
+                longitude: parseFloat(loc.longitude)
+            })).filter(l=>!isNaN(l.latitude)&&!isNaN(l.longitude));
+            setMapLocations(prev => {
+                const ids = new Set(prev.map(p=>p.id));
+                const merged = [...prev];
+                base.forEach(b=>{if(!ids.has(b.id)) merged.push(b);});
+                return merged;
             });
+            setShowingBase(true);
         }
     };
 
+    // --- Handle Map Data Update ---
+    const handleMapDataUpdate = ({ region }) => {
+        if(!region) return;
+        pendingRegionRef.current = region;
+        if(regionDebounceRef.current) clearTimeout(regionDebounceRef.current);
+        regionDebounceRef.current = setTimeout(() => {
+            const r = pendingRegionRef.current;
+            if(!r) return;
+            setMapRegion(r);
+            if(!showingBase && r.latitudeDelta > 0.05){
+                ensureBaseVisible();
+            }
+            if(showingBase && !hasLoadedExtraNearby && r.latitudeDelta > 0.25){
+                (async () => {
+                    try {
+                        const nearby = await chargingLocationService.findNearbyUserLocations(r.latitude, r.longitude, 15);
+                        const norm = nearby.map(n => ({
+                            id: n.id,
+                            type: 'user',
+                            title: n.title || n.name,
+                            subtitle: n.subtitle,
+                            address: n.address,
+                            latitude: n.coordinate.latitude,
+                            longitude: n.coordinate.longitude,
+                            _extra: true
+                        }));
+                        setExtraNearby(norm);
+                        setHasLoadedExtraNearby(true);
+                    } catch(e) {/* ignore */}
+                })();
+            }
+        }, 400);
+    };
+
+    // --- Load Extended Nearby Locations Manually ---
+    const loadExtendedNearby = async () => {
+        if(hasLoadedExtendedNearby || !mapRegion) return;
+        try {
+            const more = await chargingLocationService.findNearbyUserLocations(mapRegion.latitude, mapRegion.longitude, 30);
+            const norm = more.map(n => ({
+                id: n.id,
+                type: 'user',
+                title: n.title || n.name,
+                subtitle: n.subtitle,
+                address: n.address,
+                latitude: n.coordinate.latitude,
+                longitude: n.coordinate.longitude,
+                _extra: true,
+                _extra2: true
+            }));
+            setExtraNearby(prev => {
+                const ids = new Set(prev.map(p=>p.id));
+                return [...prev, ...norm.filter(n=>!ids.has(n.id))];
+            });
+            setHasLoadedExtendedNearby(true);
+        } catch(e){ /* ignore */ }
+    };
+
+    // --- Render Location Card ---
+    const renderLocationCard = (location) => {
+        const isSelected = selectedLocationId === location.charging_location_id || selectedLocationId === location.id || location._isSelected;
+        const isAvailable = location.is_available !== false; // treat undefined as available
+        const type = location.type || 'public';
+        const borderLeftColor = type === 'user' ? '#2196f3' : '#e53935';
+        return (
+            <TouchableOpacity
+                key={location.charging_location_id || location.id}
+                style={[styles.locationCard, {borderLeftWidth:6, borderLeftColor}, !isAvailable && styles.unavailableCard, isSelected && styles.selectedCard]}
+                activeOpacity={0.85}
+                onPress={() => {
+                    if (isAvailable) {
+                        ensureBaseVisible();
+                        setSelectedLocationId(location.charging_location_id || location.id);
+                        setSelectedLocation({
+                            latitude: parseFloat(location.latitude),
+                            longitude: parseFloat(location.longitude),
+                            title: location.name || location.title,
+                            description: `${location.city || ''}${location.street ? ', '+location.street:''}`,
+                            id: location.charging_location_id || location.id
+                        });
+                    }
+                }}
+            >
+                <View style={styles.cardHeader}>
+                    <View style={styles.locationInfo}>
+                        <Text style={styles.locationTitle}>{location.name || location.title || `#${location.charging_location_id || location.id}`}</Text>
+                        {location.street_address || location.address ? (
+                            <Text style={styles.locationAddress}>{location.street_address || location.address}</Text>
+                        ) : null}
+                        {(location.city || location.country) && (
+                            <Text style={styles.locationPostcode}>{location.city}{location.country? ', '+location.country:''}</Text>
+                        )}
+                        {(location._extra || location._extra2) && (
+                          <View style={styles.badgeRow}>
+                            <Text style={[styles.nearBadge, location._extra2 && styles.moreBadge]}>{location._extra2 ? (t('messages.more') || 'MORE') : (t('messages.nearby') || 'NEARBY')}</Text>
+                          </View>
+                        )}
+                    </View>
+                    <View style={[styles.statusBadge, { backgroundColor: isAvailable ? '#4CAF50' : '#f44336' }]}>
+                        <Text style={styles.statusText}>{isAvailable ? t('messages.avail') : t('messages.occupied')}</Text>
+                    </View>
+                </View>
+                <View style={styles.cardDetails}>
+                    <View style={styles.detailRow}>
+                        <MaterialIcons name="electric-bolt" size={18} color="#667eea" />
+                        <Text style={styles.detailText}>{(location.power_output||location.powerKw||'N/A') + ' kW'}</Text>
+                    </View>
+                    {location.description && (
+                        <View style={styles.descriptionContainer}>
+                            <Text style={styles.descriptionText}>{location.description}</Text>
+                        </View>
+                    )}
+                </View>
+                <View style={styles.cardFooter}>
+                    <Text style={isAvailable ? styles.selectText : styles.unavailableText}>
+                        {isAvailable ? t('messages.selectStation') : t('messages.unavailable')}
+                    </Text>
+                    <MaterialIcons name="chevron-right" size={20} color="#999" />
+                </View>
+            </TouchableOpacity>
+        );
+    };
+
+    // --- Adjust focusLocation with new mapLocations ---
+    const focusLocation = useMemo(() => {
+        if(!selectedLocationId) return null;
+        const found = mapLocations.find(l => l.id === selectedLocationId);
+        return found ? { latitude: found.latitude, longitude: found.longitude } : null;
+    }, [selectedLocationId, mapLocations]);
+
+    // Reintroduce helper to render search criteria summary
     const renderSearchCriteria = () => {
         if (!searchCriteria) return null;
-
         return (
             <View style={styles.searchCriteriaContainer}>
                 <FarsiText style={styles.searchCriteriaTitle}>{t('messages.searchResult')}</FarsiText>
@@ -192,126 +359,19 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
         );
     };
 
-    const renderLocationCard = (location) => {
-        const isAvailable = location.is_available === true;
-        const pricePerHour = location.price_per_hour || 'N/A';
-        const reviewAverage = location.review_average;
-        const reviewNumber = location.review_number;
-        const filledStars = Math.floor(reviewAverage);
-        const hasHalfStar = reviewAverage - filledStars >= 0.5;
-
-        const isSelected = selectedLocation && selectedLocation.id === location.charging_location_id;
-        return (
-            <TouchableOpacity
-                key={location.charging_location_id}
-                style={[styles.locationCard, !isAvailable && styles.unavailableCard, isSelected && styles.selectedCard]}
-                onPress={() => {
-                    if (isAvailable) {
-                        setSelectedLocation({
-                            latitude: location.latitude,
-                            longitude: location.longitude,
-                            title: location.name,
-                            description: `${location.city}, ${location.street}`,
-                            id: location.charging_location_id
-                        });
-                    }
-                }}
-                activeOpacity={isAvailable ? 0.8 : 1}
-                disabled={!isAvailable}
-            >
-                <View style={styles.cardHeader}>
-                    <View style={styles.locationInfo}>
-                        <FarsiText style={styles.locationTitle}>
-                            {location.street_address || t('messages.chargingStation')}
-                        </FarsiText>
-                        <FarsiText style={styles.locationAddress}>
-                            {location.city}, {location.street || t('messages.unknown')}
-                        </FarsiText>
-                        {location.postcode && (
-                            <Text style={styles.locationPostcode}>
-                                Postcode: {location.postcode}
-                            </Text>
-                        )}
-                    </View>
-                    <View style={[
-                        styles.statusBadge,
-                        { backgroundColor: isAvailable ? '#4CAF50' : '#f44336' }
-                    ]}>
-                        <FarsiText style={styles.statusText}>
-                            {isAvailable ? t('messages.avail') : t('messages.occupied')}
-                        </FarsiText>
-                    </View>
-                </View>
-
-                <View style={styles.cardDetails}>
-                    <View style={styles.detailRow}>
-                        <MaterialIcons name="flash-on" size={20} color="#FF6B35" />
-                        <FarsiText style={styles.detailText}>
-                            {location.fast_charging ? t('messages.fastCharging') : t('messages.standardCharge')}
-                        </FarsiText>
-                    </View>
-
-                    <View style={styles.detailRow}>
-                        <MaterialIcons name="attach-money" size={20} color="#4CAF50" />
-                        <Text style={styles.detailText}>
-                              {pricePerHour}/hour
-                        </Text>
-                    </View>
-
-
-                     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                        <Text style={{ marginRight: 4, fontSize: 16 }}>{reviewAverage}</Text>
-
-                        {[...Array(5)].map((_, i) => (
-                            <Icon
-                            key={i}
-                            name={
-                                i < filledStars
-                                ? 'star'
-                                : i === filledStars && hasHalfStar
-                                ? 'star-half-full'
-                                : 'star-o'
-                            }
-                            size={20}
-                            color= {'#FFD700'}  />
-                       ))}
-
-                         <Text style={{ marginLeft: 4, fontSize: 16 }}>({reviewNumber})</Text>
-                     </View>
-
-                    {location.phone_number && (
-                        <View style={styles.detailRow}>
-                            <MaterialIcons name="phone" size={20} color="#2196F3" />
-                            <Text style={styles.detailText}>
-                                {location.phone_number}
-                            </Text>
-                        </View>
-                    )}
-
-                    {location.description && (
-                        <View style={styles.descriptionContainer}>
-                            <Text style={styles.descriptionText}>
-                                {location.description}
-                            </Text>
-                        </View>
-                    )}
-                </View>
-
-                {isAvailable && (
-                    <View style={styles.cardFooter}>
-                        <FarsiText style={styles.selectText}>{t('messages.selectLoc')}</FarsiText>
-                        <MaterialIcons name="arrow-forward" size={20} color="#4CAF50" />
-                    </View>
-                )}
-
-                {!isAvailable && (
-                    <View style={styles.cardFooter}>
-                        <FarsiText style={styles.unavailableText}>{t('messages.unavailable')}</FarsiText>
-                        <MaterialIcons name="block" size={20} color="#f44336" />
-                    </View>
-                )}
-            </TouchableOpacity>
-        );
+    // Provide missing proceed handler
+    const handleProceed = () => {
+        if (!selectedLocation) return;
+        navigation.navigate('CarSelectionScreen', {
+            user,
+            chargingLocation: {
+                id: selectedLocation.id,
+                latitude: selectedLocation.latitude,
+                longitude: selectedLocation.longitude,
+                name: selectedLocation.title,
+                address: selectedLocation.description
+            }
+        });
     };
 
     if (loading) {
@@ -325,13 +385,17 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
     return (
         <View style={styles.container}>
-            {/* MapScreen above the list */}
+            {/* Map showing all charging locations */}
             <View style={{ height: 300 }}>
                 <MapScreen
-                    region={mapRegion}
-                    markers={mapMarkers.map(m => ({ ...m, selected: selectedLocation?.id === m.id }))}
-                    onRegionChangeComplete={handleRegionChangeComplete}
-                    onLocationSelected={handleMarkerPress}
+                    chargingLocations={mapLocations}
+                    externalSelectedLocationId={selectedLocationId}
+                    focusLocation={focusLocation}
+                    disableAutoFetch={true}
+                    hideTypeToggle={true}
+                    showLegend={true}
+                    persistRegionKey="noCarListMap"
+                    onMapDataUpdate={handleMapDataUpdate}
                 />
             </View>
             <LinearGradient
@@ -374,11 +438,19 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                             </TouchableOpacity>
                         </View>
                     ) : (
-                        chargingLocations.map(renderLocationCard)
+                        chargingLocations.map(loc => {
+                            const isSelected = selectedLocationId === (loc.charging_location_id || loc.id);
+                            return renderLocationCard({ ...loc, _isSelected: isSelected });
+                        })
                     )}
                 </View>
 
-                {/* Proceed Button */}
+                {/* Proceed Button & Manual Nearby Button */}
+                {hasLoadedExtraNearby && !hasLoadedExtendedNearby && (
+                  <TouchableOpacity style={styles.loadMoreBtn} onPress={loadExtendedNearby}>
+                    <Text style={styles.loadMoreText}>{t('messages.loadMore') || 'Load more nearby'}</Text>
+                  </TouchableOpacity>
+                )}
                 {selectedLocation && (
                     <TouchableOpacity style={{margin: 16, padding: 16, backgroundColor: '#4CAF50', borderRadius: 8}} onPress={handleProceed}>
                         <FarsiText style={{color: '#fff', fontWeight: 'bold', textAlign: 'center'}}>{t('messages.proceedWithSelectedLocation')}</FarsiText>
@@ -602,4 +674,9 @@ const styles = StyleSheet.create({
         fontSize: 16,
         fontWeight: 'bold',
     },
+    loadMoreBtn:{ marginHorizontal:16, marginTop:12, backgroundColor:'#667eea', paddingVertical:12, borderRadius:8, alignItems:'center' },
+    loadMoreText:{ color:'#fff', fontWeight:'600' },
+    badgeRow:{ marginTop:6, flexDirection:'row', flexWrap:'wrap' },
+    nearBadge:{ backgroundColor:'#2196f3', color:'#fff', fontSize:10, paddingHorizontal:6, paddingVertical:2, borderRadius:10, overflow:'hidden', marginRight:6 },
+    moreBadge:{ backgroundColor:'#ff9800' },
 });

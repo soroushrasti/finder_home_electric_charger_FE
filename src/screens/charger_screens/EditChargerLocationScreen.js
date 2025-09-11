@@ -90,19 +90,27 @@ export default function EditChargingLocationScreen({ navigation, route }) {
     ]);
 
     const [loading, setLoading] = useState(false);
+    const onLocationUpdated = route.params?.onLocationUpdated;
     const handleNext = async () => {
+      if(!validateForm()) return;
       setLoading(true);
+      const updatedPayload = { ...formData, latitude: selectedCoords.latitude, longitude: selectedCoords.longitude };
          try {
-             const response = await fetch(`${env.apiUrl}/update-charging-location/${formData.charging_location_id}`, {
+             const response = await fetch(`${env.apiUrl}/update-charging-location/${updatedPayload.charging_location_id}`, {
                  method: 'POST',
                  headers: {
                   'Content-Type': 'application/json',
                   'X-API-Token': `${env.apiToken} `,
                  },
-                 body: JSON.stringify(formData),
+                 body: JSON.stringify(updatedPayload),
              });
              if (response.ok) {
-                   navigation.navigate('HomeOwnerScreen', { user: { user_id: formData.user_id } });
+                   if(onLocationUpdated) {
+                      try { onLocationUpdated(updatedPayload); } catch(e) { /* ignore callback errors */ }
+                   }
+                   // Update local route params so coming back immediately reflects new coords
+                   navigation.setParams({ location: { ...location, latitude: updatedPayload.latitude, longitude: updatedPayload.longitude } });
+                   navigation.goBack();
                } else {
                           const errorText = await response.text();
                           Alert.alert(t('messages.error'), `Failed: ${response.status} ${errorText}`);
@@ -192,9 +200,10 @@ export default function EditChargingLocationScreen({ navigation, route }) {
             return false;
         }
 
-        // Validate phone number format
-        const phoneRegex = /^[+]?[1-9۱-۹][d۰-۹]{0,15}$/;
-        if (!phoneRegex.test(phone_number.replace(/\s/g, ''))) {
+        // Validate phone number format (normalize to Western digits first)
+        const normalizedPhone = phone_number.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
+        const phoneRegex = /^\+?[0-9]{6,16}$/;
+        if (!phoneRegex.test(normalizedPhone)) {
             Alert.alert(t('messages.validationError'), t('messages.validPhone'));
             return false;
         }
@@ -439,19 +448,23 @@ export default function EditChargingLocationScreen({ navigation, route }) {
 
                     <View style={{ height: 300, marginVertical: 16 }}>
                         <MapScreen
-                            region={{
+                            initialLocation={{
                                 latitude: selectedCoords.latitude,
                                 longitude: selectedCoords.longitude,
                                 latitudeDelta: 0.005,
                                 longitudeDelta: 0.005,
                             }}
-                            markers={[{ latitude: selectedCoords.latitude, longitude: selectedCoords.longitude }]}
                             enableTapToSelect={true}
                             onLocationSelected={(coords) => {
                                 setSelectedCoords(coords);
                                 setLocationConfirmed(false);
+                                // Immediately reflect in route params so if user navigates away/back it's retained
+                                navigation.setParams({ location: { ...location, latitude: coords.latitude, longitude: coords.longitude } });
                             }}
                             formData={formData}
+                            hideTypeToggle={true}
+                            showLegend={false}
+                            disableAutoFetch={true}
                         />
                         {/* Confirm location button hidden as requested */}
                         {/* Tap to select location text hidden as requested */}

@@ -467,7 +467,11 @@
     "nearby": "نزدیک",
     "more": "بیشتر",
     "loadMore": "نمایش مکان‌های بیشتر",
-    "proceedWithSelectedLocation": "ادامه با مکان انتخاب شده"
+    "proceedWithSelectedLocation": "ادامه با مکان انتخاب شده",
+    "delete": "حذف",
+    "deleteConfirm": "آیا از حذف این ایستگاه شارژ مطمئن هستید؟",
+    "areYouSure": "مطمئن هستید؟",
+    "deleting": "در حال حذف..."
   },
   "map": {
     "loadingLocations": "در حال بارگذاری مکان های شارژ...",

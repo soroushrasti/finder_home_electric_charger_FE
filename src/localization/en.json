@@ -468,7 +468,12 @@
     "nearby": "Nearby",
     "more": "More",
     "loadMore": "Load more nearby",
-    "proceedWithSelectedLocation": "Proceed with selected location"
+    "proceedWithSelectedLocation": "Proceed with selected location",
+    "delete": "Delete",
+    "deleteConfirm": "Delete Confirmation",
+    "areYouSure": "Are you sure you want to delete this charging location?",
+    "deleting": "Deleting...",
+    "deleteSuccess": "Location deleted successfully",
   },
   "map": {
     "loadingLocations": "Loading charging locations...",

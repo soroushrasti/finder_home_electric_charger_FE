@@ -6,6 +6,7 @@ import env from '../../config/environment';
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import {useTranslation} from "react-i18next";
+import { useFocusEffect } from '@react-navigation/native';
 
 
 export default function MyChargerLocationsScreen({ navigation, route }) {
@@ -14,15 +15,20 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
     const [locations, setLocations] = useState([]);
     const [loading, setLoading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [deletingId, setDeletingId] = useState(null);
 
     const user = route.params?.user;
 
     useEffect(() => {
         if (user) {
-            console.log(t('messages.fetchLoc'), user.user_id);
             fetchChargerLocations();
         }
     }, [user]);
+
+    // Refresh list whenever screen gains focus (avoids passing callbacks in params)
+    useFocusEffect(React.useCallback(() => {
+        if (user) fetchChargerLocations();
+    }, [user]));
 
     const fetchChargerLocations = async () => {
         try {
@@ -56,6 +62,42 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
     const onRefresh = () => {
         setRefreshing(true);
         fetchChargerLocations();
+    };
+
+    const handleDelete = (loc) => {
+        const id = loc.charging_location_id || loc.id;
+        if(!id) return;
+        Alert.alert(
+          t('messages.confirm') || 'Confirm',
+          t('messages.deleteConfirm') || t('messages.areYouSure') || 'Delete this charging location?',
+          [
+            { text: t('messages.cancel') || 'Cancel', style: 'cancel' },
+            { text: t('messages.delete') || 'Delete', style: 'destructive', onPress: () => performDelete(id) }
+          ]
+        );
+    };
+
+    const performDelete = async (id) => {
+        setDeletingId(id);
+        try {
+            const response = await fetch(`${env.apiUrl}/delete-charging-location/${id}` , {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-API-Token': `${env.apiToken} `,
+              },
+            });
+            if(response.ok){
+              setLocations(prev => prev.filter(l => (l.charging_location_id || l.id) !== id));
+            } else {
+              const txt = await response.text();
+              Alert.alert(t('messages.error'), txt || 'Failed to delete');
+            }
+        } catch(e){
+            Alert.alert(t('messages.error'), e.message);
+        } finally {
+            setDeletingId(null);
+        }
     };
 
     const renderLocation = ({ item }) => (
@@ -100,28 +142,39 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
 
             <View style={styles.locationActions}>
                 <TouchableOpacity
-                        style={styles.actionButton}
-                        onPress={() => navigation.navigate('EditChargerLocationScreen', {
-                            location: {
-                                 charging_location_id: item.charging_location_id,
-                                 post_code: item.post_code,
-                                 alley: item.alley,
-                                 street: item.street,
-                                 city: item.city,
-                                 name: item.name,
-                                 country: item.country,
-                                 phone_number: item.phone_number,
-                                 price_per_hour: item.price_per_hour,
-                                 power_output: item.power_output,
-                                 description: item.description,
-                                 fast_charging : item.fast_charging
-                            }, user: user
-                        })}
+                    style={styles.actionButton}
+                    onPress={() => navigation.navigate('EditChargerLocationScreen', {
+                        location: {
+                             charging_location_id: item.charging_location_id,
+                             post_code: item.post_code,
+                             alley: item.alley,
+                             street: item.street,
+                             city: item.city,
+                             name: item.name,
+                             country: item.country,
+                             phone_number: item.phone_number,
+                             price_per_hour: item.price_per_hour,
+                             power_output: item.power_output,
+                             description: item.description,
+                             fast_charging : item.fast_charging,
+                             latitude: item.latitude,
+                             longitude: item.longitude,
+                        }, user: user
+                    })}
                 >
                     <MaterialIcons name="edit" size={18} color="#667eea" />
                     <FarsiText style={styles.actionText}>{t('messages.edit')}</FarsiText>
                 </TouchableOpacity>
-
+                <TouchableOpacity
+                    style={[styles.actionButton, { backgroundColor: '#ffe8e8' }]}
+                    onPress={() => handleDelete(item)}
+                    disabled={deletingId === (item.charging_location_id || item.id)}
+                >
+                    <MaterialIcons name="delete" size={18} color={deletingId === (item.charging_location_id || item.id) ? '#bbb' : '#e53935'} />
+                    <FarsiText style={[styles.actionText, { color: deletingId === (item.charging_location_id || item.id) ? '#bbb':'#e53935' }]}>
+                        {deletingId === (item.charging_location_id || item.id) ? (t('messages.deleting') || '...') : (t('messages.delete') || 'Delete')}
+                    </FarsiText>
+                </TouchableOpacity>
             </View>
         </View>
     );
@@ -355,6 +408,7 @@ const styles = StyleSheet.create({
         paddingTop: 12,
         borderTopWidth: 1,
         borderTopColor: '#f0f0f0',
+        gap: 8,
     },
     actionButton: {
         flexDirection: 'row',
@@ -363,7 +417,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 12,
         borderRadius: 8,
         backgroundColor: '#f0f4ff',
-        flex: 0.48,
+        flex: 1,
         justifyContent: 'center',
     },
     actionText: {

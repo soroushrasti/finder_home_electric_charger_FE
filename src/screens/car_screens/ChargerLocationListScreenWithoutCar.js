@@ -27,6 +27,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     // NEW state for primary + dynamic map management
     const [primaryLocations, setPrimaryLocations] = useState([]); // user's own primary location(s)
     const [extraNearby, setExtraNearby] = useState([]);           // fetched after big zoom out (user locations)
+    const [publicChargers, setPublicChargers] = useState([]);     // NEW: public chargers fetched by bbox
     const [showingBase, setShowingBase] = useState(true);         // if base chargingLocations list visible in map
     const [mapLocations, setMapLocations] = useState([]);         // what we pass to MapScreen
     const [mapRegion, setMapRegion] = useState(null);             // region emitted from map
@@ -36,6 +37,70 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     // Debounce timer
     const regionDebounceRef = useRef(null);
     const pendingRegionRef = useRef(null);
+    const publicBBoxRef = useRef(null); // {north,south,east,west}
+    const lastPublicFetchTimeRef = useRef(0);
+
+    // Compose mapLocations whenever public/user/nearby sets change
+    useEffect(() => {
+        if(!showingBase && primaryLocations.length){
+            setMapLocations(primaryLocations);
+            return;
+        }
+        // Combine public + base + nearby extras
+        const combined = [...publicChargers, ...chargingLocations, ...extraNearby];
+        const seen = new Set();
+        const final = [];
+        for(const loc of combined){
+            if(!loc) continue;
+            const id = loc.id || loc.charging_location_id;
+            if(!id) continue;
+            if(seen.has(id)) continue;
+            seen.add(id);
+            final.push(loc);
+        }
+        setMapLocations(final);
+    }, [publicChargers, chargingLocations, extraNearby, primaryLocations, showingBase]);
+
+    // Throttled bbox public refetch
+    const maybeRefetchPublic = (r) => {
+        const now = Date.now();
+        if(now - lastPublicFetchTimeRef.current < 1500) return; // throttle 1.5s
+        if(!r || !r.latitudeDelta || !r.longitudeDelta) return;
+        const latSpan = r.latitudeDelta;
+        const lngSpan = r.longitudeDelta;
+        const north = r.latitude + latSpan/2;
+        const south = r.latitude - latSpan/2;
+        const east = r.longitude + lngSpan/2;
+        const west = r.longitude - lngSpan/2;
+        const bbox = publicBBoxRef.current;
+        // Expand criteria: region outside previous bbox or span grows significantly
+        const expanded = !bbox || north > bbox.north || south < bbox.south || east > bbox.east || west < bbox.west || ( (bbox.north - bbox.south) < (latSpan*0.75) );
+        if(!expanded) return;
+        (async () => {
+            try {
+                const fetched = await chargingLocationService.findPublicChargersInBounds(north, south, east, west);
+                if(fetched && fetched.length){
+                    const norm = fetched.map(pc => ({
+                        id: pc.id,
+                        type: 'public',
+                        title: pc.title || pc.name,
+                        subtitle: pc.subtitle,
+                        address: pc.address,
+                        latitude: pc.coordinate?.latitude,
+                        longitude: pc.coordinate?.longitude
+                    })).filter(l => !isNaN(l.latitude) && !isNaN(l.longitude));
+                    setPublicChargers(prev => {
+                        const existing = new Set(prev.map(p=>p.id));
+                        const merged = [...prev];
+                        norm.forEach(n=>{ if(!existing.has(n.id)) merged.push(n); });
+                        return merged;
+                    });
+                    publicBBoxRef.current = { north, south, east, west };
+                    lastPublicFetchTimeRef.current = Date.now();
+                }
+            } catch(e){ console.log('Refetch public bbox failed', e.message); }
+        })();
+    };
 
     useEffect(() => {
         if (searchResults) {
@@ -51,7 +116,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
         try {
             const response = await fetch('http://192.168.1.100:3000/charging-locations');
             const data = await response.json();
-
+            console.log('Fetched charging locations:', data);
             if (response.ok) {
                 setChargingLocations(data);
             } else {
@@ -80,52 +145,86 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
 
     // --- Initial Map Setup ---
     useEffect(() => {
-        if (searchResults && searchResults.length > 0) {
-            // Calculate bounding box for all markers
-            const lats = searchResults.map(loc => loc.latitude);
-            const lngs = searchResults.map(loc => loc.longitude);
-            const minLat = Math.min(...lats);
-            const maxLat = Math.max(...lats);
-            const minLng = Math.min(...lngs);
-            const maxLng = Math.max(...lngs);
-            // Center point
-            const centerLat = (minLat + maxLat) / 2;
-            const centerLng = (minLng + maxLng) / 2;
-            // Delta for zoom
-            const latDelta = Math.max(0.05, (maxLat - minLat) * 1.5);
-            const lngDelta = Math.max(0.05, (maxLng - minLng) * 1.5);
-            setMapLocations(searchResults.map(loc => ({
-                id: loc.charging_location_id || loc.id,
-                type: 'public',
-                title: loc.name || loc.street_address || `Station ${loc.charging_location_id || loc.id}`,
-                subtitle: `${loc.city || ''}${loc.country ? ', ' + loc.country : ''}`,
-                address: loc.street_address || loc.address,
-                latitude: parseFloat(loc.latitude),
-                longitude: parseFloat(loc.longitude)
-            })).filter(l => !isNaN(l.latitude) && !isNaN(l.longitude)));
-            setMapRegion({
-                latitude: centerLat,
-                longitude: centerLng,
-                latitudeDelta: latDelta,
-                longitudeDelta: lngDelta,
-            });
-        } else {
-            const fallback = getFallbackRegion();
-            setMapRegion({
-                latitude: fallback.latitude,
-                longitude: fallback.longitude,
-                latitudeDelta: 0.05,
-                longitudeDelta: 0.05,
-            });
-            setMapLocations([]);
-        }
+        let cancelled = false;
+        const initFromResults = async () => {
+            if (searchResults && searchResults.length > 0) {
+                // Calculate bounding box for all markers
+                const lats = searchResults.map(loc => parseFloat(loc.latitude)).filter(v=>!isNaN(v));
+                const lngs = searchResults.map(loc => parseFloat(loc.longitude)).filter(v=>!isNaN(v));
+                if(lats.length === 0 || lngs.length === 0){
+                    return; // nothing valid
+                }
+                const minLat = Math.min(...lats);
+                const maxLat = Math.max(...lats);
+                const minLng = Math.min(...lngs);
+                const maxLng = Math.max(...lngs);
+                const centerLat = (minLat + maxLat) / 2;
+                const centerLng = (minLng + maxLng) / 2;
+                const latDelta = Math.max(0.05, (maxLat - minLat) * 1.5);
+                const lngDelta = Math.max(0.05, (maxLng - minLng) * 1.5);
+                setMapRegion({ latitude: centerLat, longitude: centerLng, latitudeDelta: latDelta, longitudeDelta: lngDelta });
+                // Attempt initial public chargers fetch using enlarged bbox
+                try {
+                    const publicFetched = await chargingLocationService.findPublicChargersInBounds(maxLat, minLat, maxLng, minLng);
+                    if(cancelled) return;
+                    if(publicFetched && publicFetched.length){
+                        const norm = publicFetched.map(pc => ({
+                            id: pc.id,
+                            type: 'public',
+                            title: pc.title || pc.name,
+                            subtitle: pc.subtitle,
+                            address: pc.address,
+                            latitude: pc.coordinate?.latitude,
+                            longitude: pc.coordinate?.longitude
+                        })).filter(l => !isNaN(l.latitude) && !isNaN(l.longitude));
+                        setPublicChargers(norm);
+                        publicBBoxRef.current = { north:maxLat, south:minLat, east:maxLng, west:minLng };
+                        lastPublicFetchTimeRef.current = Date.now();
+                    } else {
+                        // fallback to searchResults as pseudo-public entries if empty
+                        const pseudo = searchResults.map(loc => ({
+                            id: loc.charging_location_id || loc.id,
+                            type: 'public',
+                            title: loc.name || loc.street_address || `Station ${loc.charging_location_id || loc.id}`,
+                            subtitle: `${loc.city || ''}${loc.country ? ', ' + loc.country : ''}`,
+                            address: loc.street_address || loc.address,
+                            latitude: parseFloat(loc.latitude),
+                            longitude: parseFloat(loc.longitude)
+                        })).filter(l => !isNaN(l.latitude) && !isNaN(l.longitude));
+                        setPublicChargers(pseudo);
+                        publicBBoxRef.current = { north:maxLat, south:minLat, east:maxLng, west:minLng };
+                        lastPublicFetchTimeRef.current = Date.now();
+                    }
+                } catch(fetchErr){
+                    console.log('Public chargers bbox fetch failed, using searchResults pseudo-public:', fetchErr?.message);
+                    const pseudo = searchResults.map(loc => ({
+                        id: loc.charging_location_id || loc.id,
+                        type: 'public',
+                        title: loc.name || loc.street_address || `Station ${loc.charging_location_id || loc.id}`,
+                        subtitle: `${loc.city || ''}${loc.country ? ', ' + loc.country : ''}`,
+                        address: loc.street_address || loc.address,
+                        latitude: parseFloat(loc.latitude),
+                        longitude: parseFloat(loc.longitude)
+                    })).filter(l => !isNaN(l.latitude) && !isNaN(l.longitude));
+                    setPublicChargers(pseudo);
+                    publicBBoxRef.current = { north:maxLat, south:minLat, east:maxLng, west:minLng };
+                    lastPublicFetchTimeRef.current = Date.now();
+                }
+            } else {
+                const fallback = getFallbackRegion();
+                setMapRegion({ latitude: fallback.latitude, longitude: fallback.longitude, latitudeDelta: 0.05, longitudeDelta: 0.05 });
+            }
+        };
+        initFromResults();
+        return () => { cancelled = true; };
     }, [searchResults, searchCriteria]);
 
     // --- Fetch Primary User Location ---
     useEffect(() => {
         let mounted = true;
         (async () => {
-            const primary = await chargingLocationService.getUserPrimaryChargingLocation();
+            const primary = await chargingLocationService.getUserPrimaryChargingLocation(searchCriteria);
+            console.log('Fetched primary user locations:', primary);
             if(!mounted) return;
             if(primary.length > 0){
                 // Mark them as user type explicitly
@@ -189,21 +288,6 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
     // --- Ensure Base List is Visible ---
     const ensureBaseVisible = () => {
         if(!showingBase){
-            const base = chargingLocations.map(loc => ({
-                id: loc.charging_location_id || loc.id,
-                type: loc.type || 'public',
-                title: loc.name || loc.street_address || `Station ${loc.charging_location_id || loc.id}`,
-                subtitle: `${loc.city || ''}${loc.country ? ', ' + loc.country : ''}`,
-                address: loc.street_address || loc.address,
-                latitude: parseFloat(loc.latitude),
-                longitude: parseFloat(loc.longitude)
-            })).filter(l=>!isNaN(l.latitude)&&!isNaN(l.longitude));
-            setMapLocations(prev => {
-                const ids = new Set(prev.map(p=>p.id));
-                const merged = [...prev];
-                base.forEach(b=>{if(!ids.has(b.id)) merged.push(b);});
-                return merged;
-            });
             setShowingBase(true);
         }
     };
@@ -219,6 +303,9 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             setMapRegion(r);
             if(!showingBase && r.latitudeDelta > 0.05){
                 ensureBaseVisible();
+            }
+            if(showingBase){
+                maybeRefetchPublic(r);
             }
             if(showingBase && !hasLoadedExtraNearby && r.latitudeDelta > 0.25){
                 (async () => {
@@ -236,7 +323,7 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                         }));
                         setExtraNearby(norm);
                         setHasLoadedExtraNearby(true);
-                    } catch(e) {/* ignore */}
+                    } catch(e) { /* ignore */ }
                 })();
             }
         }, 400);
@@ -413,9 +500,16 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                 <View style={styles.headerContent}>
                     <MaterialIcons name="ev-station" size={40} color="#fff" />
                     <FarsiText style={styles.headerTitle}>{t('messages.availableChargingStation')}</FarsiText>
-                    <FarsiText style={styles.headerSubtitle}>
-                        {chargingLocations.length} {t('messages.loc')}{chargingLocations.length !== 1 ? t('messages.s') : ''} {t('messages.found')}
-                    </FarsiText>
+                    {(() => {
+                        console.log('primary locations', primaryLocations);
+                        console.log('charging locations', chargingLocations);
+                        console.log('public chargers', publicChargers);
+                        console.log('showingBase', showingBase);
+                        const displayListCount = primaryLocations.length+ publicChargers.length + extraNearby.length;
+                        return (
+                      <FarsiText style={styles.headerSubtitle}>
+                        {displayListCount} {t('messages.loc')}{displayListCount !== 1 ? t('messages.s') : ''} {t('messages.found')}
+                      </FarsiText>); })()}
                 </View>
             </LinearGradient>
 
@@ -423,26 +517,31 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
                 {renderSearchCriteria()}
 
                 <View style={styles.locationsContainer}>
-                    {chargingLocations.length === 0 ? (
-                        <View style={styles.noResultsContainer}>
-                            <MaterialIcons name="search-off" size={80} color="#ccc" />
-                            <FarsiText style={styles.noResultsText}>{t('messages.noChargingLoc')}</FarsiText>
-                            <FarsiText style={styles.noResultsSubtext}>
-                                {t('messages.tryAdjust')}
-                            </FarsiText>
-                            <TouchableOpacity
-                                style={styles.searchAgainButton}
-                                onPress={() => navigation.goBack()}
-                            >
-                                <FarsiText style={styles.searchAgainButtonText}>{t('messages.searchAgain')}</FarsiText>
-                            </TouchableOpacity>
-                        </View>
-                    ) : (
-                        chargingLocations.map(loc => {
-                            const isSelected = selectedLocationId === (loc.charging_location_id || loc.id);
-                            return renderLocationCard({ ...loc, _isSelected: isSelected });
-                        })
-                    )}
+                    {(() => {
+                        const displayList = [...primaryLocations , ...publicChargers, ...chargingLocations] ;
+                        if (displayList.length === 0) {
+                            return (
+                                <View style={styles.noResultsContainer}>
+                                    <MaterialIcons name="search-off" size={80} color="#ccc" />
+                                    <FarsiText style={styles.noResultsText}>{t('messages.noChargingLoc')}</FarsiText>
+                                    <FarsiText style={styles.noResultsSubtext}>
+                                        {t('messages.tryAdjust')}
+                                    </FarsiText>
+                                    <TouchableOpacity
+                                        style={styles.searchAgainButton}
+                                        onPress={() => navigation.goBack()}
+                                    >
+                                        <FarsiText style={styles.searchAgainButtonText}>{t('messages.searchAgain')}</FarsiText>
+                                    </TouchableOpacity>
+                                </View>
+                            );
+                        }
+                        return displayList.map(loc => {
+                            const locId = loc.charging_location_id || loc.id;
+                            const isSelected = selectedLocationId === locId;
+                            return renderLocationCard({ ...loc, id: locId, _isSelected: isSelected });
+                        });
+                    })()}
                 </View>
 
                 {/* Proceed Button & Manual Nearby Button */}

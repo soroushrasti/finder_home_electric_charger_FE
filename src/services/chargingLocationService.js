@@ -152,20 +152,18 @@ class ChargingLocationService {
     }
 
     // Fetch primary (user's own) charging location(s) first view
-    async getUserPrimaryChargingLocation() {
+    async getUserPrimaryChargingLocation(searchCriteria = {}) {
         try {
-            let response = await fetch(`${this.baseUrl}/find-charging-location`, {
-                method: 'GET',
-                headers: this.headers
-            });
-            if(response.status === 405){
-                // Retry with POST (some backends require POST)
-                response = await fetch(`${this.baseUrl}/find-charging-location`, {
+                const body = {
+                    country: searchCriteria.country,
+                    city: searchCriteria.city ? searchCriteria.city : undefined,
+                };
+                let response = await fetch(`${this.baseUrl}/find-charging-location`, {
                     method: 'POST',
                     headers: this.headers,
-                    body: JSON.stringify({})
+                    body: JSON.stringify(body)
                 });
-            }
+
             if(response.status === 404){
                 return []; // endpoint not available
             }
@@ -184,53 +182,66 @@ class ChargingLocationService {
 
     // Format public charger data for map display
     formatPublicChargers(chargers) {
-        return chargers.map(charger => ({
-            id: charger.id,
-            type: 'public',
-            title: charger.name,
-            subtitle: `${charger.power_kw}kW • ${charger.operator}`,
-            description: charger.address,
-            coordinate: {
-                latitude: parseFloat(charger.latitude),
-                longitude: parseFloat(charger.longitude)
-            },
-            address: charger.address,
-            city: charger.city,
-            country: charger.country,
-            powerKw: charger.power_kw,
-            connectors: JSON.parse(charger.connectors || '[]'),
-            operator: charger.operator,
-            isActive: charger.is_active,
-            hasAccommodation: charger.has_accommodation || false, // Accommodation flag
-            markerColor: '#FF6B6B', // Red for public chargers
-            markerIcon: 'ev-station'
-        }));
+        return chargers.map((charger, idx) => {
+            // Accept either flat latitude/longitude or nested coordinate
+            const latRaw = charger.latitude ?? charger.lat ?? charger?.coordinate?.latitude;
+            const lngRaw = charger.longitude ?? charger.lon ?? charger?.coordinate?.longitude;
+            const lat = parseFloat(latRaw);
+            const lng = parseFloat(lngRaw);
+            const idFallback = charger.id || charger.charging_location_id || charger.location_id || charger.name || `${lat}_${lng}_${idx}`;
+            return {
+                id: idFallback,
+                type: 'public',
+                title: charger.name,
+                subtitle: `${charger.power_kw || 'Unknown'}kW · ${charger.operator || 'Operator'}`,
+                description: charger.address,
+                coordinate: { latitude: lat, longitude: lng },
+                latitude: lat,
+                longitude: lng,
+                address: charger.address,
+                city: charger.city,
+                country: charger.country,
+                powerKw: charger.power_kw,
+                connectors: JSON.parse(charger.connectors || '[]'),
+                operator: charger.operator,
+                isActive: charger.is_active !== false,
+                hasAccommodation: charger.has_accommodation || false,
+                markerColor: '#FF6B6B',
+                markerIcon: 'ev-station'
+            };
+        }).filter(c => !isNaN(c.latitude) && !isNaN(c.longitude));
     }
 
     // Format user location data for map display
     formatUserLocations(locations) {
-        return locations.map(location => ({
-            id: location.id,
-            type: 'user',
-            title: location.name || location.title,
-            subtitle: `${location.power_kw || 'Unknown'}kW • Private`,
-            description: location.address || location.description,
-            coordinate: {
-                latitude: parseFloat(location.latitude),
-                longitude: parseFloat(location.longitude)
-            },
-            address: location.address,
-            city: location.city,
-            country: location.country,
-            powerKw: location.power_kw,
-            connectors: JSON.parse(location.connectors || '[]'),
-            operator: 'Private Owner',
-            isActive: location.is_active !== false,
-            hasAccommodation: location.has_accommodation || false, // Accommodation flag
-            markerColor: '#4ECDC4', // Teal for user locations
-            markerIcon: 'home',
-            isUserLocation: true
-        }));
+        return locations.map((location, idx) => {
+            const latRaw = location.latitude ?? location.lat ?? location?.coordinate?.latitude;
+            const lngRaw = location.longitude ?? location.lon ?? location?.coordinate?.longitude;
+            const lat = parseFloat(latRaw);
+            const lng = parseFloat(lngRaw);
+            const idFallback = location.id || location.charging_location_id || location.location_id || location.name || `${lat}_${lng}_${idx}`;
+            return {
+                id: idFallback,
+                type: 'user',
+                title: location.name || location.title,
+                subtitle: `${location.power_kw || 'Unknown'}kW • Private`,
+                description: location.address || location.description,
+                coordinate: { latitude: lat, longitude: lng },
+                latitude: lat,
+                longitude: lng,
+                address: location.address,
+                city: location.city,
+                country: location.country,
+                powerKw: location.power_kw,
+                connectors: JSON.parse(location.connectors || '[]'),
+                operator: 'Private Owner',
+                isActive: location.is_active !== false,
+                hasAccommodation: location.has_accommodation || false,
+                markerColor: '#4ECDC4',
+                markerIcon: 'home',
+                isUserLocation: true
+            };
+        }).filter(c => !isNaN(c.latitude) && !isNaN(c.longitude));
     }
 
     // Geocoding service to get coordinates from address

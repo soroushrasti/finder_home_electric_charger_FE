@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform, Modal, FlatList } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform, Modal, FlatList, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
@@ -90,6 +90,7 @@ export default function EditChargingLocationScreen({ navigation, route }) {
     ]);
 
     const [loading, setLoading] = useState(false);
+    const [loadingInitial, setLoadingInitial] = useState(true); // NEW
     const onLocationUpdated = route.params?.onLocationUpdated;
     const handleNext = async () => {
       if(!validateForm()) return;
@@ -224,6 +225,47 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         return true;
     };
 
+
+    const chargingLocationIdParam = route.params?.location?.charging_location_id || route.params?.location?.id;
+
+    const fetchAndPrefill = async () => {
+        if(!user?.user_id) { setLoadingInitial(false); return; }
+        try {
+            setLoadingInitial(true);
+            const resp = await fetch(`${env.apiUrl}/find-charging-location`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'X-API-Token': env.apiToken },
+                body: JSON.stringify({ user_id: user.user_id })
+            });
+            if(!resp.ok){ setLoadingInitial(false); return; }
+            const data = await resp.json();
+            const list = Array.isArray(data) ? data : (data ? [data] : []);
+            let loc = null;
+            if(chargingLocationIdParam){
+                loc = list.find(l => `${l.charging_location_id}` === `${chargingLocationIdParam}` || `${l.id}` === `${chargingLocationIdParam}`);
+            }
+            if(!loc) loc = list[0];
+            if(!loc) { setLoadingInitial(false); return; }
+            setName(loc.name || '');
+            setCity(loc.city || '');
+            setCountry(loc.country || '');
+            setPostcode(loc.postcode || loc.post_code || '');
+            setStreet(loc.street || '');
+            setAlley(loc.alley || '');
+            setPhoneNumber((loc.phone_number || loc.home_phone_number || '').toString());
+            setPowerOutput((loc.power_output ?? loc.power_kw ?? '').toString());
+            setPricePerHour((loc.price_per_hour ?? '').toString());
+            setDescription(loc.description || '');
+            setFastCharging(!!loc.fast_charging);
+            setHasAccommodation(!!loc.has_accommodation);
+            // Always overwrite coordinates with server version mid-edit
+            setSelectedCoords({ latitude: loc.latitude || selectedCoords.latitude, longitude: loc.longitude || selectedCoords.longitude });
+            setId((loc.charging_location_id ?? loc.id)?.toString() || '');
+            setUserId((loc.user_id ?? user?.user_id)?.toString() || '');
+        } catch(e){ /* silent */ } finally { setLoadingInitial(false); }
+    };
+
+    useEffect(() => { fetchAndPrefill(); }, []); // initial
 
     return (
         <KeyboardAvoidingView
@@ -741,5 +783,7 @@ const styles = StyleSheet.create({
               closeBtn: {
                 marginTop: 10,
                 alignSelf: 'center'
-              }
+              },
+              revertBtn:{ marginTop:8, backgroundColor:'#eee', paddingVertical:10, paddingHorizontal:14, borderRadius:10, alignSelf:'flex-end' },
+              revertBtnText:{ color:'#333', fontSize:12, fontWeight:'600' }
 });

@@ -92,7 +92,7 @@ android {
         applicationId 'com.soroushrasti.finder_home_electric_charger'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 16
+        versionCode 17
         versionName "2.1.0"
     }
     signingConfigs {

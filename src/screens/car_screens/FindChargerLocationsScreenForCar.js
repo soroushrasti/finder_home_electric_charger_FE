@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, Switch, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, Switch, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
@@ -24,7 +25,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
 
     const handleSearch = async () => {
         if (!postCode || !street || !city) {
-            Alert.alert(t('messages.missingInformation'), t('messages.fillField'));
+            showAlert(t('messages.missingInformation'), t('messages.fillField'));
             return;
         }
 
@@ -51,7 +52,7 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
             if (response.ok) {
                 const chargingLocations = await response.json();
                 if (!chargingLocations || chargingLocations.length === 0) {
-                    Alert.alert(t('messages.noResult'), t('messages.noCharging'));
+                    showAlert(t('messages.noResult'), t('messages.noCharging'));
                     return;
                 }
                 navigation.navigate('ChargerLocationListScreen', {
@@ -65,10 +66,10 @@ export default function FindChargerLocationsScreenForCar({ navigation, route }) 
                     }
                 });
             } else {
-                Alert.alert(t('messages.searchFail'), t('messages.noChargingLocation'));
+                showAlert(t('messages.searchFail'), t('messages.noChargingLocation'));
             }
         } catch (error) {
-            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
+            showAlert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }

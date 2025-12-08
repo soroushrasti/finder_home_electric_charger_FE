@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform, Modal, FlatList, ActivityIndicator } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Switch, KeyboardAvoidingView, Platform, Modal, FlatList, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
@@ -114,10 +115,10 @@ export default function EditChargingLocationScreen({ navigation, route }) {
                    navigation.goBack();
                } else {
                           const errorText = await response.text();
-                          Alert.alert(t('messages.error'), `Failed: ${response.status} ${errorText}`);
+                          showAlert(t('messages.error'), `Failed: ${response.status} ${errorText}`);
                    }
             } catch (error) {
-                Alert.alert(t('messages.error'), `Network error: ${error.message}`);
+                showAlert(t('messages.error'), `Network error: ${error.message}`);
         } finally {
         setLoading(false);
       }
@@ -169,35 +170,35 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         const { name, country, city, postcode, street, phone_number, power_output, price_per_hour, charging_location_id} = formData;
 
         if (!name.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.stationName'));
+            showAlert(t('messages.validationError'), t('messages.stationName'));
             return false;
         }
          if (!country.trim()) {
-              Alert.alert(t('messages.validationError'), t('messages.countryRequire'));
+              showAlert(t('messages.validationError'), t('messages.countryRequire'));
               return false;
          }
         if (!city.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.cityRequire'));
+            showAlert(t('messages.validationError'), t('messages.cityRequire'));
             return false;
         }
         if (!postcode.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.postcodeRequire'));
+            showAlert(t('messages.validationError'), t('messages.postcodeRequire'));
             return false;
         }
         if (!street.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.streetAddressRequire'));
+            showAlert(t('messages.validationError'), t('messages.streetAddressRequire'));
             return false;
         }
         if (!phone_number.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.phoneNumberRequire'));
+            showAlert(t('messages.validationError'), t('messages.phoneNumberRequire'));
             return false;
         }
         if (!power_output.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.powerRequire'));
+            showAlert(t('messages.validationError'), t('messages.powerRequire'));
             return false;
         }
         if (!price_per_hour.trim()) {
-            Alert.alert(t('messages.validationError'), t('messages.priceRequire'));
+            showAlert(t('messages.validationError'), t('messages.priceRequire'));
             return false;
         }
 
@@ -205,21 +206,21 @@ export default function EditChargingLocationScreen({ navigation, route }) {
         const normalizedPhone = phone_number.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d));
         const phoneRegex = /^\+?[0-9]{6,16}$/;
         if (!phoneRegex.test(normalizedPhone)) {
-            Alert.alert(t('messages.validationError'), t('messages.validPhone'));
+            showAlert(t('messages.validationError'), t('messages.validPhone'));
             return false;
         }
 
         // Validate power output is a number
         const englishPower = power_output.replace(/[۱-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
         if (isNaN(parseFloat(englishPower))) {
-            Alert.alert(t('messages.validationError'), t('messages.validPower'));
+            showAlert(t('messages.validationError'), t('messages.validPower'));
             return false;
         }
 
         // Validate price is a number
         const englishPrice = price_per_hour.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
         if (isNaN(parseFloat(englishPrice))) {
-            Alert.alert(t('messages.validationError'), t('messages.validPrice'));
+            showAlert(t('messages.validationError'), t('messages.validPrice'));
             return false;
         }
         return true;

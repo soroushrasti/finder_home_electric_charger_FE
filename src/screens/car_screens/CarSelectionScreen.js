@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import showAlert from '../../utils/alert';
 import {
     View,
     Text,
@@ -44,11 +45,11 @@ export default function CarSelectionScreen({ navigation, route }) {
             if (response.ok) {
                 setCars(data);
             } else {
-                Alert.alert(t('messages.error'), data.message || t('messages.failFetchCar'));
+                showAlert(t('messages.error'), data.message || t('messages.failFetchCar'));
             }
         } catch (error) {
             console.error(t('messages.fetchError'), error);
-            Alert.alert(t('messages.error'), t('messages.tryAgain'));
+            showAlert(t('messages.error'), t('messages.tryAgain'));
         } finally {
             setLoading(false);
         }
@@ -60,7 +61,7 @@ export default function CarSelectionScreen({ navigation, route }) {
 
     const handleConfirmSelection = () => {
         if (!selectedCar) {
-            Alert.alert(t('messages.error'), t('messages.selectCar'));
+            showAlert(t('messages.error'), t('messages.selectCar'));
             return;
         }
         // Navigate to BookingConfirmationScreen with selected car and charging location

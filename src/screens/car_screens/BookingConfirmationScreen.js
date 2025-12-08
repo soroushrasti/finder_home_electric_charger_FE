@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Alert, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
@@ -15,7 +16,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
     const { car, user, chargingLocation } = route.params;
     const handleCreateBooking = async () => {
         if (!car?.car_id || !chargingLocation?.charging_location_id) {
-            Alert.alert(t('messages.error'), t('messages.missingInfo'));
+            showAlert(t('messages.error'), t('messages.missingInfo'));
             return;
         }
 
@@ -35,7 +36,7 @@ export default function BookingConfirmationScreen({ navigation, route }) {
 
             if (response.ok) {
                 const booking = await response.json();
-                Alert.alert(
+                showAlert(
                     t('messages.confirmBooking'),
                     t('messages.stationBooked'),
                     [
@@ -50,10 +51,10 @@ export default function BookingConfirmationScreen({ navigation, route }) {
                 );
             } else {
                 const errorData = await response.json();
-                Alert.alert(t('messages.failBooking'), errorData.message || t('messages.noCreateBooking'));
+                showAlert(t('messages.failBooking'), errorData.message || t('messages.noCreateBooking'));
             }
         } catch (error) {
-            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
+            showAlert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Platform } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
@@ -22,7 +23,7 @@ export default function AddCarScreen({ navigation, route }) {
 
     const handleAddCar = async () => {
         if (!model || !color || !year || !licensePlate) {
-            Alert.alert(t('messages.infoMissing'), t('messages.fillToContinue'));
+            showAlert(t('messages.infoMissing'), t('messages.fillToContinue'));
             return;
         }
 
@@ -49,11 +50,11 @@ export default function AddCarScreen({ navigation, route }) {
                 }
                 navigation.goBack();
             } else {
-                Alert.alert(t('messages.error'), t('messages.addCarFail'));
+                showAlert(t('messages.error'), t('messages.addCarFail'));
             }
         } catch (error) {
             console.error(t('messages.errorAddCar'), error);
-            Alert.alert(t('messages.Network Error'), t('messages.checkConnection'));
+            showAlert(t('messages.Network Error'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }

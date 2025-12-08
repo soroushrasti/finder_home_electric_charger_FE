@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import showAlert from '../../utils/alert';
 import {
     View,
     Text,
@@ -42,7 +43,7 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
     const handleSearch = async () => {
         // Validate required fields
         // if (!formData.city || !formData.street) {
-        //     Alert.alert(t('messages.error'), t('messages.fill'));
+        //     showAlert(t('messages.error'), t('messages.fill'));
         //     return;
         // }
 
@@ -68,11 +69,11 @@ export default function FindChargerLocationsScreen({ navigation, route }) {
                     searchCriteria: formData
                 });
             } else {
-                Alert.alert(t('messages.error'), data.message || t('messages.failSearchLoc'));
+                showAlert(t('messages.error'), data.message || t('messages.failSearchLoc'));
             }
         } catch (error) {
             console.error(t('messages.searchError'), error);
-            Alert.alert(t('messages.error'), t('messages.tryAgain'));
+            showAlert(t('messages.error'), t('messages.tryAgain'));
         } finally {
             setLoading(false);
         }

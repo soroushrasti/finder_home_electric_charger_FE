@@ -5,7 +5,6 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Alert,
     ActivityIndicator,
     Platform,
     Modal,
@@ -23,6 +22,7 @@ import { Dimensions } from 'react-native';
 import faCountries from '../../localization/faCountryCodes.json';
 import enCountries from '../../localization/enCountryCodes.json';
 import { useLanguage } from '../../context/LanguageContext';
+import showAlert from '../../utils/alert';
 
 export default function RegisterScreen({ navigation, setUser }) {
 
@@ -97,37 +97,37 @@ export default function RegisterScreen({ navigation, setUser }) {
 
     const validateForm = () => {
         if (!formData.name || !formData.email || !formData.password || !formData.phone_number) {
-            Alert.alert(t('messages.error'), t('messages.fillAll'));
+            showAlert(t('messages.error'), t('messages.fillAll'));
             return false;
         }
 
         // Validate phone number format - should be digits only, can start with + or 0
         const phoneRegex = /^(\+?[0-9]+|[0-9]+)$/;
         if (!phoneRegex.test(formData.phone_number)) {
-            Alert.alert(t('messages.error'), t('messages.validPhone') || 'Please enter a valid phone number (digits only, can start with + or 0)');
+            showAlert(t('messages.error'), t('messages.validPhone') || 'Please enter a valid phone number (digits only, can start with + or 0)');
             return false;
         }
 
         // Check minimum phone number length (at least 8 digits)
         const digitsOnly = formData.phone_number.replace(/\+/g, '');
         if (digitsOnly.length < 8) {
-            Alert.alert(t('messages.error'), t('messages.phoneMinLength') || 'Phone number must be at least 8 digits');
+            showAlert(t('messages.error'), t('messages.phoneMinLength') || 'Phone number must be at least 8 digits');
             return false;
         }
 
         if (formData.password !== formData.confirmPassword) {
-            Alert.alert(t('messages.error'), t('messages.passNotMatch'));
+            showAlert(t('messages.error'), t('messages.passNotMatch'));
             return false;
         }
 
         if (formData.password.length < 6) {
-            Alert.alert(t('messages.error'), t('messages.PassChar'));
+            showAlert(t('messages.error'), t('messages.PassChar'));
             return false;
         }
 
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (!emailRegex.test(formData.email)) {
-            Alert.alert(t('messages.error'), t('messages.validEmail'));
+            showAlert(t('messages.error'), t('messages.validEmail'));
             return false;
         }
 
@@ -175,21 +175,21 @@ export default function RegisterScreen({ navigation, setUser }) {
                 });
             } else {
                 if (data.detail && data.detail.includes('userExistEmail')) {
-                      Alert.alert(t('messages.error'), t('messages.userExistEmail'));
+                      showAlert(t('messages.error'), t('messages.userExistEmail'));
                 }
                 else if (data.detail && data.detail.includes('userExistUsername')) {
-                      Alert.alert(t('messages.error'), t('messages.UserExistUsername'));
+                      showAlert(t('messages.error'), t('messages.UserExistUsername'));
                 }
                 else if (data.detail && data.detail.includes('userExistMobileNumber')) {
-                      Alert.alert(t('messages.error'), t('messages.userExistMobileNumber'));
+                      showAlert(t('messages.error'), t('messages.userExistMobileNumber'));
                 }
                 else{
-                        Alert.alert(t('messages.error'), data.message || t('messages.registerFail'));
+                        showAlert(t('messages.error'), data.message || t('messages.registerFail'));
                 }
             }
         } catch (error) {
             console.error(t('messages.registerError'), error);
-            Alert.alert(t('messages.error'), t('messages.networkError'));
+            showAlert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }

@@ -5,7 +5,6 @@ import {
     TextInput,
     TouchableOpacity,
     StyleSheet,
-    Alert,
     ActivityIndicator,
     Platform
 } from 'react-native';
@@ -17,6 +16,7 @@ import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import ScrollWrapper from '../../components/ScrollWrapper';
+import showAlert from '../../utils/alert';
 
 
 export default function LoginScreen({ navigation, setUser }) {
@@ -37,13 +37,13 @@ export default function LoginScreen({ navigation, setUser }) {
 
     const validateForm = () => {
         if (!formData.email || !formData.password) {
-            Alert.alert(t('messages.error'), t('messages.fillingField'));
+            showAlert(t('messages.error'), t('messages.fillingField'));
             return false;
         }
 
         // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         // if (!emailRegex.test(formData.email)) {
-        //     Alert.alert('Error', 'Please enter a valid email address');
+        //     showAlert('Error', 'Please enter a valid email address');
         //     return false;
         // }
 
@@ -77,7 +77,7 @@ export default function LoginScreen({ navigation, setUser }) {
                 setUser(data);
                 // Save user data to AsyncStorage for persistent login
                 await AsyncStorage.setItem('user', JSON.stringify(data));
-                Alert.alert(
+                showAlert(
                     t('messages.welcome'),
                     t('messages.login'),
                     [
@@ -91,7 +91,7 @@ export default function LoginScreen({ navigation, setUser }) {
                 );
             } else if (response.ok && data.is_validated_email === false) {
                 if (data.is_validated_email === false) {
-                    Alert.alert(
+                    showAlert(
                         t('messages.noVerifyEmail'),
                         t('messages.verifyEmail'),
                         [
@@ -114,11 +114,11 @@ export default function LoginScreen({ navigation, setUser }) {
                 }
             }
             else {
-                Alert.alert(t('messages.loginFail'), data.message || t('messages.invalidCredential'));
+                showAlert(t('messages.loginFail'), data.message || t('messages.invalidCredential'));
             }
         } catch (error) {
             console.error(t('messages.errorLogin'), error);
-            Alert.alert(t('messages.error'), t('messages.networkError'));
+            showAlert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }

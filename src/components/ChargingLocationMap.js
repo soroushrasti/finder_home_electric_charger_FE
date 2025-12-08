@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import showAlert from '../utils/alert';
 import {
     View,
     StyleSheet,
@@ -116,7 +117,7 @@ const ChargingLocationMap = ({
             }
         } catch (error) {
             console.error('Error loading charging locations:', error);
-            Alert.alert(t('messages.error'), t('messages.failedToLoadLocations'));
+            showAlert(t('messages.error'), t('messages.failedToLoadLocations'));
         } finally {
             setLoading(false);
         }

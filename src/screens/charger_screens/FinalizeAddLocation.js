@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, TouchableOpacity, ActivityIndicator, Alert } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import env from '../../config/environment';
 import FarsiText from '../../components/FarsiText';
@@ -14,7 +15,7 @@ export default function FinalizeAddLocation({ route, navigation }) {
 
     const validateForm = () => {
         if (!formData.name || !formData.city || !formData.postcode || !formData.street) {
-            Alert.alert(t('messages.incompleteForm'), t('messages.fillFields'));
+            showAlert(t('messages.incompleteForm'), t('messages.fillFields'));
             return false;
         }
         return true;
@@ -53,10 +54,10 @@ export default function FinalizeAddLocation({ route, navigation }) {
                         navigation.navigate('HomeOwnerScreen', { user: { user_id: formData.user_id } });
             } else {
                 const errorText = await response.text();
-                Alert.alert(t('messages.error'), `Failed: ${response.status} ${errorText}`);
+                showAlert(t('messages.error'), `Failed: ${response.status} ${errorText}`);
             }
         } catch (error) {
-            Alert.alert(t('messages.error'), `Network error: ${error.message}`);
+            showAlert(t('messages.error'), `Network error: ${error.message}`);
         } finally {
             setLoading(false);
         }

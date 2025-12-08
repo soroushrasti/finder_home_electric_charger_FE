@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, RefreshControl } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
@@ -45,10 +46,10 @@ export default function MyCarsScreen({ navigation, route }) {
                 const carsData = await response.json();
                 setCars(Array.isArray(carsData) ? carsData : []);
             } else {
-                Alert.alert(t('messages.error'), t('messages.failCar'));
+                showAlert(t('messages.error'), t('messages.failCar'));
             }
         } catch (error) {
-            Alert.alert(t('messages.netError'), t('messages.checkConnection'));
+            showAlert(t('messages.netError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
             setRefreshing(false);

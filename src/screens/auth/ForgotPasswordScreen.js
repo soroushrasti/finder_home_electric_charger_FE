@@ -27,7 +27,7 @@ export default function ForgotPasswordScreen({ navigation }) {
 
     const handleResetPassword = async () => {
         if (!email) {
-            Alert.alert(t('messages.error'), t('messages.emailAddress'));
+            showAlert(t('messages.error'), t('messages.emailAddress'));
             return;
         }
 
@@ -52,11 +52,11 @@ export default function ForgotPasswordScreen({ navigation }) {
                         isPasswordReset: true,
                     });
             } else {
-                Alert.alert(t('messages.error'), data.message || t('messages.failRequest'));
+                showAlert(t('messages.error'), data.message || t('messages.failRequest'));
             }
         } catch (error) {
             console.error(t('messages.errorResetPass'), error);
-            Alert.alert(t('messages.error'), t('messages.networkError'));
+            showAlert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }

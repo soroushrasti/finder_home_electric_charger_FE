@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { View, StyleSheet, ActivityIndicator, TouchableOpacity, Platform, Alert, Switch, Text } from 'react-native';
+import showAlert from '../utils/alert';
+import { View, StyleSheet, ActivityIndicator, TouchableOpacity, Platform, Switch, Text } from 'react-native';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { MaterialIcons } from '@expo/vector-icons';
 import ChargingLocationMap from './ChargingLocationMap';

@@ -51,12 +51,12 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
         const code = verificationCode.join('');
 
         if (code.length !== 5) {
-            Alert.alert(t('messages.error'), t('messages.enter5DigitCode'));
+            showAlert(t('messages.error'), t('messages.enter5DigitCode'));
             return;
         }
 
         if (!user) {
-            Alert.alert(t('messages.error'), t('messages.registerInfo'));
+            showAlert(t('messages.error'), t('messages.registerInfo'));
             navigation.goBack();
             return;
         }
@@ -86,23 +86,23 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                     } else {
                         // For normal registration flow
                         setUser(data);
-                        Alert.alert(t('messages.success') , t('messages.emailLoggIn'));
+                        showAlert(t('messages.success') , t('messages.emailLoggIn'));
                     }
                 } else {
-                    Alert.alert(t('messages.error'), t('messages.emailFail'));
+                    showAlert(t('messages.error'), t('messages.emailFail'));
                 }
             } else {
                 if (response.status === 401) {
-                    Alert.alert(t('messages.invalidCode'), t('messages.correctCode'));
+                    showAlert(t('messages.invalidCode'), t('messages.correctCode'));
                     setVerificationCode(['', '', '', '', '']);
                     inputRefs.current[0]?.focus();
                 } else {
-                    Alert.alert(t('messages.error'), data.message || t('messages.failVerify'));
+                    showAlert(t('messages.error'), data.message || t('messages.failVerify'));
                 }
             }
         } catch (error) {
             console.error(t('messages.errorVerify'), error);
-            Alert.alert(t('messages.error'), t('messages.networkError'));
+            showAlert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }
@@ -110,7 +110,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
 
     const handleResendCode = async () => {
         if (!userId) {
-            Alert.alert(t('messages.error'), t('messages.registerInfo'));
+            showAlert(t('messages.error'), t('messages.registerInfo'));
             return;
         }
 
@@ -131,16 +131,16 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
             });
 
             if (response.ok) {
-                Alert.alert(t('messages.success'), t('messages.resendVerify'));
+                showAlert(t('messages.success'), t('messages.resendVerify'));
                 setVerificationCode(['', '', '', '', '']);
                 inputRefs.current[0]?.focus();
             } else {
                 const data = await response.json();
-                Alert.alert(t('messages.error'), data.message || t('messages.resendVerifyError'));
+                showAlert(t('messages.error'), data.message || t('messages.resendVerifyError'));
             }
         } catch (error) {
             console.error(t('messages.errorResending'), error);
-            Alert.alert(t('messages.error'), t('messages.networkError'));
+            showAlert(t('messages.error'), t('messages.networkError'));
         } finally {
             setResendLoading(false);
         }

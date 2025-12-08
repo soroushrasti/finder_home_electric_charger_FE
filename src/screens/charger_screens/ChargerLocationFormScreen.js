@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView, Switch, KeyboardAvoidingView, Platform } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView, Switch, KeyboardAvoidingView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
@@ -99,20 +100,20 @@ export default function ChargerLocationFormScreen({ navigation, route }) {
     const validateForm = () => {
         const { name, country, city, postcode, street, power_output, price_per_hour } = formData;
         const fullPhone = `${selectedCountry?.value || ''}${phoneLocalNumber}`;
-        if (!name.trim()) { Alert.alert(t('messages.validationError'), t('messages.stationName')); return false; }
-        if (!country.trim()) { Alert.alert(t('messages.validationError'), t('messages.countryRequire')); return false; }
-        if (!city.trim()) { Alert.alert(t('messages.validationError'), t('messages.cityRequire')); return false; }
-        if (!postcode.trim()) { Alert.alert(t('messages.validationError'), t('messages.postcodeRequire')); return false; }
-        if (!street.trim()) { Alert.alert(t('messages.validationError'), t('messages.streetAddressRequire')); return false; }
-        if (!phoneLocalNumber.trim()) { Alert.alert(t('messages.validationError'), t('messages.phoneNumberRequire')); return false; }
-        if (!power_output.trim()) { Alert.alert(t('messages.validationError'), t('messages.powerRequire')); return false; }
-        if (!price_per_hour.trim()) { Alert.alert(t('messages.validationError'), t('messages.priceRequire')); return false; }
+        if (!name.trim()) { showAlert(t('messages.validationError'), t('messages.stationName')); return false; }
+        if (!country.trim()) { showAlert(t('messages.validationError'), t('messages.countryRequire')); return false; }
+        if (!city.trim()) { showAlert(t('messages.validationError'), t('messages.cityRequire')); return false; }
+        if (!postcode.trim()) { showAlert(t('messages.validationError'), t('messages.postcodeRequire')); return false; }
+        if (!street.trim()) { showAlert(t('messages.validationError'), t('messages.streetAddressRequire')); return false; }
+        if (!phoneLocalNumber.trim()) { showAlert(t('messages.validationError'), t('messages.phoneNumberRequire')); return false; }
+        if (!power_output.trim()) { showAlert(t('messages.validationError'), t('messages.powerRequire')); return false; }
+        if (!price_per_hour.trim()) { showAlert(t('messages.validationError'), t('messages.priceRequire')); return false; }
         const phoneRegex = /^\+[0-9]{1,4}[0-9]{6,}$/; // basic intl pattern
-        if(!phoneRegex.test(fullPhone)) { Alert.alert(t('messages.validationError'), t('messages.validPhone')); return false; }
+        if(!phoneRegex.test(fullPhone)) { showAlert(t('messages.validationError'), t('messages.validPhone')); return false; }
         const englishPower = power_output.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
-        if (isNaN(parseFloat(englishPower))) { Alert.alert(t('messages.validationError'), t('messages.validPower')); return false; }
+        if (isNaN(parseFloat(englishPower))) { showAlert(t('messages.validationError'), t('messages.validPower')); return false; }
         const englishPrice = price_per_hour.replace(/[۰-۹]/g, d => '۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace('٫', '.');
-        if (isNaN(parseFloat(englishPrice))) { Alert.alert(t('messages.validationError'), t('messages.validPrice')); return false; }
+        if (isNaN(parseFloat(englishPrice))) { showAlert(t('messages.validationError'), t('messages.validPrice')); return false; }
         return true; };
 
 

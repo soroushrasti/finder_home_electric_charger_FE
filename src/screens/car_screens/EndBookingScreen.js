@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, StyleSheet, Alert, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, TextInput, StyleSheet, TouchableOpacity, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
@@ -22,7 +23,7 @@ export default function EndBookingScreen({ navigation, route }) {
 
     const handleEndBooking = async () => {
         if (!reviewMessage.trim()) {
-            Alert.alert(t('messages.reviewRequire'), t('messages.shareExperience'));
+            showAlert(t('messages.reviewRequire'), t('messages.shareExperience'));
             return;
         }
 
@@ -42,7 +43,7 @@ export default function EndBookingScreen({ navigation, route }) {
             });
 
             if (response.ok) {
-                Alert.alert(
+                showAlert(
                     t('messages.completeSession'),
                     t('messages.thankYou'),
                     [
@@ -58,10 +59,10 @@ export default function EndBookingScreen({ navigation, route }) {
                     ]
                 );
             } else {
-                Alert.alert(t('messages.error'), t('messages.failEndingBooking'));
+                showAlert(t('messages.error'), t('messages.failEndingBooking'));
             }
         } catch (error) {
-            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
+            showAlert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }

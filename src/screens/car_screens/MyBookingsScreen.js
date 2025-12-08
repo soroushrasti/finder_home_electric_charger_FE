@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, RefreshControl, ScrollView } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
@@ -52,10 +53,10 @@ export default function MyBookingsScreen({ navigation, route }) {
                 const data = await response.json();
                 setBookings(Array.isArray(data) ? data : []);
             } else {
-                Alert.alert(t('messages.error'), t('messages.failFetchBooking'));
+                showAlert(t('messages.error'), t('messages.failFetchBooking'));
             }
         } catch (error) {
-            Alert.alert(t('messages.NetError'), t('messages.checkConnection'));
+            showAlert(t('messages.NetError'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
             setRefreshing(false);

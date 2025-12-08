@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, RefreshControl, ScrollView } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, RefreshControl, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from '../../config/environment';
@@ -48,11 +49,11 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
                 console.log(t('messages.apiResponse'), data);
                 setLocations(data || []);
             } else {
-                Alert.alert(t('messages.error'), t('messages.failFetchLoc'));
+                showAlert(t('messages.error'), t('messages.failFetchLoc'));
             }
         } catch (error) {
             console.error(t('messages.networkErr'), error);
-            Alert.alert(t('messages.error'), t('messages.netErrorRequest'));
+            showAlert(t('messages.error'), t('messages.netErrorRequest'));
         } finally {
             setLoading(false);
             setRefreshing(false);
@@ -67,7 +68,7 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
     const handleDelete = (loc) => {
         const id = loc.charging_location_id || loc.id;
         if(!id) return;
-        Alert.alert(
+        showAlert(
           t('messages.confirm') || 'Confirm',
           t('messages.deleteConfirm') || t('messages.areYouSure') || 'Delete this charging location?',
           [
@@ -91,10 +92,10 @@ export default function MyChargerLocationsScreen({ navigation, route }) {
               setLocations(prev => prev.filter(l => (l.charging_location_id || l.id) !== id));
             } else {
               const txt = await response.text();
-              Alert.alert(t('messages.error'), txt || 'Failed to delete');
+              showAlert(t('messages.error'), txt || 'Failed to delete');
             }
         } catch(e){
-            Alert.alert(t('messages.error'), e.message);
+            showAlert(t('messages.error'), e.message);
         } finally {
             setDeletingId(null);
         }

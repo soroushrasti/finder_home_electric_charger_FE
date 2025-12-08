@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useMemo, useRef } from 'react';
+import showAlert from '../../utils/alert';
 import {
     View,
     Text,
@@ -120,11 +121,11 @@ export default function ChargerLocationListScreenWithoutCar({ navigation, route 
             if (response.ok) {
                 setChargingLocations(data);
             } else {
-                Alert.alert(t('messages.error'), data.message || t('messages.failFetchCharger'));
+                showAlert(t('messages.error'), data.message || t('messages.failFetchCharger'));
             }
         } catch (error) {
             console.error(t('messages.fetchLocError'), error);
-            Alert.alert(t('messages.error'), t('messages.tryAgain'));
+            showAlert(t('messages.error'), t('messages.tryAgain'));
         } finally {
             setLoading(false);
         }

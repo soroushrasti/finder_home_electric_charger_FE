@@ -3,7 +3,6 @@ import {
     View,
     TouchableOpacity,
     StyleSheet,
-    Alert,
     ActivityIndicator,
     Platform,
     SafeAreaView
@@ -15,6 +14,7 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import ScrollWrapper from '../../components/ScrollWrapper';
+import showAlert from '../../utils/alert';
 
 export default function NewPasswordScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -25,11 +25,11 @@ export default function NewPasswordScreen({ navigation, route }) {
 
     const validatePassword = () => {
         if (!password.trim()) {
-            Alert.alert(t('messages.error'), t('messages.enterPassword'));
+            showAlert(t('messages.error'), t('messages.enterPassword'));
             return false;
         }
         if (password.length < 6) {
-            Alert.alert(t('messages.error'), t('messages.PassChar'));
+            showAlert(t('messages.error'), t('messages.PassChar'));
             return false;
         }
         return true;
@@ -53,24 +53,39 @@ export default function NewPasswordScreen({ navigation, route }) {
                 }),
             });
 
-            const data = await response.json();
+            // Handle empty response or parse JSON
+            let data = {};
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const text = await response.text();
+                if (text) {
+                    data = JSON.parse(text);
+                }
+            }
+
             if (response.ok) {
-                Alert.alert(
+                showAlert(
                     t('messages.success'),
                     t('messages.updatePassword'),
                     [
                         {
                             text: t('messages.logIn'),
-                            onPress: () => navigation.navigate('LoginScreen')
+                            onPress: () => {
+                                // Navigate to Home screen (login page)
+                                navigation.reset({
+                                    index: 0,
+                                    routes: [{ name: 'Home' }],
+                                });
+                            }
                         }
                     ]
                 );
             } else {
-                Alert.alert(t('messages.error'), data.message || t('messages.updatePassFail'));
+                showAlert(t('messages.error'), data.message || t('messages.updatePassFail'));
             }
         } catch (error) {
             console.error(t('messages.errorUpdatePass'), error);
-            Alert.alert(t('messages.error'), t('messages.networkError'));
+            showAlert(t('messages.error'), t('messages.networkError'));
         } finally {
             setLoading(false);
         }

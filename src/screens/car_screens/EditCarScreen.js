@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import showAlert from '../../utils/alert';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import env from "../../config/environment";
@@ -41,16 +42,16 @@ export default function EditCarScreen({ navigation, route }) {
             });
 
             if (response.ok) {
-                Alert.alert(t('messages.success') ,  t('messages.updateCar'));
+                showAlert(t('messages.success') ,  t('messages.updateCar'));
                 navigation.navigate('MyCarsScreen', {
                     user: user,
                 });
             } else {
-                Alert.alert(t('messages.error'), t('messages.updateCarFail'));
+                showAlert(t('messages.error'), t('messages.updateCarFail'));
             }
         } catch (error) {
             console.error(t('messages.errorEditCar'), error);
-            Alert.alert(t('messages.Network Error'), t('messages.checkConnection'));
+            showAlert(t('messages.Network Error'), t('messages.checkConnection'));
         } finally {
             setLoading(false);
         }

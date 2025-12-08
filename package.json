@@ -6,7 +6,11 @@
     "start": "expo start",
     "android": "expo run:android",
     "ios": "expo run:ios",
-    "web": "expo start --web"
+    "web": "EXPO_USE_METRO_WORKSPACE_ROOT=1 expo start --web",
+    "build:web": "expo export --platform web"
+  },
+  "react-native": {
+    "react-native-maps": "./src/components/MapView.web.js"
   },
   "dependencies": {
     "@expo/metro-runtime": "~5.0.4",

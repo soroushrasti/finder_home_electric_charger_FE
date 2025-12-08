@@ -7,8 +7,7 @@ import {
     StyleSheet,
     Alert,
     ActivityIndicator,
-    Platform,
-    ScrollView
+    Platform
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -17,7 +16,7 @@ import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ScrollWrapper from '../../components/ScrollWrapper';
 
 
 export default function LoginScreen({ navigation, setUser }) {
@@ -125,20 +124,8 @@ export default function LoginScreen({ navigation, setUser }) {
         }
     };
 
-    const ScrollContainer = Platform.OS === 'web' ? ScrollView : KeyboardAwareScrollView;
-
     return (
-        <ScrollContainer
-            style={[{ flex: 1, backgroundColor: '#fff' }, Platform.OS === 'web' ? { height: '100vh', overflow: 'auto' } : {}]}
-            contentContainerStyle={[{ flexGrow: 1, padding: 16 }, Platform.OS === 'web' ? { minHeight: '100vh' } : {}]}
-            enableOnAndroid={true}
-            extraScrollHeight={40}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={true}
-            bounces={true}
-            scrollEnabled={true}
-            nestedScrollEnabled={true}
-        >
+        <ScrollWrapper contentContainerStyle={{ padding: 16 }}>
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
                 style={styles.header}
@@ -243,7 +230,7 @@ export default function LoginScreen({ navigation, setUser }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </ScrollContainer>
+        </ScrollWrapper>
     );
 }
 

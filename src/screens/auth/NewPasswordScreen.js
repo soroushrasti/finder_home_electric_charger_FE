@@ -14,7 +14,7 @@ import env from '../../config/environment';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ScrollWrapper from '../../components/ScrollWrapper';
 
 export default function NewPasswordScreen({ navigation, route }) {
     const { t } = useTranslation();
@@ -76,19 +76,11 @@ export default function NewPasswordScreen({ navigation, route }) {
         }
     };
 
-    const ContentWrapper = Platform.OS === 'web' ? View : KeyboardAwareScrollView;
-
     return (
         <SafeAreaView style={{ flex:1, backgroundColor:'#f5f5f5' }}>
-          <ContentWrapper
+          <ScrollWrapper
             style={styles.container}
-            {...(Platform.OS !== 'web' ? {
-              contentContainerStyle: { flexGrow: 1 },
-              keyboardShouldPersistTaps: 'handled',
-              enableOnAndroid: true,
-              extraScrollHeight: 40,
-              showsVerticalScrollIndicator: true
-            } : {})}
+            contentContainerStyle={{ flexGrow: 1 }}
           >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
@@ -178,7 +170,7 @@ export default function NewPasswordScreen({ navigation, route }) {
                 </TouchableOpacity>
               </View>
             </View>
-          </ContentWrapper>
+          </ScrollWrapper>
         </SafeAreaView>
     );
 }

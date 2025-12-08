@@ -39,12 +39,13 @@ import { createStackNavigator } from '@react-navigation/stack';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import MapScreen from "./src/components/MapScreen";
 import ChargingMapListWrapperScreen from './src/screens/car_screens/ChargingMapListWrapperScreen';
+import ScrollWrapper from './src/components/ScrollWrapper';
 const Stack = createStackNavigator();
 
 function Home({ navigation }) {
     const { t } = useTranslation();
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <ScrollWrapper style={styles.container} keyboardAware={false}>
             <LinearGradient
                 colors={['#667eea', '#764ba2']}
                 style={styles.homeGradient}
@@ -176,7 +177,7 @@ function Home({ navigation }) {
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </ScrollWrapper>
     );
 }
 

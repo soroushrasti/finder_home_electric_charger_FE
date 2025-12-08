@@ -17,7 +17,7 @@ import { useTranslation } from 'react-i18next';
 import { useLanguage } from '../../context/LanguageContext';
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ScrollWrapper from '../../components/ScrollWrapper';
 
 export default function ForgotPasswordScreen({ navigation }) {
     const { t, i18n } = useTranslation();
@@ -63,12 +63,9 @@ export default function ForgotPasswordScreen({ navigation }) {
     };
 
     return (
-        <KeyboardAwareScrollView
+        <ScrollWrapper
             style={[styles.container, isRTL && styles.rtl]}
             contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            enableOnAndroid={true}
-            extraScrollHeight={40}
         >
             <LinearGradient
                 colors={['#4facfe', '#00f2fe']}
@@ -149,7 +146,7 @@ export default function ForgotPasswordScreen({ navigation }) {
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAwareScrollView>
+        </ScrollWrapper>
     );
 }
 

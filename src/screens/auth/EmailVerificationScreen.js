@@ -15,7 +15,7 @@ import env from "../../config/environment";
 import {useTranslation} from "react-i18next";
 import FarsiTextInput from  "../../components/FarsiTextInput";
 import FarsiText from  "../../components/FarsiText";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ScrollWrapper from '../../components/ScrollWrapper';
 
 
 export default function EmailVerificationScreen({ navigation, route, setUser }) {
@@ -177,16 +177,9 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
     }
 
     return (
-        <KeyboardAwareScrollView
+        <ScrollWrapper
             style={styles.container}
             contentContainerStyle={{ flexGrow: 1 }}
-            keyboardShouldPersistTaps="handled"
-            enableOnAndroid={true}
-            extraScrollHeight={40}
-            showsVerticalScrollIndicator={true}
-            bounces={true}
-            scrollEnabled={true}
-            nestedScrollEnabled={true}
         >
             <LinearGradient
                 colors={['#667eea', '#764ba2']}
@@ -276,7 +269,7 @@ export default function EmailVerificationScreen({ navigation, route, setUser }) 
                     </TouchableOpacity>
                 </View>
             </View>
-        </KeyboardAwareScrollView>
+        </ScrollWrapper>
     );
 }
 

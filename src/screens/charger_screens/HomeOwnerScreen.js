@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
 import FarsiText from  "../../components/FarsiText";
 import {useTranslation} from "react-i18next";
+import ScrollWrapper from '../../components/ScrollWrapper';
 
 export default function HomeOwnerScreen({ navigation, user }) {
     const { t } = useTranslation();
@@ -34,11 +35,9 @@ export default function HomeOwnerScreen({ navigation, user }) {
                 </FarsiText>
             </LinearGradient>
 
-            <ScrollView
+            <ScrollWrapper
                 contentContainerStyle={[styles.scrollContainer, { flexGrow: 1 }]}
-                showsVerticalScrollIndicator={false}
-                keyboardShouldPersistTaps="handled"
-                scrollEnabled={true}
+                keyboardAware={false}
             >
                 <View style={styles.menuContainer}>
                     <TouchableOpacity
@@ -123,7 +122,7 @@ export default function HomeOwnerScreen({ navigation, user }) {
                         onActiveSessionsPress={handleActiveSessionsPress}
                     />
                 </View>
-            </ScrollView>
+            </ScrollWrapper>
         </View>
     );
 }

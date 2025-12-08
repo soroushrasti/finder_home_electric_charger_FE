@@ -1,10 +1,11 @@
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import ActivityDashboard from '../../components/ActivityDashboard';
 import {useTranslation} from "react-i18next";
 import FarsiText from  "../../components/FarsiText";
+import ScrollWrapper from '../../components/ScrollWrapper';
 
 export default function CarOwnerScreen({ navigation, user }) {
     const { t } = useTranslation();
@@ -33,9 +34,9 @@ export default function CarOwnerScreen({ navigation, user }) {
                 </Text>
             </LinearGradient>
 
-            <ScrollView
+            <ScrollWrapper
                 contentContainerStyle={styles.scrollContainer}
-                showsVerticalScrollIndicator={false}
+                keyboardAware={false}
             >
                 <View style={styles.menuContainer}>
                     <TouchableOpacity
@@ -120,7 +121,7 @@ export default function CarOwnerScreen({ navigation, user }) {
                         onActiveSessionsPress={handleActiveSessionsPress}
                     />
                 </View>
-            </ScrollView>
+            </ScrollWrapper>
         </View>
     );
 }

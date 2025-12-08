@@ -1,11 +1,11 @@
 // src/screens/combined/CombinedDashboardScreen.js
 import React from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
-
+import ScrollWrapper from '../../components/ScrollWrapper';
 import {useTranslation} from "react-i18next";
 
 
@@ -61,7 +61,7 @@ export default function CombinedDashboardScreen({ navigation, user }) {
     ];
 
     return (
-        <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <ScrollWrapper style={styles.container} keyboardAware={false}>
             <LinearGradient
                 colors={['#667eea', '#764ba2']}
                 style={styles.header}
@@ -129,7 +129,7 @@ export default function CombinedDashboardScreen({ navigation, user }) {
                     </View>
                 </View>
             </View>
-        </ScrollView>
+        </ScrollWrapper>
     );
 }
 

@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     StyleSheet,
     Alert,
-    ScrollView,
     ActivityIndicator,
     Platform,
     Modal,
@@ -19,7 +18,7 @@ import {useTranslation} from "react-i18next";
 import env from "../../config/environment";
 import FarsiText from  "../../components/FarsiText";
 import FarsiTextInput from  "../../components/FarsiTextInput";
-import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import ScrollWrapper from '../../components/ScrollWrapper';
 import { Dimensions } from 'react-native';
 import faCountries from '../../localization/faCountryCodes.json';
 import enCountries from '../../localization/enCountryCodes.json';
@@ -196,19 +195,9 @@ export default function RegisterScreen({ navigation, setUser }) {
         }
     };
 
-    const ScrollContainer = Platform.OS === 'web' ? ScrollView : KeyboardAwareScrollView;
-
     return (
-        <ScrollContainer
-            style={{ flex: 1, backgroundColor: '#fff' }}
-            contentContainerStyle={{ flexGrow: 1, minHeight: Platform.OS === 'web' ? '100vh' : undefined, padding: 16 }}
-            enableOnAndroid={true}
-            extraScrollHeight={40}
-            keyboardShouldPersistTaps="handled"
-            showsVerticalScrollIndicator={true}
-            bounces={true}
-            scrollEnabled={true}
-            nestedScrollEnabled={true}
+        <ScrollWrapper
+            contentContainerStyle={{ padding: 16 }}
         >
             <View style={styles.container}>
             <LinearGradient
@@ -442,7 +431,7 @@ export default function RegisterScreen({ navigation, setUser }) {
                     </View>
                 </View>
             </View>
-        </ScrollContainer>
+        </ScrollWrapper>
     );
 }
 

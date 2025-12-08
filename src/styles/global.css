@@ -1,0 +1,32 @@
+/* Global web styles for proper scrolling */
+
+* {
+    -webkit-overflow-scrolling: touch;
+}
+
+html, body, #root {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: auto;
+}
+
+/* Fix for React Native Web ScrollView */
+[data-focusable="true"] {
+    outline: none;
+}
+
+/* Ensure scrollable containers work properly */
+.scrollable-container {
+    -webkit-overflow-scrolling: touch;
+    overflow-y: auto;
+    height: 100%;
+}
+
+/* Fix for modal scrolling */
+.modal-content {
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
